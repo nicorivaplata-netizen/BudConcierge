@@ -1,0 +1,16 @@
+{
+  "name": "budconcierge",
+  "version": "1.0.0",
+  "description": "AI-powered cannabis recommendation app",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  }
+}

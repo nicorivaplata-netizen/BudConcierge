@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="description" content="BudConcierge — Your personal AI cannabis guide. Personalized recommendations, no judgment.">
+  <meta name="theme-color" content="#1D9E75">
+  <title>BudConcierge</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- PWA: makes it installable on phones like a real app -->
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════
+       HOME SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-home" class="screen active">
+    <div class="topbar">
+      <div class="wb-avatar" id="home-avatar" style="width:34px;height:34px;font-size:13px;cursor:pointer" onclick="switchTab('profile')">?</div>
+      <div style="flex:1">
+        <div class="topbar-title" id="home-title">BudConcierge</div>
+        <div class="topbar-sub">Your personal cannabis guide</div>
+      </div>
+      <span id="home-badge" style="font-size:10px;background:#E1F5EE;color:#085041;padding:2px 8px;border-radius:10px;font-weight:600">v3</span>
+    </div>
+
+    <div class="content">
+      <!-- Welcome banner -->
+      <div class="card welcome-banner">
+        <div class="wb-avatar" id="wb-avatar">?</div>
+        <div>
+          <div class="wb-title" id="wb-greeting">Welcome to BudConcierge</div>
+          <div class="wb-sub" id="wb-msg">Set up your profile and get personalized recommendations — no judgment, no guessing.</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="home-cta" onclick="handleCTA()">Set up my profile</button>
+
+      <!-- Quick actions (shown after profile is set) -->
+      <div id="quick-actions" style="display:none;display:flex;flex-direction:column;gap:8px">
+        <div class="section-label">Quick start</div>
+        <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('chat')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-weight:600;font-size:14px">Chat with BudConcierge</span>
+            <span style="color:#bbb">›</span>
+          </div>
+          <div style="font-size:13px;color:#888" id="chat-shortcut-sub">Get personalized recommendations</div>
+        </div>
+        <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('profile')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-weight:600;font-size:14px">Update my preferences</span>
+            <span style="color:#bbb">›</span>
+          </div>
+          <div style="font-size:13px;color:#888">Change goals, tolerance, product types</div>
+        </div>
+      </div>
+
+      <!-- Strain history on home -->
+      <div id="home-history-section" style="display:none">
+        <div class="section-label" style="margin-bottom:6px">My saved strains</div>
+        <div class="card" style="padding:0;overflow:hidden" id="home-history-list"></div>
+      </div>
+    </div>
+
+    <nav class="navbar">
+      <button class="nav-item active" onclick="switchTab('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </button>
+      <button class="nav-item" onclick="switchTab('chat')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Chat
+      </button>
+      <button class="nav-item" onclick="switchTab('profile')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile
+      </button>
+    </nav>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       CHAT SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-chat" class="screen">
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('home')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div style="flex:1">
+        <div class="topbar-title">BudConcierge</div>
+        <div class="topbar-sub">AI-powered · 30 real products</div>
+      </div>
+      <div style="width:8px;height:8px;border-radius:50%;background:#1D9E75"></div>
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="disclaimer">Not medical advice · 21+ or valid medical card required</div>
+
+    <div class="input-row">
+      <textarea class="chat-input" id="chat-input" placeholder="Ask anything..." rows="1"></textarea>
+      <button class="send-btn" onclick="sendMessage()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="navbar">
+      <button class="nav-item" onclick="switchTab('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </button>
+      <button class="nav-item active" onclick="switchTab('chat')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Chat
+      </button>
+      <button class="nav-item" onclick="switchTab('profile')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile
+      </button>
+    </nav>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PROFILE SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-profile" class="screen">
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('home')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="topbar-title" style="flex:1">My profile</div>
+      <span id="prof-badge" style="font-size:10px;background:#E1F5EE;color:#085041;padding:2px 8px;border-radius:10px;font-weight:600">New</span>
+    </div>
+
+    <div class="content">
+      <!-- Avatar row -->
+      <div class="card" style="display:flex;align-items:center;gap:14px">
+        <div class="wb-avatar" id="prof-avatar" style="width:52px;height:52px;font-size:20px">?</div>
+        <div style="flex:1">
+          <div style="font-size:16px;font-weight:600" id="prof-name">Set up your profile</div>
+          <div style="font-size:12px;color:#888" id="prof-since"></div>
+        </div>
+      </div>
+
+      <!-- Preferences summary -->
+      <div>
+        <div class="section-label" style="margin-bottom:8px">Preferences</div>
+        <div class="card" style="padding:0 16px">
+          <div class="pref-row">
+            <span class="pref-label">Experience</span>
+            <span class="pref-val empty" id="pf-experience">Not set</span>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">Best time</span>
+            <span class="pref-val empty" id="pf-time">Not set</span>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">THC comfort</span>
+            <span class="pref-val empty" id="pf-thc">Not set</span>
+          </div>
+          <div class="pref-row" style="flex-direction:column;align-items:flex-start;gap:6px">
+            <span class="pref-label">Product types</span>
+            <div id="pf-products"><span class="pref-val empty">Not set</span></div>
+          </div>
+          <div class="pref-row" style="flex-direction:column;align-items:flex-start;gap:6px;border-bottom:none">
+            <span class="pref-label">Goals</span>
+            <div id="pf-goals"><span class="pref-val empty">Not set</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Saved strains -->
+      <div>
+        <div class="section-label" style="margin-bottom:8px">Saved strains</div>
+        <div class="card" style="padding:0;overflow:hidden" id="prof-history-list"></div>
+      </div>
+
+      <button class="btn-secondary" onclick="openEdit()">Edit preferences</button>
+      <div id="prof-toast" class="toast"></div>
+    </div>
+
+    <nav class="navbar">
+      <button class="nav-item" onclick="switchTab('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </button>
+      <button class="nav-item" onclick="switchTab('chat')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Chat
+      </button>
+      <button class="nav-item active" onclick="switchTab('profile')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile
+      </button>
+    </nav>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       EDIT PROFILE SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-edit" class="screen">
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('profile')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="topbar-title">Edit preferences</div>
+    </div>
+
+    <div class="content">
+      <div class="card" style="display:flex;flex-direction:column;gap:16px">
+
+        <div>
+          <div class="section-label" style="margin-bottom:8px">Your name</div>
+          <input type="text" id="edit-name" placeholder="First name" maxlength="30"
+            style="width:100%;padding:10px 13px;border:1px solid rgba(0,0,0,0.15);border-radius:8px;font-size:14px;background:#fff;color:#1a1a18">
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:8px">Experience level</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="experience" data-val="First time" onclick="pickOne(this)">First time</button>
+            <button class="opt-btn" data-field="experience" data-val="Occasional" onclick="pickOne(this)">Occasional</button>
+            <button class="opt-btn" data-field="experience" data-val="Regular" onclick="pickOne(this)">Regular</button>
+            <button class="opt-btn" data-field="experience" data-val="Daily use" onclick="pickOne(this)">Daily use</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:8px">Preferred time</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="time" data-val="Morning" onclick="pickOne(this)">Morning</button>
+            <button class="opt-btn" data-field="time" data-val="Daytime" onclick="pickOne(this)">Daytime</button>
+            <button class="opt-btn" data-field="time" data-val="Evening" onclick="pickOne(this)">Evening</button>
+            <button class="opt-btn" data-field="time" data-val="Before bed" onclick="pickOne(this)">Before bed</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:8px">Product types (select all that apply)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="products" data-val="Flower" onclick="pickMany(this)">Flower</button>
+            <button class="opt-btn" data-field="products" data-val="Edibles" onclick="pickMany(this)">Edibles</button>
+            <button class="opt-btn" data-field="products" data-val="THC drinks" onclick="pickMany(this)">THC drinks</button>
+            <button class="opt-btn" data-field="products" data-val="Tinctures" onclick="pickMany(this)">Tinctures</button>
+            <button class="opt-btn" data-field="products" data-val="Vape" onclick="pickMany(this)">Vape</button>
+            <button class="opt-btn" data-field="products" data-val="Topicals" onclick="pickMany(this)">Topicals</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:8px">Goals (select all that apply)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="goals" data-val="Sleep" onclick="pickMany(this)">Sleep</button>
+            <button class="opt-btn" data-field="goals" data-val="Anxiety / stress" onclick="pickMany(this)">Anxiety / stress</button>
+            <button class="opt-btn" data-field="goals" data-val="Pain relief" onclick="pickMany(this)">Pain relief</button>
+            <button class="opt-btn" data-field="goals" data-val="Focus / creativity" onclick="pickMany(this)">Focus / creativity</button>
+            <button class="opt-btn" data-field="goals" data-val="Mood / depression" onclick="pickMany(this)">Mood / depression</button>
+            <button class="opt-btn" data-field="goals" data-val="Social / relaxation" onclick="pickMany(this)">Social / relaxation</button>
+            <button class="opt-btn" data-field="goals" data-val="Nausea / appetite" onclick="pickMany(this)">Nausea / appetite</button>
+            <button class="opt-btn" data-field="goals" data-val="General wellness" onclick="pickMany(this)">General wellness</button>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="btn-primary" onclick="saveProfile()">Save profile</button>
+      <div id="edit-toast" class="toast"></div>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<script src="strains.js"></script>
+<script>
+// ─── Storage keys ───────────────────────────────────────────────────────────
+const PKEY = 'bc_profile_v1';
+const HKEY = 'bc_history_v1';
+
+// ─── State ───────────────────────────────────────────────────────────────────
+let profile = { name:'', experience:'', time:'', products:[], goals:[], joined:'' };
+let strainHistory = [];
+let chatHistory = [];
+let isTyping = false;
+let chatInitialized = false;
+
+// ─── Persistence ─────────────────────────────────────────────────────────────
+function loadData() {
+  try { const p = localStorage.getItem(PKEY); if (p) profile = JSON.parse(p); } catch(e) {}
+  try { const h = localStorage.getItem(HKEY); if (h) strainHistory = JSON.parse(h); } catch(e) {}
+}
+function saveData() {
+  try { localStorage.setItem(PKEY, JSON.stringify(profile)); } catch(e) {}
+  try { localStorage.setItem(HKEY, JSON.stringify(strainHistory)); } catch(e) {}
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+function initials(n) { return n ? n.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) : '?'; }
+function thcLabel(exp) {
+  return { 'First time':'Low · 5–15% THC', 'Occasional':'Moderate · 15–20%', 'Regular':'Standard · 20–25%', 'Daily use':'High · 25%+' }[exp] || '—';
+}
+function timeNow() { const d = new Date(); return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'); }
+function toast(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2400);
+}
+function pills(arr, cls) {
+  return arr && arr.length ? arr.map(v=>`<span class="pill ${cls}">${v}</span>`).join(' ') : '<span class="pref-val empty">Not set</span>';
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+tab).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  if (tab === 'home' || tab === 'chat' || tab === 'profile') {
+    document.querySelectorAll(`[onclick="switchTab('${tab}')"]`).forEach(b => {
+      if (b.classList.contains('nav-item')) b.classList.add('active');
+    });
+  }
+  if (tab === 'chat' && !chatInitialized) startChat();
+  refreshUI();
+}
+
+// ─── UI refresh ───────────────────────────────────────────────────────────────
+function refreshUI() {
+  const has = !!profile.name;
+  const ini = initials(profile.name);
+
+  document.getElementById('home-avatar').textContent = ini;
+  document.getElementById('wb-avatar').textContent   = ini;
+  document.getElementById('prof-avatar').textContent = ini;
+
+  if (has) {
+    document.getElementById('home-title').textContent    = 'Hey, ' + profile.name + ' 👋';
+    document.getElementById('wb-greeting').textContent  = 'Welcome back, ' + profile.name + '!';
+    document.getElementById('wb-msg').textContent       = 'Your profile is ready. Jump straight into personalized recommendations.';
+    document.getElementById('home-cta').textContent     = 'Start a new chat →';
+    document.getElementById('home-badge').textContent   = 'Profile ready';
+    document.getElementById('prof-badge').textContent   = 'Active';
+    document.getElementById('prof-name').textContent    = profile.name;
+    document.getElementById('prof-since').textContent   = profile.joined ? 'Member since ' + profile.joined : '';
+    document.getElementById('quick-actions').style.display = 'flex';
+    const goals = profile.goals && profile.goals.length ? 'Personalized for: ' + profile.goals.slice(0,2).join(', ') : 'Get personalized recommendations';
+    document.getElementById('chat-shortcut-sub').textContent = goals;
+  } else {
+    document.getElementById('home-title').textContent   = 'BudConcierge';
+    document.getElementById('wb-greeting').textContent  = 'Welcome to BudConcierge';
+    document.getElementById('wb-msg').textContent       = 'Set up your profile for personalized, judgment-free cannabis guidance.';
+    document.getElementById('home-cta').textContent     = 'Set up my profile';
+    document.getElementById('quick-actions').style.display = 'none';
+  }
+
+  // Profile fields
+  setField('pf-experience', profile.experience);
+  setField('pf-time', profile.time);
+  setField('pf-thc', profile.experience ? thcLabel(profile.experience) : '');
+  document.getElementById('pf-products').innerHTML = pills(profile.products, 'pill-green');
+  document.getElementById('pf-goals').innerHTML    = pills(profile.goals, 'pill-purple');
+
+  // History
+  renderHistory('home-history-list');
+  renderHistory('prof-history-list');
+  document.getElementById('home-history-section').style.display = strainHistory.length ? 'block' : 'none';
+}
+
+function setField(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = val || 'Not set';
+  el.className   = 'pref-val' + (val ? '' : ' empty');
+}
+
+function renderHistory(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!strainHistory.length) {
+    el.innerHTML = '<div class="no-history">No strains saved yet</div>';
+    return;
+  }
+  el.innerHTML = strainHistory.slice(0, 5).map(h => {
+    const color = (window.TYPE_COLORS[h.type] || ['#E1F5EE','#085041'])[1];
+    const stars = '★'.repeat(h.rating||0) + '☆'.repeat(5-(h.rating||0));
+    return `<div class="h-item">
+      <div class="h-dot" style="background:${color}"></div>
+      <div>
+        <div class="h-name">${h.name}</div>
+        <div class="h-meta">${h.type} · ${h.date||'Recently'}</div>
+      </div>
+      <div class="h-stars" style="margin-left:auto">${stars}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── Home CTA ─────────────────────────────────────────────────────────────────
+function handleCTA() {
+  if (profile.name) { switchTab('chat'); }
+  else { openEdit(); }
+}
+
+// ─── Edit profile ─────────────────────────────────────────────────────────────
+function openEdit() {
+  // Reset all buttons
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('edit-name').value = profile.name || '';
+
+  // Re-select saved values
+  ['experience', 'time'].forEach(field => {
+    document.querySelectorAll(`.opt-btn[data-field="${field}"]`).forEach(b => {
+      if (b.dataset.val === profile[field]) b.classList.add('on');
+    });
+  });
+  ['products', 'goals'].forEach(field => {
+    const arr = profile[field] || [];
+    document.querySelectorAll(`.opt-btn[data-field="${field}"]`).forEach(b => {
+      if (arr.includes(b.dataset.val)) b.classList.add('on');
+    });
+  });
+  switchTab('edit');
+}
+
+function pickOne(btn) {
+  document.querySelectorAll(`.opt-btn[data-field="${btn.dataset.field}"]`).forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function pickMany(btn) { btn.classList.toggle('on'); }
+
+function saveProfile() {
+  const name = document.getElementById('edit-name').value.trim();
+  if (!name) { document.getElementById('edit-name').focus(); return; }
+
+  const get1 = f => { const b = document.querySelector(`.opt-btn.on[data-field="${f}"]`); return b ? b.dataset.val : ''; };
+  const getM = f => [...document.querySelectorAll(`.opt-btn.on[data-field="${f}"]`)].map(b => b.dataset.val);
+
+  const exp = get1('experience');
+  profile = {
+    name,
+    experience: exp,
+    time:       get1('time'),
+    products:   getM('products'),
+    goals:      getM('goals'),
+    thc:        thcLabel(exp),
+    joined:     profile.joined || new Date().toLocaleDateString('en-US', { month:'short', year:'numeric' })
+  };
+  saveData();
+  chatInitialized = false; // force new chat with updated profile
+
+  toast('edit-toast', 'Profile saved!');
+  setTimeout(() => switchTab('profile'), 1100);
+}
+
+// ─── Chat ─────────────────────────────────────────────────────────────────────
+function buildSystem() {
+  const db = window.STRAINS.map(s =>
+    `- ${s.name} (${s.type}) | THC:${s.thc_min}-${s.thc_max}% | CBD:${s.cbd_min}-${s.cbd_max}% | Helps:${s.helps_with.join(',')} | Level:${s.experience_level} | Time:${s.best_time} | "${s.description}"`
+  ).join('\n');
+
+  const history = strainHistory.length
+    ? `\nStrains this user has already tried: ${strainHistory.map(h=>h.name+(h.rating?` (${h.rating}/5 stars)`:'')).join(', ')}. Avoid re-recommending these unless asked.`
+    : '';
+
+  const profCtx = profile.name
+    ? `USER PROFILE — DO NOT ask for info already captured here:
+- Name: ${profile.name}
+- Experience: ${profile.experience || 'unknown'}
+- Preferred time: ${profile.time || 'any'}
+- Product preferences: ${(profile.products||[]).join(', ') || 'open to anything'}
+- Goals: ${(profile.goals||[]).join(', ') || 'general wellness'}
+- THC comfort: ${thcLabel(profile.experience)}
+${history}
+Since you already have their profile, greet ${profile.name} by name and ask only ONE clarifying question before recommending. Skip intake questions already answered above.`
+    : `No profile yet. Ask for their name first, then gather experience level, goals, product preference, and time of day. Keep it warm and conversational.`;
+
+  return `You are BudConcierge — a warm, knowledgeable, completely non-judgmental cannabis guide. You genuinely believe cannabis is medicine that can help anyone: lawyers, nurses, priests, executives, retirees, parents, first-timers. You never stigmatize, never gatekeep, and always make people feel comfortable and welcome.
+
+${profCtx}
+
+PRODUCT DATABASE (30 real products):
+${db}
+
+RECOMMENDATION FORMAT — when you have enough info, output each recommendation on its own line in EXACTLY this format:
+REC|||Product Name|||One sentence explaining why it fits this specific person
+
+Give 2–3 recommendations. Always include a gentle reminder that you are not a doctor.`;
+}
+
+async function getBotReply(userMsg) {
+  chatHistory.push({ role: 'user', content: userMsg });
+  showTyping(); isTyping = true;
+
+  try {
+    // Calls OUR backend proxy at /api/chat — the API key never touches the browser
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chatHistory, system: buildSystem() })
+    });
+
+    if (!res.ok) throw new Error('API error ' + res.status);
+    const data = await res.json();
+    const reply = data.content.map(b => b.text || '').join('');
+
+    chatHistory.push({ role: 'assistant', content: reply });
+    removeTyping(); isTyping = false;
+
+    // Smart chip suggestions
+    let chips = [];
+    const lo = reply.toLowerCase();
+    if (lo.includes('product') || lo.includes('prefer') || lo.includes('form')) chips = ['Flower','Edibles','THC drink','Tincture','Topical'];
+    else if (lo.includes('time') || lo.includes('morning') || lo.includes('evening')) chips = ['Morning','Daytime','Evening','Before bed'];
+    else if (lo.includes('goal') || lo.includes('help') || lo.includes('looking for')) chips = ['Sleep','Anxiety / stress','Pain relief','Energy / focus','Mood lift'];
+    else if (lo.includes('experience') || lo.includes('first time') || lo.includes('tried')) chips = ['First time','Occasional','Regular user','Daily use'];
+
+    addMessage('bot', reply, chips);
+  } catch (err) {
+    removeTyping(); isTyping = false;
+    addMessage('bot', 'Having trouble connecting right now. Make sure your ANTHROPIC_API_KEY is set in Vercel environment variables, then redeploy.');
+  }
+}
+
+function addMessage(role, content, chips) {
+  const msgsEl = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+
+  let textLines = [], recHtml = '';
+
+  if (role === 'bot') {
+    content.split('\n').forEach(line => {
+      if (line.startsWith('REC|||')) {
+        const [, name, reason] = line.split('|||');
+        const strain = window.STRAINS.find(s => s.name.toLowerCase() === (name||'').trim().toLowerCase());
+        if (strain) recHtml += buildRecCard(strain, (reason||'').trim());
+      } else if (line.trim()) {
+        textLines.push(line.trim());
+      }
+    });
+  }
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.textContent = role === 'bot'
+    ? (textLines.join(' ') || (recHtml ? 'Here are my top picks for you:' : content))
+    : content;
+  div.appendChild(bubble);
+
+  if (recHtml) {
+    const rc = document.createElement('div');
+    rc.innerHTML = recHtml;
+    div.appendChild(rc);
+  }
+
+  if (chips && chips.length) {
+    const cd = document.createElement('div');
+    cd.className = 'chips';
+    chips.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = 'chip';
+      btn.textContent = c;
+      btn.onclick = () => {
+        document.querySelectorAll('.chip').forEach(x => x.classList.add('used'));
+        document.getElementById('chat-input').value = c;
+        sendMessage();
+      };
+      cd.appendChild(btn);
+    });
+    div.appendChild(cd);
+  }
+
+  const t = document.createElement('div');
+  t.className = 'msg-time';
+  t.textContent = timeNow();
+  div.appendChild(t);
+
+  msgsEl.appendChild(div);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+
+function buildRecCard(s, reason) {
+  const [bg, tx] = window.TYPE_COLORS[s.type] || ['#E1F5EE','#085041'];
+  const saved = strainHistory.find(h => h.name === s.name);
+  const thcStr = s.thc_max <= 2 ? `${s.thc_min}–${s.thc_max}mg` : `${s.thc_min}–${s.thc_max}%`;
+  const cbdStr = s.cbd_max >= 100 ? `${Math.round(s.cbd_min)}mg` : `${s.cbd_min}–${s.cbd_max}%`;
+  return `<div class="rec-card">
+    <div class="rec-header">
+      <span class="rec-name">${s.name}</span>
+      <span class="rec-badge" style="background:${bg};color:${tx}">${s.type}</span>
+    </div>
+    <div class="rec-stats">
+      ${s.thc_max > 0 ? `<span class="rec-stat"><strong>THC</strong> ${thcStr}</span>` : ''}
+      ${s.cbd_max > 0.5 ? `<span class="rec-stat"><strong>CBD</strong> ${cbdStr}</span>` : ''}
+      <span class="rec-stat">${s.best_time}</span>
+      <span class="rec-stat">${s.experience_level}</span>
+    </div>
+    <div class="rec-desc">${s.description}</div>
+    ${reason ? `<div class="rec-why">${reason}</div>` : ''}
+    ${s.terpenes.length ? `<div class="rec-terps">${s.terpenes.map(t=>`<span class="terp">${t}</span>`).join('')}</div>` : ''}
+    <button class="save-btn ${saved?'saved':''}" onclick="saveStrain('${s.id}',this)">
+      ${saved ? 'Saved to profile' : '+ Save to profile'}
+    </button>
+  </div>`;
+}
+
+function saveStrain(id, btn) {
+  const s = window.STRAINS.find(x => x.id === id);
+  if (!s) return;
+  if (strainHistory.find(h => h.name === s.name)) { toast('prof-toast', 'Already saved'); return; }
+  strainHistory.unshift({ name: s.name, type: s.type, rating: 4, date: 'Today' });
+  if (strainHistory.length > 20) strainHistory = strainHistory.slice(0, 20);
+  saveData();
+  btn.textContent = 'Saved to profile'; btn.classList.add('saved');
+  refreshUI();
+  toast('prof-toast', s.name + ' saved to your profile!');
+}
+
+function showTyping() {
+  const msgsEl = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg bot'; d.id = 'typing-ind';
+  d.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  msgsEl.appendChild(d); msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+function removeTyping() { const t = document.getElementById('typing-ind'); if (t) t.remove(); }
+
+function startChat() {
+  chatInitialized = true;
+  chatHistory = [];
+  document.getElementById('messages').innerHTML = '';
+  const opener = profile.name
+    ? `I'm ${profile.name}. Based on my profile — ${profile.experience||'some'} experience, goals: ${(profile.goals||[]).join(', ')||'general wellness'}, prefer: ${(profile.products||[]).join(', ')||'open to anything'} — what do you recommend for me today?`
+    : `Hi! I want to find the right cannabis product for me.`;
+  getBotReply(opener);
+}
+
+async function sendMessage() {
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if (!text || isTyping) return;
+  inp.value = ''; inp.style.height = 'auto';
+  addMessage('user', text);
+  await getBotReply(text);
+}
+
+// Auto-grow textarea
+const inp = document.getElementById('chat-input');
+inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+inp.addEventListener('input', () => { inp.style.height = 'auto'; inp.style.height = Math.min(inp.scrollHeight, 90) + 'px'; });
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+loadData();
+refreshUI();
+</script>
+</body>
+</html>
