@@ -503,14 +503,14 @@ async function getBotReply(userMsg) {
 
     if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
-    const reply = (data.content || []).map(b => b.text || '').join('') || data.error || 'No response';
+    const reply = String((data.content || []).map(b => b.text || '').join('') || data.error || 'No response');
 
     chatHistory.push({ role: 'assistant', content: reply });
     removeTyping(); isTyping = false;
 
     // Smart chip suggestions
     let chips = [];
-    const lo = reply.toLowerCase();
+    const lo = String(reply).toLowerCase();
     if (lo.includes('product') || lo.includes('prefer') || lo.includes('form')) chips = ['Flower','Edibles','THC drink','Tincture','Topical'];
     else if (lo.includes('time') || lo.includes('morning') || lo.includes('evening')) chips = ['Morning','Daytime','Evening','Before bed'];
     else if (lo.includes('goal') || lo.includes('help') || lo.includes('looking for')) chips = ['Sleep','Anxiety / stress','Pain relief','Energy / focus','Mood lift'];
