@@ -503,14 +503,14 @@ async function getBotReply(userMsg) {
 
     if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
-    const reply = data.content && data.content[0] && data.content[0].text ? data.content[0].text : JSON.stringify(data);
+    const reply = data.content.map(b => b.text || '').join('');
 
     chatHistory.push({ role: 'assistant', content: reply });
     removeTyping(); isTyping = false;
 
     // Smart chip suggestions
     let chips = [];
-    const lo = String(reply).toLowerCase();
+    const lo = reply.toLowerCase();
     if (lo.includes('product') || lo.includes('prefer') || lo.includes('form')) chips = ['Flower','Edibles','THC drink','Tincture','Topical'];
     else if (lo.includes('time') || lo.includes('morning') || lo.includes('evening')) chips = ['Morning','Daytime','Evening','Before bed'];
     else if (lo.includes('goal') || lo.includes('help') || lo.includes('looking for')) chips = ['Sleep','Anxiety / stress','Pain relief','Energy / focus','Mood lift'];
@@ -519,7 +519,7 @@ async function getBotReply(userMsg) {
     addMessage('bot', reply, chips);
   } catch (err) {
     removeTyping(); isTyping = false;
-    addMessage('bot', 'Error: ' + err.message);
+    addMessage('bot', 'Having trouble connecting right now. Make sure your ANTHROPIC_API_KEY is set in Vercel environment variables, then redeploy.');
   }
 }
 
@@ -544,9 +544,15 @@ function addMessage(role, content, chips) {
 
   const bubble = document.createElement('div');
   bubble.className = 'bubble';
-  bubble.textContent = role === 'bot'
-    ? (textLines.join(' ') || (recHtml ? 'Here are my top picks for you:' : content))
-    : content;
+  if (role === 'bot') {
+    if (textLines.length) {
+      bubble.innerHTML = textLines.map(l => `<p>${l}</p>`).join('');
+    } else {
+      bubble.innerHTML = recHtml ? '<p>Here are my top picks for you:</p>' : `<p>${content}</p>`;
+    }
+  } else {
+    bubble.textContent = content;
+  }
   div.appendChild(bubble);
 
   if (recHtml) {
