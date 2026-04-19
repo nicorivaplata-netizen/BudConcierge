@@ -503,7 +503,7 @@ async function getBotReply(userMsg) {
 
     if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
-    const reply = String((data.content || []).map(b => b.text || '').join('') || data.error || 'No response');
+    const reply = data.content && data.content[0] && data.content[0].text ? data.content[0].text : JSON.stringify(data);
 
     chatHistory.push({ role: 'assistant', content: reply });
     removeTyping(); isTyping = false;
