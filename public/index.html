@@ -101,6 +101,20 @@
           </div>
           <div style="font-size:13px;color:#888">Change goals, tolerance, product types</div>
         </div>
+        <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('dispensary')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-weight:600;font-size:14px">Find a dispensary near me</span>
+            <span style="color:#bbb">›</span>
+          </div>
+          <div style="font-size:13px;color:#888">Search real dispensaries in your area</div>
+        </div>
+        <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('journal')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <span style="font-weight:600;font-size:14px">Log a journal entry</span>
+            <span style="color:#bbb">›</span>
+          </div>
+          <div style="font-size:13px;color:#888" id="journal-shortcut-sub">Track how products make you feel</div>
+        </div>
       </div>
 
       <!-- Strain history on home -->
@@ -111,15 +125,19 @@
     </div>
 
     <nav class="navbar">
-      <button class="nav-item active" onclick="switchTab('home')">
+      <button class="nav-item active" id="nav-home-home" onclick="switchTab('home')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         Home
       </button>
-      <button class="nav-item" onclick="switchTab('chat')">
+      <button class="nav-item" id="nav-home-chat" onclick="switchTab('chat')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         Chat
       </button>
-      <button class="nav-item" onclick="switchTab('profile')">
+      <button class="nav-item" id="nav-home-journal" onclick="switchTab('journal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Journal
+      </button>
+      <button class="nav-item" id="nav-home-profile" onclick="switchTab('profile')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Profile
       </button>
@@ -136,7 +154,7 @@
       </button>
       <div style="flex:1">
         <div class="topbar-title">BudConcierge</div>
-        <div class="topbar-sub">Your personal guide</div>
+        <div class="topbar-sub">99 real products · AI-powered</div>
       </div>
       <button onclick="newChat()" style="border:none;background:transparent;cursor:pointer;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600;color:#1a9968;border:1px solid #a8dfc9;background:#E1F5EE" title="Start new chat">New chat</button>
     </div>
@@ -156,18 +174,10 @@
     </div>
 
     <nav class="navbar">
-      <button class="nav-item" onclick="switchTab('home')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        Home
-      </button>
-      <button class="nav-item active" onclick="switchTab('chat')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        Chat
-      </button>
-      <button class="nav-item" onclick="switchTab('profile')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Profile
-      </button>
+      <button class="nav-item" onclick="switchTab('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+      <button class="nav-item active" onclick="switchTab('chat')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</button>
+      <button class="nav-item" onclick="switchTab('journal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Journal</button>
+      <button class="nav-item" onclick="switchTab('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
     </nav>
   </div>
 
@@ -333,10 +343,332 @@
     </div>
   </div>
 
+
+  <!-- ═══════════════════════════════════════════
+       DISPENSARY FINDER SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-dispensary" class="screen">
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('home')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div style="flex:1">
+        <div class="topbar-title">Find a dispensary</div>
+        <div class="topbar-sub">Powered by Google Places</div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="card" style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:13px;color:#5a5c57;line-height:1.55">Find licensed dispensaries near you. Selecting one helps BudConcierge tailor your experience and context.</div>
+        <div style="font-size:11px;color:#9a9c97;background:#f7f8f6;border-radius:8px;padding:8px 11px;line-height:1.5">
+          Live menu integration coming soon. Recommendations currently use our curated product database.
+        </div>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="disp-search" placeholder="City, zip code, or name..." onkeydown="if(event.key==='Enter')searchDispensaries()"
+            style="flex:1;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111">
+          <button onclick="searchDispensaries()" style="padding:10px 14px;background:#1a9968;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">Search</button>
+        </div>
+        <button onclick="findNearMe()" style="width:100%;padding:11px;border:1.5px solid #1a9968;background:#E1F5EE;color:#085041;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">
+          Use my current location
+        </button>
+      </div>
+
+      <div id="disp-status" style="font-size:13px;color:#9a9c97;text-align:center;padding:8px 0"></div>
+
+      <div id="disp-results" style="display:flex;flex-direction:column;gap:10px"></div>
+
+      <div style="font-size:11px;color:#bbb;text-align:center;line-height:1.5;padding:4px 0">
+        Selecting a dispensary tailors your chat experience. Full live inventory integration is in development.
+      </div>
+    </div>
+    <nav class="navbar">
+      <button class="nav-item" onclick="switchTab('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+      <button class="nav-item" onclick="switchTab('chat')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</button>
+      <button class="nav-item" onclick="switchTab('journal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Journal</button>
+      <button class="nav-item" onclick="switchTab('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
+    </nav>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MY JOURNAL SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-journal" class="screen">
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('home')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div style="flex:1">
+        <div class="topbar-title">My Journal</div>
+        <div class="topbar-sub">Track how products make you feel</div>
+      </div>
+      <button onclick="openNewEntry()" style="border:1px solid #a8dfc9;background:#E1F5EE;color:#085041;font-size:12px;font-weight:600;padding:5px 11px;border-radius:8px;cursor:pointer">+ New entry</button>
+    </div>
+    <div class="content">
+      <div id="journal-empty" style="text-align:center;padding:40px 20px;display:block">
+        <div style="width:60px;height:60px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#085041" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <div style="font-size:15px;font-weight:600;color:#111;margin-bottom:8px">No entries yet</div>
+        <div style="font-size:13px;color:#9a9c97;line-height:1.6;margin-bottom:20px">Log how products make you feel after each session. Over time, your journal builds a personal profile that makes recommendations smarter.</div>
+        <button onclick="openNewEntry()" class="btn-primary">Log your first entry</button>
+      </div>
+      <div id="journal-list" style="display:none;flex-direction:column;gap:12px"></div>
+    </div>
+    <nav class="navbar">
+      <button class="nav-item" onclick="switchTab('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+      <button class="nav-item" onclick="switchTab('chat')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat</button>
+      <button class="nav-item active" onclick="switchTab('journal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Journal</button>
+      <button class="nav-item" onclick="switchTab('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile</button>
+    </nav>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       NEW JOURNAL ENTRY SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-new-entry" class="screen">
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('journal')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="topbar-title">New entry</div>
+    </div>
+    <div class="content">
+
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+
+        <div>
+          <div class="section-label" style="margin-bottom:7px">Product name</div>
+          <input type="text" id="entry-product" placeholder="e.g. Blue Dream, Wyld Gummies..." maxlength="60"
+            style="width:100%;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:14px;background:#fff;color:#111">
+          <div id="entry-suggestions" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:7px"></div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:7px">Product type</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+            <button class="opt-btn" data-field="etype" data-val="Flower" onclick="pickOne(this)">Flower</button>
+            <button class="opt-btn" data-field="etype" data-val="Edible" onclick="pickOne(this)">Edible</button>
+            <button class="opt-btn" data-field="etype" data-val="THC drink" onclick="pickOne(this)">THC drink</button>
+            <button class="opt-btn" data-field="etype" data-val="Tincture" onclick="pickOne(this)">Tincture</button>
+            <button class="opt-btn" data-field="etype" data-val="Vape" onclick="pickOne(this)">Vape</button>
+            <button class="opt-btn" data-field="etype" data-val="Topical" onclick="pickOne(this)">Topical</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:7px">Overall rating</div>
+          <div id="entry-stars" style="display:flex;gap:6px">
+            <span onclick="setEntryRating(1)" style="font-size:28px;cursor:pointer;color:#d3d1c7;transition:color .1s">★</span>
+            <span onclick="setEntryRating(2)" style="font-size:28px;cursor:pointer;color:#d3d1c7;transition:color .1s">★</span>
+            <span onclick="setEntryRating(3)" style="font-size:28px;cursor:pointer;color:#d3d1c7;transition:color .1s">★</span>
+            <span onclick="setEntryRating(4)" style="font-size:28px;cursor:pointer;color:#d3d1c7;transition:color .1s">★</span>
+            <span onclick="setEntryRating(5)" style="font-size:28px;cursor:pointer;color:#d3d1c7;transition:color .1s">★</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:10px">How did it affect you? (1 = not at all, 10 = very much)</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Sleep quality</span><span id="val-sleep" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-sleep').textContent=this.value" style="width:100%">
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Anxiety relief</span><span id="val-anxiety" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-anxiety').textContent=this.value" style="width:100%">
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Pain relief</span><span id="val-pain" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-pain').textContent=this.value" style="width:100%">
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Energy / focus</span><span id="val-energy" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-energy').textContent=this.value" style="width:100%">
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Mood lift</span><span id="val-mood" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-mood').textContent=this.value" style="width:100%">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:7px">Notes (optional)</div>
+          <textarea id="entry-notes" placeholder="How did it feel? Any side effects? Would you use it again?" rows="3"
+            style="width:100%;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;resize:none;background:#fff;color:#111;font-family:inherit"></textarea>
+        </div>
+
+      </div>
+
+      <button class="btn-primary" onclick="saveJournalEntry()">Save entry</button>
+      <div id="entry-toast" class="toast"></div>
+    </div>
+  </div>
+
 </div><!-- #app -->
 
 <script src="strains.js"></script>
 <script>
+
+
+// ─── Journal ──────────────────────────────────────────────────────────────────
+const JKEY = 'bc_journal_v1';
+let journal = [];
+let entryRating = 0;
+
+function loadJournal() {
+  try { const j = localStorage.getItem(JKEY); if (j) journal = JSON.parse(j); } catch(e) {}
+}
+function saveJournal() {
+  try { localStorage.setItem(JKEY, JSON.stringify(journal)); } catch(e) {}
+}
+
+function openNewEntry() {
+  // Reset form
+  document.getElementById('entry-product').value = '';
+  document.getElementById('entry-notes').value = '';
+  document.querySelectorAll('[data-field="etype"]').forEach(b => b.classList.remove('on'));
+  ['sleep','anxiety','pain','energy','mood'].forEach(k => {
+    const el = document.querySelector(`input[oninput*="val-${k}"]`);
+    if (el) { el.value = 5; document.getElementById('val-'+k).textContent = '5'; }
+  });
+  entryRating = 0;
+  setEntryRating(0);
+  // Populate suggestions from strain history
+  const sugg = document.getElementById('entry-suggestions');
+  sugg.innerHTML = strainHistory.slice(0,6).map(h =>
+    `<button onclick="document.getElementById('entry-product').value='${h.name}'" style="font-size:11px;padding:3px 9px;border-radius:12px;border:1px solid #a8dfc9;background:#E1F5EE;color:#085041;cursor:pointer">${h.name}</button>`
+  ).join('');
+  switchTab('new-entry');
+}
+
+function setEntryRating(n) {
+  entryRating = n;
+  document.querySelectorAll('#entry-stars span').forEach((s, i) => {
+    s.style.color = i < n ? '#EF9F27' : '#d3d1c7';
+  });
+}
+
+function saveJournalEntry() {
+  const product = document.getElementById('entry-product').value.trim();
+  if (!product) { document.getElementById('entry-product').focus(); return; }
+  const etype = document.querySelector('.opt-btn.on[data-field="etype"]');
+  const entry = {
+    id:      Date.now(),
+    product,
+    type:    etype ? etype.dataset.val : 'Unknown',
+    date:    new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }),
+    rating:  entryRating,
+    scores: {
+      sleep:   parseInt(document.querySelector('input[oninput*="val-sleep"]').value),
+      anxiety: parseInt(document.querySelector('input[oninput*="val-anxiety"]').value),
+      pain:    parseInt(document.querySelector('input[oninput*="val-pain"]').value),
+      energy:  parseInt(document.querySelector('input[oninput*="val-energy"]').value),
+      mood:    parseInt(document.querySelector('input[oninput*="val-mood"]').value),
+    },
+    notes: document.getElementById('entry-notes').value.trim(),
+  };
+  journal.unshift(entry);
+  if (journal.length > 100) journal = journal.slice(0, 100);
+  saveJournal();
+  const t = document.getElementById('entry-toast');
+  t.textContent = 'Entry saved!'; t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show'); switchTab('journal'); renderJournal(); }, 1000);
+}
+
+function renderJournal() {
+  const empty = document.getElementById('journal-empty');
+  const list  = document.getElementById('journal-list');
+  if (!journal.length) {
+    empty.style.display = 'block'; list.style.display = 'none'; return;
+  }
+  empty.style.display = 'none'; list.style.display = 'flex';
+  const scoreBar = (label, val) =>
+    `<div style="margin-bottom:4px"><div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="font-size:11px;color:#9a9c97">${label}</span><span style="font-size:11px;font-weight:600;color:#1a9968">${val}/10</span></div><div style="height:4px;background:#f0f1ee;border-radius:2px"><div style="height:100%;width:${val*10}%;background:#1a9968;border-radius:2px"></div></div></div>`;
+  list.innerHTML = journal.map((e, i) => `
+    <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:14px 16px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+        <div>
+          <div style="font-size:14px;font-weight:600;color:#111">${e.product}</div>
+          <div style="font-size:11px;color:#9a9c97">${e.type} · ${e.date}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:13px;color:#EF9F27">${'★'.repeat(e.rating||0)}<span style="color:#d3d1c7">${'★'.repeat(5-(e.rating||0))}</span></span>
+          <button onclick="deleteJournalEntry(${i})" style="border:none;background:transparent;color:#9a9c97;font-size:16px;cursor:pointer;padding:2px 4px;line-height:1">×</button>
+        </div>
+      </div>
+      ${scoreBar('Sleep', e.scores.sleep)}
+      ${scoreBar('Anxiety relief', e.scores.anxiety)}
+      ${scoreBar('Pain relief', e.scores.pain)}
+      ${scoreBar('Energy / focus', e.scores.energy)}
+      ${scoreBar('Mood', e.scores.mood)}
+      ${e.notes ? `<div style="font-size:12px;color:#5a5c57;margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.06)">${e.notes}</div>` : ''}
+    </div>`).join('');
+}
+
+function deleteJournalEntry(i) {
+  journal.splice(i, 1);
+  saveJournal();
+  renderJournal();
+}
+
+// ─── Dispensary Finder ────────────────────────────────────────────────────────
+async function searchDispensaries() {
+  const q = document.getElementById('disp-search').value.trim();
+  if (!q) return;
+  setDispStatus('Searching...');
+  document.getElementById('disp-results').innerHTML = '';
+  try {
+    const res = await fetch('/api/dispensaries?query=' + encodeURIComponent(q));
+    const data = await res.json();
+    if (data.error) { setDispStatus('Search failed: ' + data.error); return; }
+    renderDispensaries(data.dispensaries || []);
+  } catch(e) { setDispStatus('Connection error — try again'); }
+}
+
+function findNearMe() {
+  if (!navigator.geolocation) { setDispStatus('Location not available on this device'); return; }
+  setDispStatus('Getting your location...');
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const { latitude: lat, longitude: lng } = pos.coords;
+    try {
+      const res = await fetch(`/api/dispensaries?lat=${lat}&lng=${lng}`);
+      const data = await res.json();
+      if (data.error) { setDispStatus('Search failed: ' + data.error); return; }
+      renderDispensaries(data.dispensaries || []);
+    } catch(e) { setDispStatus('Connection error — try again'); }
+  }, () => setDispStatus('Could not get your location. Try searching by city instead.'));
+}
+
+function setDispStatus(msg) {
+  document.getElementById('disp-status').textContent = msg;
+}
+
+function renderDispensaries(list) {
+  const el = document.getElementById('disp-results');
+  setDispStatus('');
+  if (!list.length) { setDispStatus('No dispensaries found. Try a different search.'); return; }
+  el.innerHTML = list.map(d => `
+    <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:14px 16px;cursor:pointer" onclick="selectDispensary('${d.id}','${d.name.replace(/'/g,"\'")}')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600;color:#111;margin-bottom:3px">${d.name}</div>
+          <div style="font-size:12px;color:#9a9c97">${d.address}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+          ${d.rating ? `<span style="font-size:12px;color:#EF9F27">★ ${d.rating}</span>` : ''}
+          ${d.open !== null ? `<span style="font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600;background:${d.open?'#E1F5EE':'#FCEBEB'};color:${d.open?'#085041':'#791F1F'}">${d.open?'Open':'Closed'}</span>` : ''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function selectDispensary(id, name) {
+  // Save selected dispensary and go to chat with context
+  localStorage.setItem('bc_selected_dispensary', JSON.stringify({ id, name }));
+  chatInitialized = false;
+  switchTab('chat');
+}
 
 // ─── Onboarding ──────────────────────────────────────────────────────────────
 const OKEY = 'bc_onboarded_v1';
@@ -389,6 +721,7 @@ let chatInitialized = false;
 function loadData() {
   try { const p = localStorage.getItem(PKEY); if (p) profile = JSON.parse(p); } catch(e) {}
   try { const h = localStorage.getItem(HKEY); if (h) strainHistory = JSON.parse(h); } catch(e) {}
+  loadJournal();
 }
 function saveData() {
   try { localStorage.setItem(PKEY, JSON.stringify(profile)); } catch(e) {}
@@ -413,14 +746,17 @@ function pills(arr, cls) {
 // ─── Navigation ───────────────────────────────────────────────────────────────
 function switchTab(tab) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-'+tab).classList.add('active');
+  const screen = document.getElementById('screen-'+tab);
+  if (screen) screen.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  if (tab === 'home' || tab === 'chat' || tab === 'profile') {
-    document.querySelectorAll(`[onclick="switchTab('${tab}')"]`).forEach(b => {
-      if (b.classList.contains('nav-item')) b.classList.add('active');
+  const navTabs = ['home','chat','journal','profile','dispensary'];
+  if (navTabs.includes(tab)) {
+    document.querySelectorAll(`.nav-item`).forEach(b => {
+      if (b.getAttribute('onclick') === `switchTab('${tab}')`) b.classList.add('active');
     });
   }
   if (tab === 'chat' && !chatInitialized) startChat();
+  if (tab === 'journal') renderJournal();
   refreshUI();
 }
 
@@ -479,6 +815,8 @@ function refreshUI() {
   renderHistory('home-history-list');
   renderHistory('prof-history-list');
   document.getElementById('home-history-section').style.display = strainHistory.length ? 'block' : 'none';
+  const jsub = document.getElementById('journal-shortcut-sub');
+  if (jsub) jsub.textContent = journal.length ? journal.length + ' entries logged' : 'Track how products make you feel';
 }
 
 function updateCompletion() {
@@ -651,13 +989,15 @@ CRITICAL FORMATTING RULES — follow these without exception:
 
 ${profCtx}
 
-PRODUCT DATABASE (30 real products):
+PRODUCT DATABASE (99 real products across 10 categories — flower, edibles, THC drinks, tinctures, topicals, vapes, concentrates, capsules, CBD strains, and hybrids):
 ${db}
 
 RECOMMENDATION FORMAT — when you have enough info, output each recommendation on its own line in EXACTLY this format:
 REC|||Product Name|||One sentence explaining why it fits this specific person
 
 Give 2 to 3 recommendations. Always include a gentle reminder that you are not a doctor.
+
+When recommending, consider the full range of product types available — if someone cannot smoke, suggest edibles, tinctures, drinks, or topicals. Match the product TYPE to the person's lifestyle, not just the strain or flavor.
 
 CHIP FORMAT — whenever you ask a question, you must end your message with a line in EXACTLY this format:
 CHIPS|||option1|||option2|||option3|||option4
@@ -879,9 +1219,11 @@ function startChat() {
   chatInitialized = true;
   chatHistory = [];
   document.getElementById('messages').innerHTML = '';
+  const savedDisp = localStorage.getItem('bc_selected_dispensary');
+  const dispCtx = savedDisp ? ` I am shopping at ${JSON.parse(savedDisp).name}.` : '';
   const opener = profile.name
-    ? `I'm ${profile.name}. Based on my profile — ${profile.experience||'some'} experience, goals: ${(profile.goals||[]).join(', ')||'general wellness'}, prefer: ${(profile.products||[]).join(', ')||'open to anything'} — what do you recommend for me today?`
-    : `Hi! I want to find the right cannabis product for me.`;
+    ? `I'm ${profile.name}. Based on my profile — ${profile.experience||'some'} experience, goals: ${(profile.goals||[]).join(', ')||'general wellness'}, prefer: ${(profile.products||[]).join(', ')||'open to anything'} — what do you recommend for me today?${dispCtx}`
+    : `Hi! I want to find the right cannabis product for me.${dispCtx}`;
   getBotReply(opener);
 }
 
@@ -901,7 +1243,9 @@ inp.addEventListener('input', () => { inp.style.height = 'auto'; inp.style.heigh
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────
 loadData();
+loadJournal();
 refreshUI();
+renderJournal();
 showOnboardIfNeeded();
 </script>
 </body>
