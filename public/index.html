@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <meta name="description" content="BudConcierge — Your personal AI cannabis guide. Personalized recommendations, no judgment.">
+  <meta name="description" content="Ivy — Your personal AI cannabis guide. Private, judgment-free wellness recommendations tailored to you.">
   <meta name="theme-color" content="#1D9E75">
-  <title>BudConcierge</title>
+  <title>Ivy — Personal Cannabis Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -35,7 +35,7 @@
 
         <div id="ob-slide-1" class="ob-slide" style="text-align:center;width:100%;margin:0 auto">
           <h2 style="font-size:26px;font-weight:700;color:#111310;margin-bottom:14px;letter-spacing:-0.5px;line-height:1.2;text-align:center;width:100%">Your private cannabis guide</h2>
-          <p style="font-size:15px;color:#5a5c57;line-height:1.7;text-align:center;width:100%;padding:0 8px">BudConcierge gives you personalized recommendations based on your unique needs. No dispensary visit required.</p>
+          <p style="font-size:15px;color:#5a5c57;line-height:1.7;text-align:center;width:100%;padding:0 8px">Ivy gives you personalized cannabis recommendations based on your unique wellness needs. Private, judgment-free, and always on your side.</p>
         </div>
 
         <div id="ob-slide-2" class="ob-slide" style="text-align:center;width:100%;margin:0 auto;display:none">
@@ -45,7 +45,7 @@
 
         <div id="ob-slide-3" class="ob-slide" style="text-align:center;width:100%;margin:0 auto;display:none">
           <h2 style="font-size:26px;font-weight:700;color:#111310;margin-bottom:14px;letter-spacing:-0.5px;line-height:1.2;text-align:center;width:100%">No judgment. Ever.</h2>
-          <p style="font-size:15px;color:#5a5c57;line-height:1.7;text-align:center;width:100%;padding:0 8px">Cannabis is wellness. BudConcierge is here for anyone who wants honest, private guidance — on their own terms, at their own pace.</p>
+          <p style="font-size:15px;color:#5a5c57;line-height:1.7;text-align:center;width:100%;padding:0 8px">Cannabis is wellness. Ivy is here for anyone who wants honest, private guidance — on their own terms, at their own pace.</p>
         </div>
 
       </div>
@@ -69,7 +69,7 @@
     <div class="topbar">
       <div class="wb-avatar" id="home-avatar" style="width:34px;height:34px;font-size:13px;cursor:pointer" onclick="switchTab('profile')">?</div>
       <div style="flex:1">
-        <div class="topbar-title" id="home-title">BudConcierge</div>
+        <div class="topbar-title" id="home-title">Ivy</div>
         <div class="topbar-sub">Your personal cannabis guide</div>
       </div>
       <span id="home-badge" style="font-size:10px;background:#E1F5EE;color:#085041;padding:2px 8px;border-radius:10px;font-weight:600">v3</span>
@@ -80,7 +80,7 @@
       <div class="card welcome-banner">
         <div class="wb-avatar" id="wb-avatar">?</div>
         <div>
-          <div class="wb-title" id="wb-greeting">Welcome to BudConcierge</div>
+          <div class="wb-title" id="wb-greeting">Welcome to Ivy</div>
           <div class="wb-sub" id="wb-msg">Set up your profile and get personalized recommendations — no judgment, no guessing.</div>
         </div>
       </div>
@@ -92,7 +92,7 @@
         <div class="section-label">Quick start</div>
         <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('chat')">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <span style="font-weight:600;font-size:14px">Chat with BudConcierge</span>
+            <span style="font-weight:600;font-size:14px">Chat with Ivy</span>
             <span style="color:#bbb">›</span>
           </div>
           <div style="font-size:13px;color:#888" id="chat-shortcut-sub">Get personalized recommendations</div>
@@ -139,7 +139,7 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <div style="flex:1">
-        <div class="topbar-title">BudConcierge</div>
+        <div class="topbar-title">Ivy</div>
         <div class="topbar-sub">Personalized cannabis guidance</div>
       </div>
       <button onclick="newChat()" style="border:none;background:transparent;cursor:pointer;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600;color:#1a9968;border:1px solid #a8dfc9;background:#E1F5EE" title="Start new chat">New chat</button>
@@ -446,7 +446,7 @@
     </div>
     <div class="content">
       <div class="card" style="display:flex;flex-direction:column;gap:10px">
-        <div style="font-size:13px;color:#5a5c57;line-height:1.55">Find licensed dispensaries near you. Selecting one helps BudConcierge tailor your experience and context.</div>
+        <div style="font-size:13px;color:#5a5c57;line-height:1.55">Find licensed dispensaries near you. Selecting one helps Ivy tailor your experience and context.</div>
         <div style="font-size:11px;color:#9a9c97;background:#f7f8f6;border-radius:8px;padding:8px 11px;line-height:1.5">
           Live menu integration coming soon. Recommendations currently use our curated product database.
         </div>
@@ -980,8 +980,8 @@ function refreshUI() {
     const goals = profile.goals && profile.goals.length ? 'Personalized for: ' + profile.goals.slice(0,2).join(', ') : 'Get personalized recommendations';
     document.getElementById('chat-shortcut-sub').textContent = goals;
   } else {
-    document.getElementById('home-title').textContent   = 'BudConcierge';
-    document.getElementById('wb-greeting').textContent  = 'Welcome to BudConcierge';
+    document.getElementById('home-title').textContent   = 'Ivy';
+    document.getElementById('wb-greeting').textContent  = 'Welcome to Ivy';
     document.getElementById('wb-msg').textContent       = 'Set up your profile for personalized, judgment-free cannabis guidance.';
     document.getElementById('home-cta').textContent     = 'Set up my profile';
     document.getElementById('quick-actions').style.display = 'none';
@@ -1352,7 +1352,7 @@ ${history}${journalCtx}
 Since you already have their profile, greet ${profile.name} by name and ask only ONE clarifying question before recommending. Skip intake questions already answered above.`
     : `No profile yet. Ask for their name first, then gather experience level, goals, product preference, and time of day. Keep it warm and conversational.`;
 
-  return `You are BudConcierge — a warm, knowledgeable, completely non-judgmental cannabis guide. You genuinely believe cannabis is medicine that can help anyone: lawyers, nurses, priests, executives, retirees, parents, first-timers. You never stigmatize, never gatekeep, and always make people feel comfortable and welcome.
+  return `You are Ivy — a warm, deeply knowledgeable, and completely non-judgmental personal cannabis guide. Your name is Ivy. When introducing yourself, say 'I'm Ivy' — never 'I am BudConcierge' or any other name. You genuinely believe cannabis is medicine that can help anyone. You never stigmatize, never gatekeep, and always make people feel completely safe and welcome.
 
 CRITICAL FORMATTING RULES — follow these without exception:
 - NEVER use asterisks (*) for any reason — not for bold, not for bullet points, not for emphasis
