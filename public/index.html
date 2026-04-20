@@ -193,6 +193,18 @@
         </div>
       </div>
 
+      <!-- Profile completion indicator -->
+      <div id="prof-completion-wrap" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-size:12px;font-weight:600;color:#5a5c57">Profile completion</span>
+          <span id="prof-completion-pct" style="font-size:12px;font-weight:700;color:#1a9968">0%</span>
+        </div>
+        <div style="height:6px;background:#f0f1ee;border-radius:3px;overflow:hidden">
+          <div id="prof-completion-bar" style="height:100%;background:#1a9968;border-radius:3px;transition:width .4s ease;width:0%"></div>
+        </div>
+        <div id="prof-completion-msg" style="font-size:11px;color:#9a9c97;margin-top:5px"></div>
+      </div>
+
       <!-- Preferences summary -->
       <div>
         <div class="section-label" style="margin-bottom:8px">Preferences</div>
@@ -427,7 +439,14 @@ function refreshUI() {
     document.getElementById('wb-msg').textContent       = 'Your profile is ready. Jump straight into personalized recommendations.';
     document.getElementById('home-cta').textContent     = 'Start a new chat →';
     document.getElementById('home-badge').textContent   = 'Profile ready';
-    document.getElementById('prof-badge').textContent   = 'Active';
+    const pctDone = [!!profile.name, !!profile.experience, !!profile.time, profile.products&&profile.products.length>0, profile.goals&&profile.goals.length>0].filter(Boolean).length;
+    const badgeText = pctDone === 5 ? 'Complete' : pctDone >= 3 ? 'In progress' : 'Getting started';
+    const badgeBg = pctDone === 5 ? '#E1F5EE' : pctDone >= 3 ? '#FAEEDA' : '#E6F1FB';
+    const badgeColor = pctDone === 5 ? '#085041' : pctDone >= 3 ? '#412402' : '#0C447C';
+    const badge = document.getElementById('prof-badge');
+    badge.textContent = badgeText;
+    badge.style.background = badgeBg;
+    badge.style.color = badgeColor;
     document.getElementById('prof-name').textContent    = profile.name;
     document.getElementById('prof-since').textContent   = profile.joined ? 'Member since ' + profile.joined : '';
     document.getElementById('quick-actions').style.display = 'flex';
@@ -448,10 +467,49 @@ function refreshUI() {
   document.getElementById('pf-products').innerHTML = pills(profile.products, 'pill-green');
   document.getElementById('pf-goals').innerHTML    = pills(profile.goals, 'pill-purple');
 
+  // Profile completion
+  updateCompletion();
+
   // History
   renderHistory('home-history-list');
   renderHistory('prof-history-list');
   document.getElementById('home-history-section').style.display = strainHistory.length ? 'block' : 'none';
+}
+
+function updateCompletion() {
+  const wrap = document.getElementById('prof-completion-wrap');
+  if (!wrap) return;
+  if (!profile.name) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+
+  const steps = [
+    { done: !!profile.name,                           label: 'Name' },
+    { done: !!profile.experience,                     label: 'Experience level' },
+    { done: !!profile.time,                           label: 'Preferred time' },
+    { done: profile.products && profile.products.length > 0, label: 'Product types' },
+    { done: profile.goals && profile.goals.length > 0,       label: 'Goals' },
+    { done: strainHistory.length > 0,                 label: 'First strain saved' },
+  ];
+
+  const done = steps.filter(s => s.done).length;
+  const pct = Math.round((done / steps.length) * 100);
+
+  document.getElementById('prof-completion-bar').style.width = pct + '%';
+  document.getElementById('prof-completion-pct').textContent = pct + '%';
+
+  const missing = steps.filter(s => !s.done).map(s => s.label);
+  if (pct === 100) {
+    document.getElementById('prof-completion-msg').textContent = 'Your profile is complete — recommendations are fully personalized.';
+    document.getElementById('prof-completion-msg').style.color = '#1a9968';
+    document.getElementById('prof-completion-bar').style.background = '#1a9968';
+  } else if (missing.length === 1) {
+    document.getElementById('prof-completion-msg').textContent = 'Almost there — just add: ' + missing[0];
+    document.getElementById('prof-completion-msg').style.color = '#BA7517';
+    document.getElementById('prof-completion-bar').style.background = '#EF9F27';
+  } else {
+    document.getElementById('prof-completion-msg').textContent = 'To complete: ' + missing.slice(0,2).join(', ') + (missing.length > 2 ? ' +' + (missing.length-2) + ' more' : '');
+    document.getElementById('prof-completion-msg').style.color = '#9a9c97';
+  }
 }
 
 function setField(id, val) {
