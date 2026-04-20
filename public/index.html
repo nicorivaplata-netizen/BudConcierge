@@ -500,7 +500,11 @@ ${db}
 RECOMMENDATION FORMAT — when you have enough info, output each recommendation on its own line in EXACTLY this format:
 REC|||Product Name|||One sentence explaining why it fits this specific person
 
-Give 2 to 3 recommendations. Always include a gentle reminder that you are not a doctor.`;
+Give 2 to 3 recommendations. Always include a gentle reminder that you are not a doctor.
+
+CHIP FORMAT — whenever you ask a question, you must end your message with a line in EXACTLY this format:
+CHIPS|||option1|||option2|||option3|||option4
+The chips must be short (2 to 4 words max) and directly answer the specific question you just asked. Never show generic chips. If you ask about pain type, show chips like: Muscle soreness|||Joint pain|||Headaches|||Back pain. If you ask about product, show: Flower|||Edibles|||THC drink|||Tincture. If you ask about experience: First time|||Occasional|||Regular|||Daily. If you are making recommendations and not asking a question, do not include a CHIPS line.`;
 }
 
 async function getBotReply(userMsg) {
@@ -522,15 +526,16 @@ async function getBotReply(userMsg) {
     chatHistory.push({ role: 'assistant', content: reply });
     removeTyping(); isTyping = false;
 
-    // Smart chip suggestions
+    // Extract AI-generated chips from response
     let chips = [];
-    const lo = reply.toLowerCase();
-    if (lo.includes('product') || lo.includes('prefer') || lo.includes('form')) chips = ['Flower','Edibles','THC drink','Tincture','Topical'];
-    else if (lo.includes('time') || lo.includes('morning') || lo.includes('evening')) chips = ['Morning','Daytime','Evening','Before bed'];
-    else if (lo.includes('goal') || lo.includes('help') || lo.includes('looking for')) chips = ['Sleep','Anxiety / stress','Pain relief','Energy / focus','Mood lift'];
-    else if (lo.includes('experience') || lo.includes('first time') || lo.includes('tried')) chips = ['First time','Occasional','Regular user','Daily use'];
+    let cleanReply = reply;
+    const chipMatch = reply.match(/CHIPS\|\|\|(.+)$/m);
+    if (chipMatch) {
+      chips = chipMatch[1].split('|||').map(c => c.trim()).filter(Boolean).slice(0, 5);
+      cleanReply = reply.replace(/CHIPS\|\|\|.+$/m, '').trim();
+    }
 
-    addMessage('bot', reply, chips);
+    addMessage('bot', cleanReply, chips);
   } catch (err) {
     removeTyping(); isTyping = false;
     addMessage('bot', 'Having trouble connecting right now. Make sure your ANTHROPIC_API_KEY is set in Vercel environment variables, then redeploy.');
