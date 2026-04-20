@@ -1071,8 +1071,11 @@ async function getBotReply(userMsg) {
       body: JSON.stringify({ messages: chatHistory, system: buildSystem() })
     });
 
-    if (!res.ok) throw new Error('API error ' + res.status);
     const data = await res.json();
+    if (!res.ok) {
+      const errMsg = data.error || ('API error ' + res.status);
+      throw new Error(errMsg);
+    }
     const reply = data.content.map(b => b.text || '').join('');
 
     chatHistory.push({ role: 'assistant', content: reply });
@@ -1090,7 +1093,7 @@ async function getBotReply(userMsg) {
     addMessage('bot', cleanReply, chips);
   } catch (err) {
     removeTyping(); isTyping = false;
-    addMessage('bot', 'Having trouble connecting right now. Make sure your ANTHROPIC_API_KEY is set in Vercel environment variables, then redeploy.');
+    addMessage('bot', 'Connection error: ' + err.message + '. If this persists, check that your ANTHROPIC_API_KEY is set correctly in Vercel.');
   }
 }
 
