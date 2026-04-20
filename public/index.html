@@ -216,9 +216,21 @@
             <span class="pref-label">Product types</span>
             <div id="pf-products"><span class="pref-val empty">Not set</span></div>
           </div>
-          <div class="pref-row" style="flex-direction:column;align-items:flex-start;gap:6px;border-bottom:none">
+          <div class="pref-row" style="flex-direction:column;align-items:flex-start;gap:6px">
             <span class="pref-label">Goals</span>
             <div id="pf-goals"><span class="pref-val empty">Not set</span></div>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">Gender</span>
+            <span class="pref-val empty" id="pf-gender">Not set</span>
+          </div>
+          <div class="pref-row" style="flex-direction:column;align-items:flex-start;gap:6px">
+            <span class="pref-label">Health conditions</span>
+            <div id="pf-conditions"><span class="pref-val empty">Not set</span></div>
+          </div>
+          <div class="pref-row" style="border-bottom:none">
+            <span class="pref-label">Medications</span>
+            <span class="pref-val empty" id="pf-medications">Not set</span>
           </div>
         </div>
       </div>
@@ -305,6 +317,95 @@
           </div>
         </div>
 
+      </div>
+
+
+        <div>
+          <div class="section-label" style="margin-bottom:4px">Gender</div>
+          <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">Helps personalize recommendations — cannabis affects people differently</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="gender" data-val="Male" onclick="pickGender(this)">Male</button>
+            <button class="opt-btn" data-field="gender" data-val="Female" onclick="pickGender(this)">Female</button>
+            <button class="opt-btn" data-field="gender" data-val="Other" onclick="pickGender(this)">Other</button>
+          </div>
+        </div>
+
+        <!-- Female/Other hormonal section — shown conditionally -->
+        <div id="hormonal-section" style="display:none">
+          <div style="background:#F1EFE8;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:14px">
+            <div style="font-size:12px;color:#5a5c57;line-height:1.5">Cannabis affects hormonal health in meaningful ways. These optional questions help us give you more relevant recommendations.</div>
+
+            <div>
+              <div class="section-label" style="margin-bottom:8px">Menstrual cycle phase <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <button class="opt-btn" data-field="cycle" data-val="Menstrual" onclick="pickOne(this)" title="Days 1-5 — bleeding phase">Menstrual</button>
+                <button class="opt-btn" data-field="cycle" data-val="Follicular" onclick="pickOne(this)" title="Days 6-13 — building phase">Follicular</button>
+                <button class="opt-btn" data-field="cycle" data-val="Ovulation" onclick="pickOne(this)" title="Around day 14">Ovulation</button>
+                <button class="opt-btn" data-field="cycle" data-val="Luteal" onclick="pickOne(this)" title="Days 15-28 — PMS phase">Luteal / PMS</button>
+                <button class="opt-btn" data-field="cycle" data-val="Menopause" onclick="pickOne(this)">Menopause</button>
+                <button class="opt-btn" data-field="cycle" data-val="Prefer not to say" onclick="pickOne(this)">Skip</button>
+              </div>
+            </div>
+
+            <div>
+              <div class="section-label" style="margin-bottom:8px">Hormonal conditions <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <button class="opt-btn" data-field="hormonal" data-val="PCOS" onclick="pickMany(this)">PCOS</button>
+                <button class="opt-btn" data-field="hormonal" data-val="Endometriosis" onclick="pickMany(this)">Endometriosis</button>
+                <button class="opt-btn" data-field="hormonal" data-val="Fibroids" onclick="pickMany(this)">Fibroids</button>
+                <button class="opt-btn" data-field="hormonal" data-val="Thyroid disorder" onclick="pickMany(this)">Thyroid</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Other gender hormonal toggle -->
+        <div id="other-hormonal-toggle" style="display:none">
+          <div style="background:#F1EFE8;border-radius:10px;padding:14px">
+            <div style="font-size:13px;color:#5a5c57;margin-bottom:10px">Some of our wellness recommendations are tailored for hormonal health. Would you like to answer a few optional questions?</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <button class="opt-btn" data-field="hormonal_opt" data-val="Yes" onclick="showHormonalFromOther(this)">Yes, show them</button>
+              <button class="opt-btn" data-field="hormonal_opt" data-val="No" onclick="hideHormonalFromOther(this)">No thanks</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- WELLNESS PROFILE SECTION -->
+      <div style="margin-top:8px">
+        <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:4px;letter-spacing:-0.2px">Wellness Profile</div>
+        <div style="font-size:12px;color:#9a9c97;margin-bottom:14px">Everything here is optional and stays private on your device.</div>
+        <div class="card" style="display:flex;flex-direction:column;gap:16px">
+
+          <div>
+            <div class="section-label" style="margin-bottom:8px">Health conditions <span style="font-weight:400;color:#9a9c97">(select all that apply)</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <button class="opt-btn" data-field="conditions" data-val="Anxiety" onclick="pickMany(this)">Anxiety</button>
+              <button class="opt-btn" data-field="conditions" data-val="Depression" onclick="pickMany(this)">Depression</button>
+              <button class="opt-btn" data-field="conditions" data-val="PTSD" onclick="pickMany(this)">PTSD</button>
+              <button class="opt-btn" data-field="conditions" data-val="Chronic pain" onclick="pickMany(this)">Chronic pain</button>
+              <button class="opt-btn" data-field="conditions" data-val="Insomnia" onclick="pickMany(this)">Insomnia</button>
+              <button class="opt-btn" data-field="conditions" data-val="Fibromyalgia" onclick="pickMany(this)">Fibromyalgia</button>
+              <button class="opt-btn" data-field="conditions" data-val="Arthritis" onclick="pickMany(this)">Arthritis</button>
+              <button class="opt-btn" data-field="conditions" data-val="Migraines" onclick="pickMany(this)">Migraines</button>
+              <button class="opt-btn" data-field="conditions" data-val="Nausea" onclick="pickMany(this)">Nausea</button>
+              <button class="opt-btn" data-field="conditions" data-val="ADHD" onclick="pickMany(this)">ADHD</button>
+              <button class="opt-btn" data-field="conditions" data-val="Epilepsy" onclick="pickMany(this)">Epilepsy</button>
+              <button class="opt-btn" data-field="conditions" data-val="IBS" onclick="pickMany(this)">IBS</button>
+            </div>
+            <input type="text" id="conditions-other" placeholder="Other condition (optional)..." maxlength="80"
+              style="width:100%;margin-top:8px;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;background:#fff;color:#111;font-family:inherit">
+          </div>
+
+          <div>
+            <div class="section-label" style="margin-bottom:4px">Medications <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
+            <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">BudConcierge will flag any known interactions and suggest speaking with your doctor. We never claim safety.</div>
+            <textarea id="edit-medications" placeholder="e.g. Sertraline, Metformin, Warfarin..." rows="2"
+              style="width:100%;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;resize:none;background:#fff;color:#111;font-family:inherit"></textarea>
+          </div>
+
+        </div>
       </div>
 
       <button class="btn-primary" onclick="saveProfile()">Save profile</button>
@@ -726,7 +827,9 @@ const PKEY = 'bc_profile_v1';
 const HKEY = 'bc_history_v1';
 
 // ─── State ───────────────────────────────────────────────────────────────────
-let profile = { name:'', experience:'', time:'', products:[], goals:[], joined:'' };
+let profile = { name:'', experience:'', time:'', products:[], goals:[], joined:'', gender:'', conditions:[], medications:'', hormonal:'', cycle:'', hormonal_conditions:'' };
+let promotions = []; // [{dispensary, product, deal, expires}]
+const PROMOKEY = 'bc_promotions_v1';
 let strainHistory = [];
 let chatHistory = [];
 let isTyping = false;
@@ -736,6 +839,7 @@ let chatInitialized = false;
 function loadData() {
   try { const p = localStorage.getItem(PKEY); if (p) profile = JSON.parse(p); } catch(e) {}
   try { const h = localStorage.getItem(HKEY); if (h) strainHistory = JSON.parse(h); } catch(e) {}
+  try { const pr = localStorage.getItem(PROMOKEY); if (pr) promotions = JSON.parse(pr); } catch(e) {}
   loadJournal();
 }
 function saveData() {
@@ -766,6 +870,22 @@ function pills(arr, cls) {
 }
 
 // ─── Navigation ───────────────────────────────────────────────────────────────
+
+
+// ─── Promotions Admin ────────────────────────────────────────────────────────
+function addPromotion(dispensary, product, deal, expires) {
+  promotions.push({ dispensary, product, deal, expires, added: new Date().toLocaleDateString() });
+  try { localStorage.setItem(PROMOKEY, JSON.stringify(promotions)); } catch(e) {}
+  console.log('Promotion added:', product, deal);
+}
+
+function clearPromotions() {
+  promotions = [];
+  try { localStorage.removeItem(PROMOKEY); } catch(e) {}
+}
+
+// Usage: addPromotion('Green Leaf Dispensary', 'Blue Dream', '20% off this week', 'Apr 27')
+// Call from browser console to add weekly deals
 
 // ─── Dynamic Navbar ───────────────────────────────────────────────────────────
 function buildNavbar(activeTab) {
@@ -859,6 +979,12 @@ function refreshUI() {
   setField('pf-thc', profile.experience ? thcLabel(profile.experience) : '');
   document.getElementById('pf-products').innerHTML = pills(profile.products, 'pill-green');
   document.getElementById('pf-goals').innerHTML    = pills(profile.goals, 'pill-purple');
+  const condEl = document.getElementById('pf-conditions');
+  if (condEl) condEl.innerHTML = profile.conditions && profile.conditions.length ? pills(profile.conditions, 'pill-purple') : '<span class="pref-val empty">Not set</span>';
+  const medEl = document.getElementById('pf-medications');
+  if (medEl) { medEl.textContent = profile.medications || 'Not set'; medEl.className = profile.medications ? 'pref-val' : 'pref-val empty'; }
+  const genEl = document.getElementById('pf-gender');
+  if (genEl) { genEl.textContent = profile.gender || 'Not set'; genEl.className = profile.gender ? 'pref-val' : 'pref-val empty'; }
 
   // Profile completion
   updateCompletion();
@@ -975,6 +1101,37 @@ function openEdit() {
   switchTab('edit');
 }
 
+
+function pickGender(btn) {
+  document.querySelectorAll('.opt-btn[data-field="gender"]').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  const val = btn.dataset.val;
+  const hormonalSection = document.getElementById('hormonal-section');
+  const otherToggle = document.getElementById('other-hormonal-toggle');
+  if (val === 'Female') {
+    hormonalSection.style.display = 'block';
+    otherToggle.style.display = 'none';
+  } else if (val === 'Other') {
+    otherToggle.style.display = 'block';
+    hormonalSection.style.display = 'none';
+  } else {
+    hormonalSection.style.display = 'none';
+    otherToggle.style.display = 'none';
+  }
+}
+
+function showHormonalFromOther(btn) {
+  document.querySelectorAll('.opt-btn[data-field="hormonal_opt"]').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('hormonal-section').style.display = 'block';
+}
+
+function hideHormonalFromOther(btn) {
+  document.querySelectorAll('.opt-btn[data-field="hormonal_opt"]').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('hormonal-section').style.display = 'none';
+}
+
 function pickOne(btn) {
   document.querySelectorAll(`.opt-btn[data-field="${btn.dataset.field}"]`).forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
@@ -989,6 +1146,10 @@ function saveProfile() {
   const getM = f => [...document.querySelectorAll(`.opt-btn.on[data-field="${f}"]`)].map(b => b.dataset.val);
 
   const exp = get1('experience');
+  const conditionsOther = document.getElementById('conditions-other')?.value.trim();
+  const conditionsList = getM('conditions');
+  if (conditionsOther) conditionsList.push(conditionsOther);
+  const hormonalList = getM('hormonal');
   profile = {
     name,
     experience: exp,
@@ -996,7 +1157,13 @@ function saveProfile() {
     products:   getM('products'),
     goals:      getM('goals'),
     thc:        thcLabel(exp),
-    joined:     profile.joined || new Date().toLocaleDateString('en-US', { month:'short', year:'numeric' })
+    joined:     profile.joined || new Date().toLocaleDateString('en-US', { month:'short', year:'numeric' }),
+    gender:     get1('gender'),
+    conditions: conditionsList,
+    medications: document.getElementById('edit-medications')?.value.trim() || '',
+    hormonal:   hormonalList.join(', '),
+    cycle:      get1('cycle'),
+    hormonal_conditions: hormonalList.join(', '),
   };
   saveData();
   chatInitialized = false; // force new chat with updated profile
@@ -1025,6 +1192,12 @@ function buildSystem() {
 - Product preferences: ${(profile.products||[]).join(', ') || 'open to anything'}
 - Goals: ${(profile.goals||[]).join(', ') || 'general wellness'}
 - THC comfort: ${thcLabel(profile.experience)}
+${profile.gender ? '- Gender: ' + profile.gender : ''}
+${profile.conditions && profile.conditions.length ? '- Health conditions: ' + profile.conditions.join(', ') : ''}
+${profile.medications ? '- Medications: ' + profile.medications + ' — flag any known cannabis interactions gently, suggest speaking with a doctor, never claim safety' : ''}
+${profile.hormonal ? '- Hormonal context: ' + profile.hormonal : ''}
+${profile.cycle ? '- Menstrual cycle phase: ' + profile.cycle + ' — adjust recommendations accordingly (e.g. luteal phase benefits from CBD for cramps and mood)' : ''}
+${profile.hormonal_conditions ? '- Hormonal conditions: ' + profile.hormonal_conditions : ''}
 ${history}
 Since you already have their profile, greet ${profile.name} by name and ask only ONE clarifying question before recommending. Skip intake questions already answered above.`
     : `No profile yet. Ask for their name first, then gather experience level, goals, product preference, and time of day. Keep it warm and conversational.`;
@@ -1057,6 +1230,9 @@ REC|||Exact Product Name|||One sentence reason tailored to this person
 Always include a gentle reminder that you are not a doctor.
 
 When recommending, consider the full range of product types — if someone cannot smoke, suggest edibles, tinctures, drinks, or topicals. Match product TYPE to the person's lifestyle.
+
+PROMOTIONS — if any of the following deals are active, mention them naturally when recommending the matching product. Never force a promotion — only mention it if the product is genuinely a good fit:
+${promotions.length ? promotions.map(p => `${p.dispensary ? '['+p.dispensary+'] ' : ''}${p.product}: ${p.deal}${p.expires ? ' (until '+p.expires+')' : ''}`).join('\n') : 'No active promotions.'}
 
 CHIP FORMAT — whenever you ask a question, you must end your message with a line in EXACTLY this format:
 CHIPS|||option1|||option2|||option3|||option4
