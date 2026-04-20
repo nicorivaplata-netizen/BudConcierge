@@ -488,7 +488,11 @@ function openNewEntry() {
     if (el) { el.value = 5; document.getElementById('val-'+k).textContent = '5'; }
   });
   entryRating = 0;
+  editingIndex = -1;
   setEntryRating(0);
+  // Reset save button text
+  const saveBtn = document.querySelector('#screen-new-entry .btn-primary');
+  if (saveBtn) saveBtn.textContent = 'Save entry';
   // Populate suggestions from strain history
   const sugg = document.getElementById('entry-suggestions');
   sugg.innerHTML = strainHistory.slice(0,6).map(h =>
@@ -523,11 +527,19 @@ function saveJournalEntry() {
     },
     notes: document.getElementById('entry-notes').value.trim(),
   };
-  journal.unshift(entry);
+  if (editingIndex >= 0) {
+    journal[editingIndex] = { ...journal[editingIndex], ...entry, date: journal[editingIndex].date };
+    editingIndex = -1;
+  } else {
+    journal.unshift(entry);
+  }
   if (journal.length > 100) journal = journal.slice(0, 100);
   saveJournal();
+  // Reset save button text
+  const saveBtn = document.querySelector('#screen-new-entry .btn-primary');
+  if (saveBtn) saveBtn.textContent = 'Save entry';
   const t = document.getElementById('entry-toast');
-  t.textContent = 'Entry saved!'; t.classList.add('show');
+  t.textContent = editingIndex >= 0 ? 'Entry updated!' : 'Entry saved!'; t.classList.add('show');
   setTimeout(() => { t.classList.remove('show'); switchTab('journal'); renderJournal(); }, 1000);
 }
 
@@ -549,6 +561,7 @@ function renderJournal() {
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           <span style="font-size:13px;color:#EF9F27">${'★'.repeat(e.rating||0)}<span style="color:#d3d1c7">${'★'.repeat(5-(e.rating||0))}</span></span>
+          <button onclick="editJournalEntry(${i})" style="border:none;background:transparent;color:#1a9968;font-size:12px;font-weight:600;cursor:pointer;padding:2px 6px;line-height:1;border:1px solid #a8dfc9;border-radius:6px;background:#E1F5EE">Edit</button>
           <button onclick="deleteJournalEntry(${i})" style="border:none;background:transparent;color:#9a9c97;font-size:16px;cursor:pointer;padding:2px 4px;line-height:1">×</button>
         </div>
       </div>
@@ -565,6 +578,42 @@ function deleteJournalEntry(i) {
   journal.splice(i, 1);
   saveJournal();
   renderJournal();
+}
+
+let editingIndex = -1;
+
+function editJournalEntry(i) {
+  const e = journal[i];
+  if (!e) return;
+  editingIndex = i;
+  // Pre-fill the form
+  document.getElementById('entry-product').value = e.product;
+  document.getElementById('entry-notes').value = e.notes || '';
+  // Set product type
+  document.querySelectorAll('[data-field="etype"]').forEach(b => {
+    b.classList.toggle('on', b.dataset.val === e.type);
+  });
+  // Set scores
+  ['sleep','anxiety','pain','energy','mood'].forEach(k => {
+    const el = document.querySelector(`input[oninput*="val-${k}"]`);
+    if (el) {
+      el.value = e.scores[k] || 5;
+      const lbl = document.getElementById('val-'+k);
+      if (lbl) lbl.textContent = e.scores[k] || 5;
+    }
+  });
+  // Set rating
+  entryRating = e.rating || 0;
+  setEntryRating(entryRating);
+  // Update button text
+  const saveBtn = document.querySelector('#screen-new-entry .btn-primary');
+  if (saveBtn) saveBtn.textContent = 'Update entry';
+  // Populate suggestions
+  const sugg = document.getElementById('entry-suggestions');
+  if (sugg) sugg.innerHTML = strainHistory.slice(0,6).map(h =>
+    `<button onclick="document.getElementById('entry-product').value='${h.name}'" style="font-size:11px;padding:3px 9px;border-radius:12px;border:1px solid #a8dfc9;background:#E1F5EE;color:#085041;cursor:pointer">${h.name}</button>`
+  ).join('');
+  switchTab('new-entry');
 }
 
 // ─── Dispensary Finder ────────────────────────────────────────────────────────
@@ -604,8 +653,8 @@ function renderDispensaries(list) {
   setDispStatus('');
   if (!list.length) { setDispStatus('No dispensaries found. Try a different search.'); return; }
   el.innerHTML = list.map(d => `
-    <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:14px 16px;cursor:pointer" onclick="selectDispensary('${d.id}','${d.name.replace(/'/g,"\'")}')">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+    <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px">
         <div style="flex:1">
           <div style="font-size:14px;font-weight:600;color:#111;margin-bottom:3px">${d.name}</div>
           <div style="font-size:12px;color:#9a9c97">${d.address}</div>
@@ -615,14 +664,21 @@ function renderDispensaries(list) {
           ${d.open !== null ? `<span style="font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600;background:${d.open?'#E1F5EE':'#FCEBEB'};color:${d.open?'#085041':'#791F1F'}">${d.open?'Open':'Closed'}</span>` : ''}
         </div>
       </div>
+      <div style="display:flex;gap:8px">
+        ${d.website ? `<a href="${d.website}" target="_blank" style="flex:1;padding:8px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:12px;font-weight:600;color:#5a5c57;text-align:center;text-decoration:none">Visit website</a>` : ''}
+        <button onclick="selectDispensary('${d.id}','${d.name.replace(/'/g,"\'")}','${d.website||''}')" style="flex:1;padding:8px;background:#1a9968;border:none;border-radius:8px;font-size:12px;font-weight:600;color:#fff;cursor:pointer">Use for chat</button>
+      </div>
     </div>`).join('');
 }
 
-function selectDispensary(id, name) {
-  // Save selected dispensary and go to chat with context
-  localStorage.setItem('bc_selected_dispensary', JSON.stringify({ id, name }));
+function selectDispensary(id, name, website) {
+  localStorage.setItem('bc_selected_dispensary', JSON.stringify({ id, name, website }));
   chatInitialized = false;
-  switchTab('chat');
+  // Show confirmation instead of auto-navigating
+  const status = document.getElementById('disp-status');
+  status.textContent = name + ' selected. Head to Chat for personalized recommendations.';
+  status.style.color = '#1a9968';
+  status.style.fontWeight = '600';
 }
 
 // ─── Onboarding ──────────────────────────────────────────────────────────────
@@ -1142,11 +1198,23 @@ function clearAllStrains() {
 }
 
 function clearProfile() {
-  if (!confirm("Reset your entire profile?")) return;
+  if (!confirm("Reset your entire profile? This cannot be undone.")) return;
+  // Clear in-memory state first
   profile = { name:"", experience:"", time:"", products:[], goals:[], joined:"" };
   strainHistory = [];
+  // Clear localStorage directly
+  try { localStorage.removeItem('bc_profile_v1'); } catch(e) {}
+  try { localStorage.removeItem('bc_history_v1'); } catch(e) {}
+  try { localStorage.removeItem('bc_onboarded_v1'); } catch(e) {}
+  // Save empty state
   saveData();
   chatInitialized = false;
+  // Force all UI elements to reflect empty state
+  document.getElementById('prof-name').textContent = 'Set up your profile';
+  document.getElementById('prof-since').textContent = '';
+  document.getElementById('prof-avatar').textContent = '?';
+  document.getElementById('home-avatar').textContent = '?';
+  document.getElementById('wb-avatar').textContent = '?';
   refreshUI();
   toast("prof-toast", "Profile reset");
 }
