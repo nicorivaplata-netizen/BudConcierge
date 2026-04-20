@@ -270,11 +270,12 @@
 
         <div>
           <div class="section-label" style="margin-bottom:8px">Preferred time</div>
+          <div style="font-size:11px;color:#9a9c97;margin-bottom:6px">Select all that apply</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button class="opt-btn" data-field="time" data-val="Morning" onclick="pickOne(this)">Morning</button>
-            <button class="opt-btn" data-field="time" data-val="Daytime" onclick="pickOne(this)">Daytime</button>
-            <button class="opt-btn" data-field="time" data-val="Evening" onclick="pickOne(this)">Evening</button>
-            <button class="opt-btn" data-field="time" data-val="Before bed" onclick="pickOne(this)">Before bed</button>
+            <button class="opt-btn" data-field="time" data-val="Morning" onclick="pickMany(this)">Morning</button>
+            <button class="opt-btn" data-field="time" data-val="Daytime" onclick="pickMany(this)">Daytime</button>
+            <button class="opt-btn" data-field="time" data-val="Evening" onclick="pickMany(this)">Evening</button>
+            <button class="opt-btn" data-field="time" data-val="Before bed" onclick="pickMany(this)">Before bed</button>
           </div>
         </div>
 
@@ -826,7 +827,7 @@ function refreshUI() {
     const profFields = [
       !!profile.name,
       !!profile.experience,
-      !!profile.time,
+      !!(Array.isArray(profile.time) ? profile.time.length > 0 : !!profile.time),
       !!(profile.products && profile.products.length > 0),
       !!(profile.goals && profile.goals.length > 0)
     ];
@@ -851,7 +852,10 @@ function refreshUI() {
 
   // Profile fields
   setField('pf-experience', profile.experience);
-  setField('pf-time', profile.time);
+  const timeVal = Array.isArray(profile.time)
+    ? profile.time.join(', ')
+    : (profile.time || '');
+  setField('pf-time', timeVal);
   setField('pf-thc', profile.experience ? thcLabel(profile.experience) : '');
   document.getElementById('pf-products').innerHTML = pills(profile.products, 'pill-green');
   document.getElementById('pf-goals').innerHTML    = pills(profile.goals, 'pill-purple');
@@ -988,7 +992,7 @@ function saveProfile() {
   profile = {
     name,
     experience: exp,
-    time:       get1('time'),
+    time:       getM('time'),
     products:   getM('products'),
     goals:      getM('goals'),
     thc:        thcLabel(exp),
@@ -1017,7 +1021,7 @@ function buildSystem() {
     ? `USER PROFILE — DO NOT ask for info already captured here:
 - Name: ${profile.name}
 - Experience: ${profile.experience || 'unknown'}
-- Preferred time: ${profile.time || 'any'}
+- Preferred time: ${Array.isArray(profile.time) ? profile.time.join(', ') : (profile.time || 'any')}
 - Product preferences: ${(profile.products||[]).join(', ') || 'open to anything'}
 - Goals: ${(profile.goals||[]).join(', ') || 'general wellness'}
 - THC comfort: ${thcLabel(profile.experience)}
