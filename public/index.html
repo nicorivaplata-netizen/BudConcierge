@@ -204,6 +204,10 @@
             <span class="pref-label">Experience</span>
             <span class="pref-val empty" id="pf-experience">Not set</span>
           </div>
+          <div class="pref-row" id="pf-strain-pref-row" style="display:none">
+            <span class="pref-label">Strain preference</span>
+            <span class="pref-val empty" id="pf-strain-pref">Not set</span>
+          </div>
           <div class="pref-row">
             <span class="pref-label">Best time</span>
             <span class="pref-val empty" id="pf-time">Not set</span>
@@ -275,10 +279,23 @@
         <div>
           <div class="section-label" style="margin-bottom:8px">Experience level</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button class="opt-btn" data-field="experience" data-val="First time" onclick="pickOne(this)">First time</button>
-            <button class="opt-btn" data-field="experience" data-val="Occasional" onclick="pickOne(this)">Occasional</button>
-            <button class="opt-btn" data-field="experience" data-val="Regular" onclick="pickOne(this)">Regular</button>
-            <button class="opt-btn" data-field="experience" data-val="Daily use" onclick="pickOne(this)">Daily use</button>
+            <button class="opt-btn" data-field="experience" data-val="First time" onclick="pickExperience(this)">First time</button>
+            <button class="opt-btn" data-field="experience" data-val="Occasional" onclick="pickExperience(this)">Occasional</button>
+            <button class="opt-btn" data-field="experience" data-val="Regular" onclick="pickExperience(this)">Regular</button>
+            <button class="opt-btn" data-field="experience" data-val="Daily use" onclick="pickExperience(this)">Daily use</button>
+          </div>
+        </div>
+
+        <!-- Strain preference — shown for Regular and Daily use only -->
+        <div id="strain-pref-section" style="display:none">
+          <div class="section-label" style="margin-bottom:4px">Preferred strain type</div>
+          <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">Helps us skip the basics and get straight to recommendations</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="strain_pref" data-val="Indica" onclick="pickOne(this)">Indica</button>
+            <button class="opt-btn" data-field="strain_pref" data-val="Sativa" onclick="pickOne(this)">Sativa</button>
+            <button class="opt-btn" data-field="strain_pref" data-val="Hybrid" onclick="pickOne(this)">Hybrid</button>
+            <button class="opt-btn" data-field="strain_pref" data-val="CBD-forward" onclick="pickOne(this)">CBD-forward</button>
+            <button class="opt-btn" data-field="strain_pref" data-val="No preference" onclick="pickOne(this)">No preference</button>
           </div>
         </div>
 
@@ -826,7 +843,7 @@ const PKEY = 'bc_profile_v1';
 const HKEY = 'bc_history_v1';
 
 // ─── State ───────────────────────────────────────────────────────────────────
-let profile = { name:'', experience:'', time:'', products:[], goals:[], joined:'', gender:'', conditions:[], medications:'', hormonal:'', cycle:'', hormonal_conditions:'' };
+let profile = { name:'', experience:'', time:'', products:[], goals:[], joined:'', gender:'', conditions:[], medications:'', hormonal:'', cycle:'', hormonal_conditions:'', strain_pref:'' };
 let promotions = []; // [{dispensary, product, deal, expires}]
 const PROMOKEY = 'bc_promotions_v1';
 let strainHistory = [];
@@ -971,6 +988,17 @@ function refreshUI() {
 
   // Profile fields
   setField('pf-experience', profile.experience);
+  const strainPrefEl = document.getElementById('pf-strain-pref');
+  const strainPrefRow = document.getElementById('pf-strain-pref-row');
+  if (strainPrefEl && strainPrefRow) {
+    if (profile.strain_pref && profile.strain_pref !== 'No preference') {
+      strainPrefEl.textContent = profile.strain_pref;
+      strainPrefEl.className = 'pref-val';
+      strainPrefRow.style.display = 'flex';
+    } else {
+      strainPrefRow.style.display = 'none';
+    }
+  }
   const timeVal = Array.isArray(profile.time)
     ? profile.time.join(', ')
     : (profile.time || '');
@@ -1097,9 +1125,33 @@ function openEdit() {
       if (arr.includes(b.dataset.val)) b.classList.add('on');
     });
   });
+  // Restore strain preference and show section if applicable
+  document.querySelectorAll('.opt-btn[data-field="strain_pref"]').forEach(b => {
+    b.classList.toggle('on', b.dataset.val === profile.strain_pref);
+  });
+  const strainSect = document.getElementById('strain-pref-section');
+  if (strainSect) strainSect.style.display = (profile.experience === 'Regular' || profile.experience === 'Daily use') ? 'block' : 'none';
   switchTab('edit');
 }
 
+
+function pickExperience(btn) {
+  // Standard single-select behavior
+  document.querySelectorAll('.opt-btn[data-field="experience"]').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  // Show strain preference only for experienced users
+  const exp = btn.dataset.val;
+  const strainSection = document.getElementById('strain-pref-section');
+  if (strainSection) {
+    if (exp === 'Regular' || exp === 'Daily use') {
+      strainSection.style.display = 'block';
+    } else {
+      strainSection.style.display = 'none';
+      // Clear strain preference if experience downgraded
+      document.querySelectorAll('.opt-btn[data-field="strain_pref"]').forEach(b => b.classList.remove('on'));
+    }
+  }
+}
 
 function pickGender(btn) {
   document.querySelectorAll('.opt-btn[data-field="gender"]').forEach(b => b.classList.remove('on'));
@@ -1163,6 +1215,7 @@ function saveProfile() {
     hormonal:   hormonalList.join(', '),
     cycle:      get1('cycle'),
     hormonal_conditions: hormonalList.join(', '),
+    strain_pref: get1('strain_pref'),
   };
   saveData();
   chatInitialized = false; // force new chat with updated profile
@@ -1280,6 +1333,7 @@ function buildSystem() {
 - Product preferences: ${(profile.products||[]).join(', ') || 'open to anything'}
 - Goals: ${(profile.goals||[]).join(', ') || 'general wellness'}
 - THC comfort: ${thcLabel(profile.experience)}
+${profile.strain_pref && profile.strain_pref !== 'No preference' ? '- Preferred strain type: ' + profile.strain_pref + ' — this user already knows their preference. Skip basic strain type questions and go straight to specific product recommendations within this category.' : ''}
 ${profile.gender ? '- Gender: ' + profile.gender : ''}
 ${profile.conditions && profile.conditions.length ? '- Health conditions: ' + profile.conditions.join(', ') : ''}
 ${profile.medications ? '- Medications: ' + profile.medications + ' — flag any known cannabis interactions gently, suggest speaking with a doctor, never claim safety' : ''}
