@@ -6,6 +6,9 @@
   <meta name="description" content="BudConcierge — Your personal AI cannabis guide. Personalized recommendations, no judgment.">
   <meta name="theme-color" content="#1D9E75">
   <title>BudConcierge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <!-- PWA: makes it installable on phones like a real app -->
   <link rel="manifest" href="manifest.json">
@@ -42,7 +45,7 @@
 
         <div id="ob-slide-3" class="ob-slide" style="text-align:center;width:100%;margin:0 auto;display:none">
           <h2 style="font-size:26px;font-weight:700;color:#111310;margin-bottom:14px;letter-spacing:-0.5px;line-height:1.2;text-align:center;width:100%">No judgment. Ever.</h2>
-          <p style="font-size:15px;color:#5a5c57;line-height:1.7;text-align:center;width:100%;padding:0 8px">Whether you are a nurse, a lawyer, a retiree, or a first-timer — BudConcierge treats you with the dignity and respect you deserve.</p>
+          <p style="font-size:15px;color:#5a5c57;line-height:1.7;text-align:center;width:100%;padding:0 8px">Cannabis is wellness. BudConcierge is here for anyone who wants honest, private guidance — on their own terms, at their own pace.</p>
         </div>
 
       </div>
@@ -744,7 +747,14 @@ function initials(n) { return n ? n.trim().split(' ').map(w=>w[0]).join('').toUp
 function thcLabel(exp) {
   return { 'First time':'Low · 5–15% THC', 'Occasional':'Moderate · 15–20%', 'Regular':'Standard · 20–25%', 'Daily use':'High · 25%+' }[exp] || '—';
 }
-function timeNow() { const d = new Date(); return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0'); }
+function timeNow() {
+  const d = new Date();
+  let h = d.getHours();
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return h + ':' + m + ' ' + ampm;
+}
 function toast(id, msg) {
   const el = document.getElementById(id);
   el.textContent = msg; el.classList.add('show');
@@ -1035,9 +1045,14 @@ ${db}
 RECOMMENDATION FORMAT — when you have enough info, output each recommendation on its own line in EXACTLY this format:
 REC|||Product Name|||One sentence explaining why it fits this specific person
 
-Give 2 to 3 recommendations. Always include a gentle reminder that you are not a doctor.
+CRITICAL: When you have enough information to make recommendations, you MUST use the REC||| format. Never mention product names in plain text — always use the structured format so users can save them.
 
-When recommending, consider the full range of product types available — if someone cannot smoke, suggest edibles, tinctures, drinks, or topicals. Match the product TYPE to the person's lifestyle, not just the strain or flavor.
+Give 2 to 3 recommendations using ONLY this format (one per line):
+REC|||Exact Product Name|||One sentence reason tailored to this person
+
+Always include a gentle reminder that you are not a doctor.
+
+When recommending, consider the full range of product types — if someone cannot smoke, suggest edibles, tinctures, drinks, or topicals. Match product TYPE to the person's lifestyle.
 
 CHIP FORMAT — whenever you ask a question, you must end your message with a line in EXACTLY this format:
 CHIPS|||option1|||option2|||option3|||option4
