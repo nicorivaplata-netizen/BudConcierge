@@ -262,6 +262,8 @@
     </div>
 
     <div class="content">
+
+      <!-- CANNABIS PREFERENCES -->
       <div class="card" style="display:flex;flex-direction:column;gap:16px">
 
         <div>
@@ -281,8 +283,8 @@
         </div>
 
         <div>
-          <div class="section-label" style="margin-bottom:8px">Preferred time</div>
-          <div style="font-size:11px;color:#9a9c97;margin-bottom:6px">Select all that apply</div>
+          <div class="section-label" style="margin-bottom:4px">Preferred time</div>
+          <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">Select all that apply</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <button class="opt-btn" data-field="time" data-val="Morning" onclick="pickMany(this)">Morning</button>
             <button class="opt-btn" data-field="time" data-val="Daytime" onclick="pickMany(this)">Daytime</button>
@@ -317,12 +319,9 @@
           </div>
         </div>
 
-      </div>
-
-
         <div>
           <div class="section-label" style="margin-bottom:4px">Gender</div>
-          <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">Helps personalize recommendations — cannabis affects people differently</div>
+          <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">Helps personalize recommendations</div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
             <button class="opt-btn" data-field="gender" data-val="Male" onclick="pickGender(this)">Male</button>
             <button class="opt-btn" data-field="gender" data-val="Female" onclick="pickGender(this)">Female</button>
@@ -330,52 +329,52 @@
           </div>
         </div>
 
-        <!-- Female/Other hormonal section — shown conditionally -->
-        <div id="hormonal-section" style="display:none">
-          <div style="background:#F1EFE8;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:14px">
-            <div style="font-size:12px;color:#5a5c57;line-height:1.5">Cannabis affects hormonal health in meaningful ways. These optional questions help us give you more relevant recommendations.</div>
+      </div>
 
-            <div>
-              <div class="section-label" style="margin-bottom:8px">Menstrual cycle phase <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                <button class="opt-btn" data-field="cycle" data-val="Menstrual" onclick="pickOne(this)" title="Days 1-5 — bleeding phase">Menstrual</button>
-                <button class="opt-btn" data-field="cycle" data-val="Follicular" onclick="pickOne(this)" title="Days 6-13 — building phase">Follicular</button>
-                <button class="opt-btn" data-field="cycle" data-val="Ovulation" onclick="pickOne(this)" title="Around day 14">Ovulation</button>
-                <button class="opt-btn" data-field="cycle" data-val="Luteal" onclick="pickOne(this)" title="Days 15-28 — PMS phase">Luteal / PMS</button>
-                <button class="opt-btn" data-field="cycle" data-val="Menopause" onclick="pickOne(this)">Menopause</button>
-                <button class="opt-btn" data-field="cycle" data-val="Prefer not to say" onclick="pickOne(this)">Skip</button>
-              </div>
-            </div>
+      <!-- HORMONAL SECTION — shown for Female -->
+      <div id="hormonal-section" style="display:none">
+        <div class="card" style="background:#F7F8F6;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:12px;color:#5a5c57;line-height:1.5">These optional questions help us give you more relevant recommendations based on hormonal health.</div>
 
-            <div>
-              <div class="section-label" style="margin-bottom:8px">Hormonal conditions <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                <button class="opt-btn" data-field="hormonal" data-val="PCOS" onclick="pickMany(this)">PCOS</button>
-                <button class="opt-btn" data-field="hormonal" data-val="Endometriosis" onclick="pickMany(this)">Endometriosis</button>
-                <button class="opt-btn" data-field="hormonal" data-val="Fibroids" onclick="pickMany(this)">Fibroids</button>
-                <button class="opt-btn" data-field="hormonal" data-val="Thyroid disorder" onclick="pickMany(this)">Thyroid</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Other gender hormonal toggle -->
-        <div id="other-hormonal-toggle" style="display:none">
-          <div style="background:#F1EFE8;border-radius:10px;padding:14px">
-            <div style="font-size:13px;color:#5a5c57;margin-bottom:10px">Some of our wellness recommendations are tailored for hormonal health. Would you like to answer a few optional questions?</div>
+          <div>
+            <div class="section-label" style="margin-bottom:8px">Menstrual cycle phase <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <button class="opt-btn" data-field="hormonal_opt" data-val="Yes" onclick="showHormonalFromOther(this)">Yes, show them</button>
-              <button class="opt-btn" data-field="hormonal_opt" data-val="No" onclick="hideHormonalFromOther(this)">No thanks</button>
+              <button class="opt-btn" data-field="cycle" data-val="Menstrual" onclick="pickOne(this)">Menstrual</button>
+              <button class="opt-btn" data-field="cycle" data-val="Follicular" onclick="pickOne(this)">Follicular</button>
+              <button class="opt-btn" data-field="cycle" data-val="Ovulation" onclick="pickOne(this)">Ovulation</button>
+              <button class="opt-btn" data-field="cycle" data-val="Luteal / PMS" onclick="pickOne(this)">Luteal / PMS</button>
+              <button class="opt-btn" data-field="cycle" data-val="Menopause" onclick="pickOne(this)">Menopause</button>
+              <button class="opt-btn" data-field="cycle" data-val="Prefer not to say" onclick="pickOne(this)">Skip</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-label" style="margin-bottom:8px">Hormonal conditions <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <button class="opt-btn" data-field="hormonal" data-val="PCOS" onclick="pickMany(this)">PCOS</button>
+              <button class="opt-btn" data-field="hormonal" data-val="Endometriosis" onclick="pickMany(this)">Endometriosis</button>
+              <button class="opt-btn" data-field="hormonal" data-val="Fibroids" onclick="pickMany(this)">Fibroids</button>
+              <button class="opt-btn" data-field="hormonal" data-val="Thyroid disorder" onclick="pickMany(this)">Thyroid</button>
             </div>
           </div>
         </div>
+      </div>
 
+      <!-- OTHER GENDER HORMONAL TOGGLE -->
+      <div id="other-hormonal-toggle" style="display:none">
+        <div class="card" style="background:#F7F8F6">
+          <div style="font-size:13px;color:#5a5c57;margin-bottom:10px">Some wellness recommendations are tailored for hormonal health. Would you like to answer a few optional questions?</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="hormonal_opt" data-val="Yes" onclick="showHormonalFromOther(this)">Yes, show them</button>
+            <button class="opt-btn" data-field="hormonal_opt" data-val="No" onclick="hideHormonalFromOther(this)">No thanks</button>
+          </div>
+        </div>
       </div>
 
       <!-- WELLNESS PROFILE SECTION -->
-      <div style="margin-top:8px">
+      <div>
         <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:4px;letter-spacing:-0.2px">Wellness Profile</div>
-        <div style="font-size:12px;color:#9a9c97;margin-bottom:14px">Everything here is optional and stays private on your device.</div>
+        <div style="font-size:12px;color:#9a9c97;margin-bottom:12px">Everything here is optional and stays private on your device.</div>
         <div class="card" style="display:flex;flex-direction:column;gap:16px">
 
           <div>
@@ -395,14 +394,14 @@
               <button class="opt-btn" data-field="conditions" data-val="IBS" onclick="pickMany(this)">IBS</button>
             </div>
             <input type="text" id="conditions-other" placeholder="Other condition (optional)..." maxlength="80"
-              style="width:100%;margin-top:8px;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;background:#fff;color:#111;font-family:inherit">
+              style="width:100%;margin-top:8px;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;background:#fff;color:#111;font-family:inherit;box-sizing:border-box">
           </div>
 
           <div>
             <div class="section-label" style="margin-bottom:4px">Medications <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
-            <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">BudConcierge will flag any known interactions and suggest speaking with your doctor. We never claim safety.</div>
+            <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">We flag known interactions and suggest speaking with your doctor. We never claim safety.</div>
             <textarea id="edit-medications" placeholder="e.g. Sertraline, Metformin, Warfarin..." rows="2"
-              style="width:100%;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;resize:none;background:#fff;color:#111;font-family:inherit"></textarea>
+              style="width:100%;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;resize:none;background:#fff;color:#111;font-family:inherit;box-sizing:border-box"></textarea>
           </div>
 
         </div>
@@ -410,11 +409,11 @@
 
       <button class="btn-primary" onclick="saveProfile()">Save profile</button>
       <div id="edit-toast" class="toast"></div>
+
     </div>
   </div>
 
-
-  <!-- ═══════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════
        DISPENSARY FINDER SCREEN
   ═══════════════════════════════════════════ -->
   <div id="screen-dispensary" class="screen">
