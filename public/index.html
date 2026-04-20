@@ -181,6 +181,8 @@
       </div>
 
       <button class="btn-secondary" onclick="openEdit()">Edit preferences</button>
+      <button class="btn-secondary" onclick="clearAllStrains()" style="margin-top:-8px;color:#A32D2D;border-color:rgba(163,45,45,0.2)">Clear saved strains</button>
+      <button class="btn-secondary" onclick="clearProfile()" style="margin-top:-8px;color:#A32D2D;border-color:rgba(163,45,45,0.2)">Reset entire profile</button>
       <div id="prof-toast" class="toast"></div>
     </div>
 
@@ -383,16 +385,18 @@ function renderHistory(id) {
     el.innerHTML = '<div class="no-history">No strains saved yet</div>';
     return;
   }
-  el.innerHTML = strainHistory.slice(0, 5).map(h => {
+  const showDelete = id === 'prof-history-list';
+  el.innerHTML = strainHistory.slice(0, 10).map((h, i) => {
     const color = (window.TYPE_COLORS[h.type] || ['#E1F5EE','#085041'])[1];
     const stars = '★'.repeat(h.rating||0) + '☆'.repeat(5-(h.rating||0));
-    return `<div class="h-item">
+    return `<div class="h-item" id="h-item-${i}">
       <div class="h-dot" style="background:${color}"></div>
-      <div>
+      <div style="flex:1">
         <div class="h-name">${h.name}</div>
         <div class="h-meta">${h.type} · ${h.date||'Recently'}</div>
       </div>
-      <div class="h-stars" style="margin-left:auto">${stars}</div>
+      <div class="h-stars">${stars}</div>
+      ${showDelete ? `<button onclick="deleteStrain(${i})" style="margin-left:10px;border:none;background:transparent;color:var(--text-3);font-size:16px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1" title="Remove">×</button>` : ''}
     </div>`;
   }).join('');
 }
@@ -478,6 +482,16 @@ Since you already have their profile, greet ${profile.name} by name and ask only
 
   return `You are BudConcierge — a warm, knowledgeable, completely non-judgmental cannabis guide. You genuinely believe cannabis is medicine that can help anyone: lawyers, nurses, priests, executives, retirees, parents, first-timers. You never stigmatize, never gatekeep, and always make people feel comfortable and welcome.
 
+CRITICAL FORMATTING RULES — follow these without exception:
+- NEVER use asterisks (*) for any reason — not for bold, not for bullet points, not for emphasis
+- NEVER use markdown formatting of any kind — no **bold**, no *italics*, no # headers, no bullet points with dashes or asterisks
+- NEVER use em dashes (—) or excessive punctuation
+- Write in plain conversational sentences only
+- Separate thoughts with line breaks, not bullet points
+- Keep each response to 3 to 4 short paragraphs maximum
+- Ask only ONE question per message, never multiple at once
+- Respond like a knowledgeable friend texting you, not a formal report
+
 ${profCtx}
 
 PRODUCT DATABASE (30 real products):
@@ -486,7 +500,7 @@ ${db}
 RECOMMENDATION FORMAT — when you have enough info, output each recommendation on its own line in EXACTLY this format:
 REC|||Product Name|||One sentence explaining why it fits this specific person
 
-Give 2–3 recommendations. Always include a gentle reminder that you are not a doctor.`;
+Give 2 to 3 recommendations. Always include a gentle reminder that you are not a doctor.`;
 }
 
 async function getBotReply(userMsg) {
@@ -612,6 +626,33 @@ function buildRecCard(s, reason) {
   </div>`;
 }
 
+
+function deleteStrain(index) {
+  const name = strainHistory[index] && strainHistory[index].name;
+  strainHistory.splice(index, 1);
+  saveData();
+  refreshUI();
+  if (name) toast("prof-toast", name + " removed from your profile");
+}
+
+function clearAllStrains() {
+  if (!strainHistory.length) return;
+  if (!confirm("Remove all saved strains?")) return;
+  strainHistory = [];
+  saveData();
+  refreshUI();
+  toast("prof-toast", "All saved strains cleared");
+}
+
+function clearProfile() {
+  if (!confirm("Reset your entire profile?")) return;
+  profile = { name:"", experience:"", time:"", products:[], goals:[], joined:"" };
+  strainHistory = [];
+  saveData();
+  chatInitialized = false;
+  refreshUI();
+  toast("prof-toast", "Profile reset");
+}
 function saveStrain(id, btn) {
   const s = window.STRAINS.find(x => x.id === id);
   if (!s) return;
