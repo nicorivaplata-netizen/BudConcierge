@@ -9,9 +9,55 @@
   <link rel="stylesheet" href="styles.css">
   <!-- PWA: makes it installable on phones like a real app -->
   <link rel="manifest" href="manifest.json">
+
+<style>
+.ob-dot{width:8px;height:8px;border-radius:50%;background:#d3d1c7;transition:background .2s}
+.ob-dot.active{background:#1a9968}
+.ob-slide{width:100%}
+</style>
 </head>
 <body>
 <div id="app">
+
+  <!-- ═══════════════════════════════════════════
+       ONBOARDING SCREEN (first-time only)
+  ═══════════════════════════════════════════ -->
+  <div id="screen-onboard" class="screen">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:2rem 1.5rem 1.5rem">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:0">
+
+        <div id="ob-icon" style="width:80px;height:80px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;margin-bottom:28px;border:2px solid #a8dfc9">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0a5c3a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+
+        <div id="ob-slide-1" class="ob-slide">
+          <h2 style="font-size:26px;font-weight:700;color:#111310;margin-bottom:14px;letter-spacing:-0.5px;line-height:1.2">Your private cannabis guide</h2>
+          <p style="font-size:15px;color:#5a5c57;line-height:1.7;max-width:300px">BudConcierge gives you personalized recommendations based on your unique needs. No dispensary visit required.</p>
+        </div>
+
+        <div id="ob-slide-2" class="ob-slide" style="display:none">
+          <h2 style="font-size:26px;font-weight:700;color:#111310;margin-bottom:14px;letter-spacing:-0.5px;line-height:1.2">Remembers what works for you</h2>
+          <p style="font-size:15px;color:#5a5c57;line-height:1.7;max-width:300px">Build your personal terpene profile over time. The more you use it, the smarter your recommendations become.</p>
+        </div>
+
+        <div id="ob-slide-3" class="ob-slide" style="display:none">
+          <h2 style="font-size:26px;font-weight:700;color:#111310;margin-bottom:14px;letter-spacing:-0.5px;line-height:1.2">No judgment. Ever.</h2>
+          <p style="font-size:15px;color:#5a5c57;line-height:1.7;max-width:300px">Whether you are a nurse, a lawyer, a retiree, or a first-timer — BudConcierge treats you with the dignity and respect you deserve.</p>
+        </div>
+
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:center;gap:8px;margin-bottom:4px">
+          <div class="ob-dot active" id="ob-dot-1"></div>
+          <div class="ob-dot" id="ob-dot-2"></div>
+          <div class="ob-dot" id="ob-dot-3"></div>
+        </div>
+        <button class="btn-primary" id="ob-btn" onclick="nextSlide()">Next</button>
+        <button onclick="finishOnboard()" style="background:transparent;border:none;color:#9a9c97;font-size:13px;cursor:pointer;padding:6px">Skip</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ═══════════════════════════════════════════
        HOME SCREEN
@@ -90,9 +136,9 @@
       </button>
       <div style="flex:1">
         <div class="topbar-title">BudConcierge</div>
-        <div class="topbar-sub">AI-powered · 30 real products</div>
+        <div class="topbar-sub">Your personal guide</div>
       </div>
-      <div style="width:8px;height:8px;border-radius:50%;background:#1D9E75"></div>
+      <button onclick="newChat()" style="border:none;background:transparent;cursor:pointer;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600;color:#1a9968;border:1px solid #a8dfc9;background:#E1F5EE" title="Start new chat">New chat</button>
     </div>
 
     <div class="messages" id="messages"></div>
@@ -279,6 +325,39 @@
 
 <script src="strains.js"></script>
 <script>
+
+// ─── Onboarding ──────────────────────────────────────────────────────────────
+const OKEY = 'bc_onboarded_v1';
+let obSlide = 1;
+
+function showOnboardIfNeeded() {
+  const done = localStorage.getItem(OKEY);
+  if (!done) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-onboard').classList.add('active');
+  }
+}
+
+function nextSlide() {
+  if (obSlide < 3) {
+    document.getElementById('ob-slide-' + obSlide).style.display = 'none';
+    document.getElementById('ob-dot-' + obSlide).classList.remove('active');
+    obSlide++;
+    document.getElementById('ob-slide-' + obSlide).style.display = 'block';
+    document.getElementById('ob-dot-' + obSlide).classList.add('active');
+    if (obSlide === 3) document.getElementById('ob-btn').textContent = 'Get started';
+  } else {
+    finishOnboard();
+  }
+}
+
+function finishOnboard() {
+  localStorage.setItem(OKEY, '1');
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-home').classList.add('active');
+  refreshUI();
+}
+
 // ─── Storage keys ───────────────────────────────────────────────────────────
 const PKEY = 'bc_profile_v1';
 const HKEY = 'bc_history_v1';
@@ -625,9 +704,12 @@ function buildRecCard(s, reason) {
     <div class="rec-desc">${s.description}</div>
     ${reason ? `<div class="rec-why">${reason}</div>` : ''}
     ${s.terpenes.length ? `<div class="rec-terps">${s.terpenes.map(t=>`<span class="terp">${t}</span>`).join('')}</div>` : ''}
-    <button class="save-btn ${saved?'saved':''}" onclick="saveStrain('${s.id}',this)">
-      ${saved ? 'Saved to profile' : '+ Save to profile'}
-    </button>
+    ${saved
+      ? '<button class="save-btn saved">Saved to profile</button>'
+      : '<div style="margin-top:9px"><div style="font-size:11px;color:#9a9c97;margin-bottom:4px;font-weight:500">Rate before saving:</div><div style="display:flex;gap:4px;align-items:center">' +
+        [1,2,3,4,5].map(n => `<span onclick="saveStrainRated('${s.id}',${n},this.parentElement.parentElement)" style="font-size:22px;cursor:pointer;color:#d3d1c7;transition:color .1s" onmouseover="hoverStars(this,${n})" onmouseout="resetStars(this.parentElement)">${'★'}</span>`).join('') +
+        '</div></div>'
+    }
   </div>`;
 }
 
@@ -658,6 +740,26 @@ function clearProfile() {
   refreshUI();
   toast("prof-toast", "Profile reset");
 }
+
+function hoverStars(el, n) {
+  const stars = el.parentElement.querySelectorAll('span');
+  stars.forEach((s, i) => s.style.color = i < n ? '#EF9F27' : '#d3d1c7');
+}
+function resetStars(container) {
+  container.querySelectorAll('span').forEach(s => s.style.color = '#d3d1c7');
+}
+function saveStrainRated(id, rating, container) {
+  const s = window.STRAINS.find(x => x.id === id);
+  if (!s) return;
+  if (strainHistory.find(h => h.name === s.name)) { toast('prof-toast', 'Already saved'); return; }
+  strainHistory.unshift({ name: s.name, type: s.type, rating: rating, date: 'Today' });
+  if (strainHistory.length > 20) strainHistory = strainHistory.slice(0, 20);
+  saveData();
+  container.innerHTML = '<button class="save-btn saved">Saved to profile</button>';
+  refreshUI();
+  toast('prof-toast', s.name + ' saved with ' + rating + ' stars!');
+}
+
 function saveStrain(id, btn) {
   const s = window.STRAINS.find(x => x.id === id);
   if (!s) return;
@@ -678,6 +780,14 @@ function showTyping() {
   msgsEl.appendChild(d); msgsEl.scrollTop = msgsEl.scrollHeight;
 }
 function removeTyping() { const t = document.getElementById('typing-ind'); if (t) t.remove(); }
+
+
+function newChat() {
+  chatInitialized = false;
+  chatHistory = [];
+  document.getElementById('messages').innerHTML = '';
+  startChat();
+}
 
 function startChat() {
   chatInitialized = true;
@@ -706,6 +816,7 @@ inp.addEventListener('input', () => { inp.style.height = 'auto'; inp.style.heigh
 // ─── Boot ─────────────────────────────────────────────────────────────────────
 loadData();
 refreshUI();
+showOnboardIfNeeded();
 </script>
 </body>
 </html>
