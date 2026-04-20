@@ -54,8 +54,8 @@ html,body { height:100%; font-family:var(--font); font-size:15px; background:var
 
 /* Nav */
 .navbar { display:flex; border-top:1px solid var(--border); background:var(--surface); flex-shrink:0; }
-.nav-item { flex:1; padding:10px 4px 9px; display:flex; flex-direction:column; align-items:center; gap:3px; font-size:10px; font-weight:600; color:var(--text-3); cursor:pointer; border:none; background:transparent; letter-spacing:0.2px; }
-.nav-item svg { width:21px; height:21px; }
+.nav-item { flex:1; padding:8px 2px 7px; display:flex; flex-direction:column; align-items:center; gap:2px; font-size:9px; font-weight:600; color:var(--text-3); cursor:pointer; border:none; background:transparent; letter-spacing:0; min-width:0; }
+.nav-item svg { width:19px; height:19px; }
 .nav-item.active { color:var(--green); }
 
 /* Content */
