@@ -1179,9 +1179,98 @@ function buildSystem() {
     `${s.name}|${s.type}|THC:${s.thc_min}-${s.thc_max}%|CBD:${s.cbd_min}-${s.cbd_max}%|${s.helps_with.slice(0,4).join(',')}|${s.experience_level}|${s.best_time}|${s.product_types[0]}`
   ).join('\n');
 
+  // ── Strain history (saved products) ────────────────────────────────────────
   const history = strainHistory.length
-    ? `\nStrains this user has already tried: ${strainHistory.map(h=>h.name+(h.rating?` (${h.rating}/5 stars)`:'')).join(', ')}. Avoid re-recommending these unless asked.`
+    ? `\nProducts saved to profile: ${strainHistory.map(h=>h.name+(h.rating?` (${h.rating}/5 stars)`:'')).join(', ')}. Avoid re-recommending unless asked.`
     : '';
+
+  // ── Journal closed loop intelligence ─────────────────────────────────────
+  // Reads actual session data to surface patterns and personalize recommendations
+  let journalCtx = '';
+  if (journal && journal.length > 0) {
+    // Build per-product score summaries
+    const productScores = {};
+    journal.forEach(e => {
+      if (!e.product || !e.scores) return;
+      if (!productScores[e.product]) productScores[e.product] = { entries: 0, sleep:0, anxiety:0, pain:0, energy:0, mood:0, rating:0 };
+      const p = productScores[e.product];
+      p.entries++;
+      p.sleep   += e.scores.sleep   || 0;
+      p.anxiety += e.scores.anxiety || 0;
+      p.pain    += e.scores.pain    || 0;
+      p.energy  += e.scores.energy  || 0;
+      p.mood    += e.scores.mood    || 0;
+      p.rating  += e.rating         || 0;
+    });
+
+    // Build human-readable journal summary lines
+    const lines = [];
+
+    // Highly effective products (avg score >= 7 in any dimension)
+    const stars = [];
+    const avoid = [];
+    Object.entries(productScores).forEach(([name, p]) => {
+      const n = p.entries;
+      const avgSleep   = (p.sleep/n).toFixed(1);
+      const avgAnxiety = (p.anxiety/n).toFixed(1);
+      const avgPain    = (p.pain/n).toFixed(1);
+      const avgEnergy  = (p.energy/n).toFixed(1);
+      const avgMood    = (p.mood/n).toFixed(1);
+      const avgRating  = (p.rating/n).toFixed(1);
+
+      const highs = [];
+      const lows  = [];
+      if (avgSleep   >= 7) highs.push(`sleep(${avgSleep})`);
+      if (avgAnxiety >= 7) highs.push(`anxiety relief(${avgAnxiety})`);
+      if (avgPain    >= 7) highs.push(`pain relief(${avgPain})`);
+      if (avgEnergy  >= 7) highs.push(`energy(${avgEnergy})`);
+      if (avgMood    >= 7) highs.push(`mood(${avgMood})`);
+
+      if (avgSleep   <= 3) lows.push('sleep');
+      if (avgAnxiety <= 3) lows.push('anxiety');
+      if (avgPain    <= 3) lows.push('pain');
+      if (avgEnergy  <= 3) lows.push('energy');
+      if (avgMood    <= 3) lows.push('mood');
+
+      if (highs.length) stars.push(`${name}: works well for ${highs.join(', ')} (${n} session${n>1?'s':''})`);
+      if (lows.length)  avoid.push(`${name}: poor results for ${lows.join(', ')} — do not recommend for these`);
+    });
+
+    if (stars.length) lines.push('Products that work well for this user: ' + stars.join('; '));
+    if (avoid.length) lines.push('Products with poor results for this user: ' + avoid.join('; '));
+
+    // Overall wellness trends from all journal entries
+    if (journal.length >= 3) {
+      const totals = { sleep:0, anxiety:0, pain:0, energy:0, mood:0 };
+      journal.forEach(e => {
+        if (!e.scores) return;
+        totals.sleep   += e.scores.sleep   || 0;
+        totals.anxiety += e.scores.anxiety || 0;
+        totals.pain    += e.scores.pain    || 0;
+        totals.energy  += e.scores.energy  || 0;
+        totals.mood    += e.scores.mood    || 0;
+      });
+      const n = journal.length;
+      const strongest = Object.entries(totals)
+        .map(([k,v]) => ({ k, avg: v/n }))
+        .sort((a,b) => b.avg - a.avg)[0];
+      const weakest = Object.entries(totals)
+        .map(([k,v]) => ({ k, avg: v/n }))
+        .sort((a,b) => a.avg - b.avg)[0];
+      if (strongest.avg >= 7) lines.push(`Strongest consistent benefit across all sessions: ${strongest.k} (avg ${strongest.avg.toFixed(1)}/10)`);
+      if (weakest.avg <= 4)   lines.push(`Weakest area across all sessions: ${weakest.k} (avg ${weakest.avg.toFixed(1)}/10) — this user may need more targeted help here`);
+    }
+
+    // Recent session note
+    const latest = journal[0];
+    if (latest) {
+      lines.push(`Most recent session: ${latest.product} on ${latest.date} — rated ${latest.rating||0}/5 stars`);
+    }
+
+    if (lines.length) {
+      journalCtx = `\nJOURNAL INSIGHTS (${journal.length} logged session${journal.length>1?'s':''} — use this to personalize recommendations):\n` + lines.map(l => '- ' + l).join('\n');
+    }
+  }
 
   const profCtx = profile.name
     ? `USER PROFILE — DO NOT ask for info already captured here:
@@ -1197,7 +1286,7 @@ ${profile.medications ? '- Medications: ' + profile.medications + ' — flag any
 ${profile.hormonal ? '- Hormonal context: ' + profile.hormonal : ''}
 ${profile.cycle ? '- Menstrual cycle phase: ' + profile.cycle + ' — adjust recommendations accordingly (e.g. luteal phase benefits from CBD for cramps and mood)' : ''}
 ${profile.hormonal_conditions ? '- Hormonal conditions: ' + profile.hormonal_conditions : ''}
-${history}
+${history}${journalCtx}
 Since you already have their profile, greet ${profile.name} by name and ask only ONE clarifying question before recommending. Skip intake questions already answered above.`
     : `No profile yet. Ask for their name first, then gather experience level, goals, product preference, and time of day. Keep it warm and conversational.`;
 
@@ -1470,8 +1559,9 @@ function startChat() {
   document.getElementById('messages').innerHTML = '';
   const savedDisp = localStorage.getItem('bc_selected_dispensary');
   const dispCtx = savedDisp ? ` I am shopping at ${JSON.parse(savedDisp).name}.` : '';
+  const hasJournal = journal && journal.length > 0;
   const opener = profile.name
-    ? `I'm ${profile.name}. Based on my profile — ${profile.experience||'some'} experience, goals: ${(profile.goals||[]).join(', ')||'general wellness'}, prefer: ${(profile.products||[]).join(', ')||'open to anything'} — what do you recommend for me today?${dispCtx}`
+    ? `I'm ${profile.name}. Based on my profile — ${profile.experience||'some'} experience, goals: ${(profile.goals||[]).join(', ')||'general wellness'}, prefer: ${(profile.products||[]).join(', ')||'open to anything'}${hasJournal ? `, and I have ${journal.length} journal entries logged` : ''} — what do you recommend for me today?${dispCtx}`
     : `Hi! I want to find the right cannabis product for me.${dispCtx}`;
   getBotReply(opener);
 }
