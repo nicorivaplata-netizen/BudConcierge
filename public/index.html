@@ -439,14 +439,19 @@ function refreshUI() {
     document.getElementById('wb-msg').textContent       = 'Your profile is ready. Jump straight into personalized recommendations.';
     document.getElementById('home-cta').textContent     = 'Start a new chat →';
     document.getElementById('home-badge').textContent   = 'Profile ready';
-    const pctDone = [!!profile.name, !!profile.experience, !!profile.time, profile.products&&profile.products.length>0, profile.goals&&profile.goals.length>0].filter(Boolean).length;
-    const badgeText = pctDone === 5 ? 'Complete' : pctDone >= 3 ? 'In progress' : 'Getting started';
-    const badgeBg = pctDone === 5 ? '#E1F5EE' : pctDone >= 3 ? '#FAEEDA' : '#E6F1FB';
-    const badgeColor = pctDone === 5 ? '#085041' : pctDone >= 3 ? '#412402' : '#0C447C';
+    const profFields = [
+      !!profile.name,
+      !!profile.experience,
+      !!profile.time,
+      !!(profile.products && profile.products.length > 0),
+      !!(profile.goals && profile.goals.length > 0)
+    ];
+    const profDone = profFields.filter(Boolean).length;
+    const badgeText = profDone === 5 ? 'Complete' : profDone >= 3 ? 'In progress' : 'Getting started';
+    const badgeBg   = profDone === 5 ? '#E1F5EE'  : profDone >= 3 ? '#FAEEDA'     : '#E6F1FB';
+    const badgeColor= profDone === 5 ? '#085041'  : profDone >= 3 ? '#412402'     : '#0C447C';
     const badge = document.getElementById('prof-badge');
-    badge.textContent = badgeText;
-    badge.style.background = badgeBg;
-    badge.style.color = badgeColor;
+    if (badge) { badge.textContent = badgeText; badge.style.background = badgeBg; badge.style.color = badgeColor; }
     document.getElementById('prof-name').textContent    = profile.name;
     document.getElementById('prof-since').textContent   = profile.joined ? 'Member since ' + profile.joined : '';
     document.getElementById('quick-actions').style.display = 'flex';
@@ -529,16 +534,27 @@ function renderHistory(id) {
   const showDelete = id === 'prof-history-list';
   el.innerHTML = strainHistory.slice(0, 10).map((h, i) => {
     const color = (window.TYPE_COLORS[h.type] || ['#E1F5EE','#085041'])[1];
-    const stars = '★'.repeat(h.rating||0) + '☆'.repeat(5-(h.rating||0));
-    return `<div class="h-item" id="h-item-${i}">
-      <div class="h-dot" style="background:${color}"></div>
-      <div style="flex:1">
-        <div class="h-name">${h.name}</div>
-        <div class="h-meta">${h.type} · ${h.date||'Recently'}</div>
-      </div>
-      <div class="h-stars">${stars}</div>
-      ${showDelete ? `<button onclick="deleteStrain(${i})" style="margin-left:10px;border:none;background:transparent;color:var(--text-3);font-size:16px;cursor:pointer;padding:2px 6px;border-radius:4px;line-height:1" title="Remove">×</button>` : ''}
-    </div>`;
+    let starsHtml;
+    if (showDelete) {
+      starsHtml = [1,2,3,4,5].map(n =>
+        '<span onclick="rateStrain(' + i + ',' + n + ')" style="cursor:pointer;font-size:15px;color:' + (n<=(h.rating||0)?'#EF9F27':'#d3d1c7') + '">★</span>'
+      ).join('');
+    } else {
+      starsHtml = '<span style="font-size:13px;color:#EF9F27">' + '★'.repeat(h.rating||0) + '</span><span style="font-size:13px;color:#d3d1c7">' + '★'.repeat(5-(h.rating||0)) + '</span>';
+    }
+    const rateLabel = (showDelete && !h.rating) ? '<div style="font-size:10px;color:#9a9c97;margin-top:1px;text-align:right">Tap to rate</div>' : '';
+    return '<div class="h-item" id="h-item-' + i + '">' +
+      '<div class="h-dot" style="background:' + color + '"></div>' +
+      '<div style="flex:1">' +
+        '<div class="h-name">' + h.name + '</div>' +
+        '<div class="h-meta">' + h.type + ' · ' + (h.date||'Recently') + '</div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;align-items:flex-end">' +
+        '<div>' + starsHtml + '</div>' +
+        rateLabel +
+      '</div>' +
+      (showDelete ? '<button onclick="deleteStrain(' + i + ')" style="margin-left:8px;border:none;background:transparent;color:#9a9c97;font-size:18px;cursor:pointer;padding:2px 4px;line-height:1" title="Remove">×</button>' : '') +
+    '</div>';
   }).join('');
 }
 
@@ -766,15 +782,23 @@ function buildRecCard(s, reason) {
     <div class="rec-desc">${s.description}</div>
     ${reason ? `<div class="rec-why">${reason}</div>` : ''}
     ${s.terpenes.length ? `<div class="rec-terps">${s.terpenes.map(t=>`<span class="terp">${t}</span>`).join('')}</div>` : ''}
-    ${saved
-      ? '<button class="save-btn saved">Saved to profile</button>'
-      : '<div style="margin-top:9px"><div style="font-size:11px;color:#9a9c97;margin-bottom:4px;font-weight:500">Rate before saving:</div><div style="display:flex;gap:4px;align-items:center">' +
-        [1,2,3,4,5].map(n => `<span onclick="saveStrainRated('${s.id}',${n},this.parentElement.parentElement)" style="font-size:22px;cursor:pointer;color:#d3d1c7;transition:color .1s" onmouseover="hoverStars(this,${n})" onmouseout="resetStars(this.parentElement)">${'★'}</span>`).join('') +
-        '</div></div>'
-    }
+    <button class="save-btn ${saved?'saved':''}" onclick="saveStrain('${s.id}',this)">
+      ${saved ? 'Saved to profile' : '+ Save to profile'}
+    </button>
   </div>`;
 }
 
+
+
+function rateStrain(index, rating) {
+  if (strainHistory[index]) {
+    strainHistory[index].rating = rating;
+    saveData();
+    renderHistory('home-history-list');
+    renderHistory('prof-history-list');
+    toast('prof-toast', 'Rating saved!');
+  }
+}
 
 function deleteStrain(index) {
   const name = strainHistory[index] && strainHistory[index].name;
@@ -826,7 +850,7 @@ function saveStrain(id, btn) {
   const s = window.STRAINS.find(x => x.id === id);
   if (!s) return;
   if (strainHistory.find(h => h.name === s.name)) { toast('prof-toast', 'Already saved'); return; }
-  strainHistory.unshift({ name: s.name, type: s.type, rating: 4, date: 'Today' });
+  strainHistory.unshift({ name: s.name, type: s.type, rating: 0, date: 'Today' });
   if (strainHistory.length > 20) strainHistory = strainHistory.slice(0, 20);
   saveData();
   btn.textContent = 'Saved to profile'; btn.classList.add('saved');
