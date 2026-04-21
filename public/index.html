@@ -26,32 +26,61 @@
        ONBOARDING SCREEN (first-time only)
   ═══════════════════════════════════════════ -->
   <div id="screen-onboard" class="screen">
-    <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:3rem 2rem 1.5rem">
-      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:0;width:100%;padding:0 16px">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:2.5rem 2rem 1.5rem">
 
-        <div id="ob-icon" style="width:80px;height:80px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;margin-bottom:28px;border:2px solid #a8dfc9">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0a5c3a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 8v4l3 3"/></svg>
-        </div>
+      <!-- Ivy logo mark — shown on all slides -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:8px">
+        <svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="28" cy="28" r="28" fill="#1a9968"/>
+  <line x1="28" y1="42" x2="28" y2="14" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M28,34 C21,29 11,27 9,19 C15,19 23,25 28,34 Z" fill="white"/>
+  <path d="M28,34 C35,29 45,27 47,19 C41,19 33,25 28,34 Z" fill="white"/>
+  <path d="M28,24 C22,19 13,16 11,9 C17,11 24,17 28,24 Z" fill="white"/>
+  <path d="M28,24 C34,19 43,16 45,9 C39,11 32,17 28,24 Z" fill="white"/>
+</svg>
+        <div style="font-size:22px;font-weight:700;color:#0d6647;letter-spacing:-0.5px;margin-top:4px">Ivy</div>
+        <div style="font-size:11px;color:#4a9c78;letter-spacing:0.15em;font-weight:500">YOUR PERSONAL CANNABIS GUIDE</div>
+      </div>
 
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;width:100%;padding:0 16px">
+
+        <!-- Slide 1 — Privacy icon -->
         <div id="ob-slide-1" class="ob-slide" style="text-align:center;width:100%;margin:0 auto">
-          <h2 style="font-size:26px;font-weight:700;color:#111310;margin-bottom:14px;letter-spacing:-0.5px;line-height:1.2;text-align:center;width:100%">Your private cannabis guide</h2>
-          <p style="font-size:15px;color:#5a5c57;line-height:1.7;text-align:center;width:100%;padding:0 8px">Ivy gives you personalized cannabis recommendations based on your unique wellness needs. Private, judgment-free, and always on your side.</p>
+          <div style="width:64px;height:64px;border-radius:50%;background:#E1F5EE;border:2px solid #a8dfc9;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0a5c3a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <h2 style="font-size:24px;font-weight:700;color:#111310;margin-bottom:12px;letter-spacing:-0.5px;line-height:1.2">Your private cannabis guide</h2>
+          <p style="font-size:14px;color:#5a5c57;line-height:1.75;padding:0 8px">Ivy gives you personalized cannabis recommendations based on your unique wellness needs. Private, judgment-free, and always on your side.</p>
         </div>
 
+        <!-- Slide 2 — Journal/memory icon -->
         <div id="ob-slide-2" class="ob-slide" style="text-align:center;width:100%;margin:0 auto;display:none">
-          <h2 style="font-size:26px;font-weight:700;color:#111310;margin-bottom:14px;letter-spacing:-0.5px;line-height:1.2;text-align:center;width:100%">Remembers what works for you</h2>
-          <p style="font-size:15px;color:#5a5c57;line-height:1.7;text-align:center;width:100%;padding:0 8px">Build your personal terpene profile over time. The more you use it, the smarter your recommendations become.</p>
+          <div style="width:64px;height:64px;border-radius:50%;background:#E1F5EE;border:2px solid #a8dfc9;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0a5c3a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          <h2 style="font-size:24px;font-weight:700;color:#111310;margin-bottom:12px;letter-spacing:-0.5px;line-height:1.2">Remembers what works for you</h2>
+          <p style="font-size:14px;color:#5a5c57;line-height:1.75;padding:0 8px">Log your sessions and build a personal wellness profile over time. The more you use Ivy, the smarter your recommendations become.</p>
         </div>
 
+        <!-- Slide 3 — Heart/wellness icon -->
         <div id="ob-slide-3" class="ob-slide" style="text-align:center;width:100%;margin:0 auto;display:none">
-          <h2 style="font-size:26px;font-weight:700;color:#111310;margin-bottom:14px;letter-spacing:-0.5px;line-height:1.2;text-align:center;width:100%">No judgment. Ever.</h2>
-          <p style="font-size:15px;color:#5a5c57;line-height:1.7;text-align:center;width:100%;padding:0 8px">Cannabis is wellness. Ivy is here for anyone who wants honest, private guidance — on their own terms, at their own pace.</p>
+          <div style="width:64px;height:64px;border-radius:50%;background:#E1F5EE;border:2px solid #a8dfc9;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0a5c3a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+          <h2 style="font-size:24px;font-weight:700;color:#111310;margin-bottom:12px;letter-spacing:-0.5px;line-height:1.2">No judgment. Ever.</h2>
+          <p style="font-size:14px;color:#5a5c57;line-height:1.75;padding:0 8px">Cannabis is wellness. Ivy is here for anyone who wants honest, private guidance — on their own terms, at their own pace.</p>
         </div>
 
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div style="display:flex;justify-content:center;gap:8px;margin-bottom:4px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:center;gap:10px;margin-bottom:2px">
           <div class="ob-dot active" id="ob-dot-1" onclick="goToSlide(1)" style="cursor:pointer;width:10px;height:10px"></div>
           <div class="ob-dot" id="ob-dot-2" onclick="goToSlide(2)" style="cursor:pointer;width:10px;height:10px"></div>
           <div class="ob-dot" id="ob-dot-3" onclick="goToSlide(3)" style="cursor:pointer;width:10px;height:10px"></div>
@@ -59,6 +88,7 @@
         <button class="btn-primary" id="ob-btn" onclick="nextSlide()">Next</button>
         <button onclick="finishOnboard()" style="background:transparent;border:none;color:#9a9c97;font-size:13px;cursor:pointer;padding:6px">Skip</button>
       </div>
+
     </div>
   </div>
 
@@ -67,21 +97,30 @@
   ═══════════════════════════════════════════ -->
   <div id="screen-home" class="screen active">
     <div class="topbar">
-      <div class="wb-avatar" id="home-avatar" style="width:34px;height:34px;font-size:13px;cursor:pointer" onclick="switchTab('profile')">?</div>
-      <div style="flex:1">
-        <div class="topbar-title" id="home-title">Ivy</div>
-        <div class="topbar-sub">Your personal cannabis guide</div>
+      <div style="display:flex;align-items:center;gap:8px;flex:1">
+        <svg width="28" height="28" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="28" cy="28" r="28" fill="#1a9968"/>
+  <line x1="28" y1="42" x2="28" y2="14" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M28,34 C21,29 11,27 9,19 C15,19 23,25 28,34 Z" fill="white"/>
+  <path d="M28,34 C35,29 45,27 47,19 C41,19 33,25 28,34 Z" fill="white"/>
+  <path d="M28,24 C22,19 13,16 11,9 C17,11 24,17 28,24 Z" fill="white"/>
+  <path d="M28,24 C34,19 43,16 45,9 C39,11 32,17 28,24 Z" fill="white"/>
+</svg>
+        <div>
+          <div class="topbar-title" id="home-title" style="line-height:1.1">Ivy</div>
+          <div class="topbar-sub">Your personal cannabis guide</div>
+        </div>
       </div>
-      <span id="home-badge" style="font-size:10px;background:#E1F5EE;color:#085041;padding:2px 8px;border-radius:10px;font-weight:600">v3</span>
+      <div class="wb-avatar" id="home-avatar" style="width:34px;height:34px;font-size:13px;cursor:pointer" onclick="switchTab('profile')">?</div>
     </div>
 
     <div class="content">
       <!-- Welcome banner -->
-      <div class="card welcome-banner">
-        <div class="wb-avatar" id="wb-avatar">?</div>
+      <div class="card welcome-banner" style="background:linear-gradient(135deg,#1a9968 0%,#0d6647 100%);border:none">
+        <div class="wb-avatar" id="wb-avatar" style="background:rgba(255,255,255,0.2);color:white;border:2px solid rgba(255,255,255,0.3)">?</div>
         <div>
-          <div class="wb-title" id="wb-greeting">Welcome to Ivy</div>
-          <div class="wb-sub" id="wb-msg">Set up your profile and get personalized recommendations — no judgment, no guessing.</div>
+          <div class="wb-title" id="wb-greeting" style="color:white">Welcome to Ivy</div>
+          <div class="wb-sub" id="wb-msg" style="color:rgba(255,255,255,0.85)">Your private cannabis guide — personalized, judgment-free, and always on your side.</div>
         </div>
       </div>
 
@@ -958,9 +997,9 @@ function refreshUI() {
   if (has) {
     document.getElementById('home-title').textContent    = 'Hey, ' + profile.name + ' 👋';
     document.getElementById('wb-greeting').textContent  = 'Welcome back, ' + profile.name + '!';
-    document.getElementById('wb-msg').textContent       = 'Your profile is ready. Jump straight into personalized recommendations.';
+    document.getElementById('wb-msg').textContent       = 'Welcome back. Your profile is ready — jump straight into personalized recommendations.';
     document.getElementById('home-cta').textContent     = 'Start a new chat →';
-    document.getElementById('home-badge').textContent   = 'Profile ready';
+    // home-badge hidden
     const profFields = [
       !!profile.name,
       !!profile.experience,
