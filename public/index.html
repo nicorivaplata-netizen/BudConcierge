@@ -178,37 +178,66 @@
 
       <button class="btn-primary" id="home-cta" onclick="handleCTA()">Set up my profile</button>
 
-      <!-- Quick actions (shown after profile is set) -->
-      <div id="quick-actions" style="display:none;display:flex;flex-direction:column;gap:8px">
-        <div class="section-label">Quick start</div>
+      <!-- Quick actions — always visible, works with or without profile -->
+      <div id="quick-actions" style="display:flex;flex-direction:column;gap:8px">
+        <div class="section-label" id="quick-actions-label">Explore Ivy</div>
+
+        <!-- Chat card -->
         <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('chat')">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <span style="font-weight:600;font-size:14px">Chat with Ivy</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <span style="font-weight:600;font-size:14px">Chat with Ivy</span>
+            </div>
             <span style="color:#bbb">›</span>
           </div>
-          <div style="font-size:13px;color:#888" id="chat-shortcut-sub">Get personalized recommendations</div>
+          <div style="font-size:13px;color:#888;padding-left:40px" id="chat-shortcut-sub">Ask anything — no profile needed to start</div>
         </div>
-        <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('profile')">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <span style="font-weight:600;font-size:14px">Update my preferences</span>
-            <span style="color:#bbb">›</span>
-          </div>
-          <div style="font-size:13px;color:#888">Change goals, tolerance, product types</div>
-        </div>
+
+        <!-- Find dispensary card -->
         <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('dispensary')">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <span style="font-weight:600;font-size:14px">Find a dispensary near me</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <span style="font-weight:600;font-size:14px">Find a dispensary</span>
+            </div>
             <span style="color:#bbb">›</span>
           </div>
-          <div style="font-size:13px;color:#888">Search real dispensaries in your area</div>
+          <div style="font-size:13px;color:#888;padding-left:40px">Search licensed dispensaries near you</div>
         </div>
+
+        <!-- Journal card -->
         <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('journal')">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <span style="font-weight:600;font-size:14px">Log a journal entry</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              </div>
+              <span style="font-weight:600;font-size:14px">My Journal</span>
+            </div>
             <span style="color:#bbb">›</span>
           </div>
-          <div style="font-size:13px;color:#888" id="journal-shortcut-sub">Track how products make you feel</div>
+          <div style="font-size:13px;color:#888;padding-left:40px" id="journal-shortcut-sub">Track how products make you feel</div>
         </div>
+
+        <!-- Profile card — only shown after profile exists -->
+        <div id="profile-shortcut" class="card" style="cursor:pointer;padding:13px 16px;display:none" onclick="switchTab('profile')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <span style="font-weight:600;font-size:14px">Update my preferences</span>
+            </div>
+            <span style="color:#bbb">›</span>
+          </div>
+          <div style="font-size:13px;color:#888;padding-left:40px">Edit goals, tolerance, wellness profile</div>
+        </div>
+
       </div>
 
       <!-- Strain history on home -->
@@ -1105,14 +1134,20 @@ function refreshUI() {
     document.getElementById('prof-name').textContent    = profile.name;
     document.getElementById('prof-since').textContent   = profile.joined ? 'Member since ' + profile.joined : '';
     document.getElementById('quick-actions').style.display = 'flex';
-    const goals = profile.goals && profile.goals.length ? 'Personalized for: ' + profile.goals.slice(0,2).join(', ') : 'Get personalized recommendations';
+    document.getElementById('quick-actions-label').textContent = 'Quick start';
+    const profileShortcut = document.getElementById('profile-shortcut');
+    if (profileShortcut) profileShortcut.style.display = 'block';
+    const goals = profile.goals && profile.goals.length ? 'Personalized for: ' + profile.goals.slice(0,2).join(', ') : 'Ask anything — no profile needed to start';
     document.getElementById('chat-shortcut-sub').textContent = goals;
   } else {
     document.getElementById('home-title').textContent   = 'Ivy';
     document.getElementById('wb-greeting').textContent  = 'Welcome to Ivy';
     document.getElementById('wb-msg').textContent       = 'Set up your profile for personalized, judgment-free cannabis guidance.';
     document.getElementById('home-cta').textContent     = 'Set up my profile';
-    document.getElementById('quick-actions').style.display = 'none';
+    document.getElementById('quick-actions').style.display = 'flex';
+    document.getElementById('quick-actions-label').textContent = 'Explore Ivy';
+    const profileShortcut = document.getElementById('profile-shortcut');
+    if (profileShortcut) profileShortcut.style.display = 'none';
   }
 
   // Profile fields
