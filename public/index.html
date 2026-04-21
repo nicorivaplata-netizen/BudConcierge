@@ -23,6 +23,58 @@
 <div id="app">
 
   <!-- ═══════════════════════════════════════════
+       AGE VERIFICATION SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-agegate" class="screen">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2.5rem 2rem;text-align:center">
+
+      <!-- Ivy mark -->
+      <svg width="64" height="64" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:16px">
+        <circle cx="28" cy="28" r="28" fill="#1a9968"/>
+        <line x1="28" y1="42" x2="28" y2="14" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M28,34 C21,29 11,27 9,19 C15,19 23,25 28,34 Z" fill="white"/>
+        <path d="M28,34 C35,29 45,27 47,19 C41,19 33,25 28,34 Z" fill="white"/>
+        <path d="M28,24 C22,19 13,16 11,9 C17,11 24,17 28,24 Z" fill="white"/>
+        <path d="M28,24 C34,19 43,16 45,9 C39,11 32,17 28,24 Z" fill="white"/>
+      </svg>
+
+      <div style="font-size:22px;font-weight:700;color:#0d6647;letter-spacing:-0.5px;margin-bottom:4px">Ivy</div>
+      <div style="font-size:11px;color:#4a9c78;letter-spacing:0.15em;font-weight:500;margin-bottom:32px">YOUR PERSONAL CANNABIS GUIDE</div>
+
+      <div style="background:#f7f8f6;border-radius:16px;padding:28px 24px;width:100%;max-width:340px">
+        <div style="font-size:20px;font-weight:700;color:#111;margin-bottom:10px;letter-spacing:-0.3px">Age verification</div>
+        <div style="font-size:14px;color:#5a5c57;line-height:1.65;margin-bottom:24px">Ivy provides guidance on cannabis products. You must be 21 or older, or hold a valid medical cannabis card in your state, to continue.</div>
+
+        <button onclick="confirmAge()" style="width:100%;padding:14px;background:#1a9968;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;font-family:inherit">
+          I am 21 or older
+        </button>
+
+        <button onclick="denyAge()" style="width:100%;padding:14px;background:transparent;color:#9a9c97;border:1px solid rgba(0,0,0,0.1);border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit">
+          I am under 21
+        </button>
+      </div>
+
+      <div style="font-size:11px;color:#c5c7c2;margin-top:20px;line-height:1.6;max-width:300px">
+        By continuing you confirm you are of legal age to access cannabis information in your jurisdiction.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- UNDER 21 SCREEN -->
+  <div id="screen-underage" class="screen">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2.5rem 2rem;text-align:center">
+      <div style="width:64px;height:64px;border-radius:50%;background:#FCEBEB;display:flex;align-items:center;justify-content:center;margin-bottom:20px">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A32D2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <div style="font-size:20px;font-weight:700;color:#111;margin-bottom:10px">Access restricted</div>
+      <div style="font-size:14px;color:#5a5c57;line-height:1.65;max-width:300px">Ivy is only available to adults 21 and older, or those with a valid medical cannabis card. Please check back when you meet the age requirement.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
        ONBOARDING SCREEN (first-time only)
   ═══════════════════════════════════════════ -->
   <div id="screen-onboard" class="screen">
@@ -848,9 +900,40 @@ function selectDispensary(id, name, website) {
 
 // ─── Onboarding ──────────────────────────────────────────────────────────────
 const OKEY = 'bc_onboarded_v1';
+const AGEKEY = 'bc_age_verified_v1';
 let obSlide = 1;
 
+function showAgeGateIfNeeded() {
+  const ageVerified = localStorage.getItem(AGEKEY);
+  if (!ageVerified) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-agegate').classList.add('active');
+    return true; // age gate shown
+  }
+  return false; // already verified
+}
+
+function confirmAge() {
+  localStorage.setItem(AGEKEY, '1');
+  // Now check if onboarding is needed
+  const done = localStorage.getItem(OKEY);
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  if (!done) {
+    document.getElementById('screen-onboard').classList.add('active');
+  } else {
+    document.getElementById('screen-home').classList.add('active');
+    refreshUI();
+  }
+}
+
+function denyAge() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-underage').classList.add('active');
+}
+
 function showOnboardIfNeeded() {
+  // Age gate takes priority over onboarding
+  if (showAgeGateIfNeeded()) return;
   const done = localStorage.getItem(OKEY);
   if (!done) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1597,6 +1680,7 @@ function clearProfile() {
   try { localStorage.removeItem('bc_profile_v1'); } catch(e) {}
   try { localStorage.removeItem('bc_history_v1'); } catch(e) {}
   try { localStorage.removeItem('bc_onboarded_v1'); } catch(e) {}
+  try { localStorage.removeItem('bc_age_verified_v1'); } catch(e) {}
   // Save empty state
   saveData();
   chatInitialized = false;
