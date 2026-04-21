@@ -817,8 +817,12 @@ function renderDispensaries(list) {
     <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:14px 16px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px">
         <div style="flex:1">
-          <div style="font-size:14px;font-weight:600;color:#111;margin-bottom:3px">${d.name}</div>
-          <div style="font-size:12px;color:#9a9c97">${d.address}</div>
+          ${d.website
+            ? `<a href="${d.website}" target="_blank" style="font-size:14px;font-weight:600;color:#1a9968;margin-bottom:3px;display:block;text-decoration:none">${d.name} ↗</a>`
+            : `<div style="font-size:14px;font-weight:600;color:#111;margin-bottom:3px">${d.name}</div>`
+          }
+          <div style="font-size:12px;color:#9a9c97;margin-bottom:${d.phone?'2px':'0'}">${d.address}</div>
+          ${d.phone ? `<a href="tel:${d.phone}" style="font-size:12px;color:#1a9968;text-decoration:none">${d.phone}</a>` : ''}
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
           ${d.rating ? `<span style="font-size:12px;color:#EF9F27">★ ${d.rating}</span>` : ''}
@@ -826,7 +830,7 @@ function renderDispensaries(list) {
         </div>
       </div>
       <div style="display:flex;gap:8px">
-        ${d.website ? `<a href="${d.website}" target="_blank" style="flex:1;padding:8px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;font-size:12px;font-weight:600;color:#5a5c57;text-align:center;text-decoration:none">Visit website</a>` : ''}
+        ${d.website ? `<a href="${d.website}" target="_blank" style="flex:1;padding:8px;border:1px solid #a8dfc9;border-radius:8px;font-size:12px;font-weight:600;color:#085041;text-align:center;text-decoration:none;background:#E1F5EE">Visit website</a>` : ''}
         <button onclick="selectDispensary('${d.id}','${d.name.replace(/'/g,"\'")}','${d.website||''}')" style="flex:1;padding:8px;background:#1a9968;border:none;border-radius:8px;font-size:12px;font-weight:600;color:#fff;cursor:pointer">Use for chat</button>
       </div>
     </div>`).join('');
