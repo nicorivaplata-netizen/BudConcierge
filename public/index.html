@@ -465,6 +465,8 @@
               <button class="opt-btn" data-field="hormonal" data-val="Fibroids" onclick="pickMany(this)">Fibroids</button>
               <button class="opt-btn" data-field="hormonal" data-val="Thyroid disorder" onclick="pickMany(this)">Thyroid</button>
             </div>
+            <input type="text" id="hormonal-other" placeholder="Other hormonal condition (optional)..." maxlength="80"
+              style="width:100%;margin-top:8px;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;background:#fff;color:#111;font-family:inherit;box-sizing:border-box">
           </div>
         </div>
       </div>
@@ -1261,6 +1263,47 @@ function openEdit() {
   });
   const strainSect = document.getElementById('strain-pref-section');
   if (strainSect) strainSect.style.display = (profile.experience === 'Occasional' || profile.experience === 'Regular' || profile.experience === 'Daily use') ? 'block' : 'none';
+  // Restore gender and hormonal section visibility
+  if (profile.gender) {
+    document.querySelectorAll('.opt-btn[data-field="gender"]').forEach(b => {
+      b.classList.toggle('on', b.dataset.val === profile.gender);
+    });
+    const hs = document.getElementById('hormonal-section');
+    const ot = document.getElementById('other-hormonal-toggle');
+    if (hs) hs.style.display = profile.gender === 'Female' ? 'block' : 'none';
+    if (ot) ot.style.display = profile.gender === 'Other' ? 'block' : 'none';
+  }
+  // Restore conditions
+  const condArr = profile.conditions || [];
+  document.querySelectorAll('.opt-btn[data-field="conditions"]').forEach(b => {
+    b.classList.toggle('on', condArr.includes(b.dataset.val));
+  });
+  // Restore hormonal buttons and other text
+  const presets = ['PCOS','Endometriosis','Fibroids','Thyroid disorder'];
+  const hormonalArr = profile.hormonal ? profile.hormonal.split(', ') : [];
+  document.querySelectorAll('.opt-btn[data-field="hormonal"]').forEach(b => {
+    b.classList.toggle('on', hormonalArr.includes(b.dataset.val));
+  });
+  const hormonalOtherEl = document.getElementById('hormonal-other');
+  if (hormonalOtherEl) {
+    const otherVal = hormonalArr.find(v => !presets.includes(v));
+    hormonalOtherEl.value = otherVal || '';
+  }
+  // Restore cycle
+  const cycleVal = profile.cycle || '';
+  document.querySelectorAll('.opt-btn[data-field="cycle"]').forEach(b => {
+    b.classList.toggle('on', b.dataset.val === cycleVal);
+  });
+  // Restore medications
+  const medEl = document.getElementById('edit-medications');
+  if (medEl) medEl.value = profile.medications || '';
+  // Restore conditions other
+  const condOtherEl = document.getElementById('conditions-other');
+  if (condOtherEl) {
+    const presetConds = ['Anxiety','Depression','PTSD','Chronic pain','Insomnia','Fibromyalgia','Arthritis','Migraines','Nausea','ADHD','Epilepsy','IBS'];
+    const otherCond = condArr.find(v => !presetConds.includes(v));
+    condOtherEl.value = otherCond || '';
+  }
   switchTab('edit');
 }
 
@@ -1342,7 +1385,12 @@ function saveProfile() {
     gender:     get1('gender'),
     conditions: conditionsList,
     medications: document.getElementById('edit-medications')?.value.trim() || '',
-    hormonal:   hormonalList.join(', '),
+    hormonal:   (() => {
+      const hormonalOther = document.getElementById('hormonal-other')?.value.trim();
+      const full = [...hormonalList];
+      if (hormonalOther) full.push(hormonalOther);
+      return full.join(', ');
+    })(),
     cycle:      get1('cycle'),
     hormonal_conditions: hormonalList.join(', '),
     strain_pref: getM('strain_pref'),
