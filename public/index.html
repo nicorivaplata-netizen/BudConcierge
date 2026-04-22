@@ -1916,12 +1916,168 @@ function startChat() {
   chatInitialized = true;
   chatHistory = [];
   document.getElementById('messages').innerHTML = '';
+
+  // Show quick setup for users without a profile
+  if (!profile.name) {
+    showQuickSetup();
+    return;
+  }
+
+  // Returning user with profile — jump straight to personalized chat
   const savedDisp = localStorage.getItem('bc_selected_dispensary');
   const dispCtx = savedDisp ? ` I am shopping at ${JSON.parse(savedDisp).name}.` : '';
   const hasJournal = journal && journal.length > 0;
-  const opener = profile.name
-    ? `I'm ${profile.name}. Based on my profile — ${profile.experience||'some'} experience, goals: ${(profile.goals||[]).join(', ')||'general wellness'}, prefer: ${(profile.products||[]).join(', ')||'open to anything'}${hasJournal ? `, and I have ${journal.length} journal entries logged` : ''} — what do you recommend for me today?${dispCtx}`
-    : `Hi! I want to find the right cannabis product for me.${dispCtx}`;
+  const opener = `I'm ${profile.name}. Based on my profile — ${profile.experience||'some'} experience, goals: ${(profile.goals||[]).join(', ')||'general wellness'}, prefer: ${(profile.products||[]).join(', ')||'open to anything'}${hasJournal ? `, and I have ${journal.length} journal entries logged` : ''} — what do you recommend for me today?${dispCtx}`;
+  getBotReply(opener);
+}
+
+// ── Quick Setup Card — shown inline in chat for new users ────────────────────
+let quickSetupData = { name: '', experience: '', goals: [] };
+
+function showQuickSetup() {
+  const msgsEl = document.getElementById('messages');
+  msgsEl.innerHTML = '';
+
+  const card = document.createElement('div');
+  card.id = 'quick-setup-card';
+  card.style.cssText = 'margin:16px;background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,0.08);overflow:hidden';
+
+  card.innerHTML = `
+    <div style="background:linear-gradient(135deg,#1a9968,#0d6647);padding:18px 20px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <svg width="20" height="20" viewBox="0 0 56 56"><circle cx="28" cy="28" r="28" fill="rgba(255,255,255,0.2)"/><line x1="28" y1="42" x2="28" y2="14" stroke="white" stroke-width="2.5" stroke-linecap="round"/><path d="M28,34 C21,29 11,27 9,19 C15,19 23,25 28,34 Z" fill="white"/><path d="M28,34 C35,29 45,27 47,19 C41,19 33,25 28,34 Z" fill="white"/><path d="M28,24 C22,19 13,16 11,9 C17,11 24,17 28,24 Z" fill="white"/><path d="M28,24 C34,19 43,16 45,9 C39,11 32,17 28,24 Z" fill="white"/></svg>
+        <span style="font-size:16px;font-weight:700;color:white">Hi, I'm Ivy</span>
+      </div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.9);line-height:1.5">Your private cannabis guide. Answer 3 quick questions and I'll give you personalized recommendations right away.</div>
+    </div>
+
+    <div style="padding:18px 20px">
+
+      <!-- Step 1: Name -->
+      <div id="qs-step-1">
+        <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:12px">What should I call you?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <input id="qs-name-input" type="text" placeholder="Your name..." maxlength="30"
+            style="grid-column:1/-1;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;font-family:inherit;outline:none"
+            oninput="quickSetupData.name=this.value"
+            onkeydown="if(event.key==='Enter')qsNextStep(1)">
+          <button onclick="quickSetupData.name=this.dataset.val;qsNextStep(1)" data-val="Just call me friend"
+            style="padding:9px 8px;border:1.5px solid rgba(0,0,0,0.1);border-radius:9px;font-size:12px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#5a5c57">
+            Just call me friend
+          </button>
+          <button onclick="quickSetupData.name=this.dataset.val;qsNextStep(1)" data-val="Anonymous"
+            style="padding:9px 8px;border:1.5px solid rgba(0,0,0,0.1);border-radius:9px;font-size:12px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#5a5c57">
+            Stay anonymous
+          </button>
+        </div>
+        <button onclick="if(document.getElementById('qs-name-input').value.trim()){quickSetupData.name=document.getElementById('qs-name-input').value.trim();}qsNextStep(1)"
+          style="width:100%;padding:11px;background:#1a9968;color:white;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+          Continue →
+        </button>
+      </div>
+
+      <!-- Step 2: Experience (hidden initially) -->
+      <div id="qs-step-2" style="display:none">
+        <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:12px">What's your experience with cannabis?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          ${['First time','Occasional','Regular','Daily use'].map(exp => `
+          <button onclick="quickSetupData.experience='${exp}';qsNextStep(2)"
+            style="padding:11px 8px;border:1.5px solid rgba(0,0,0,0.1);border-radius:9px;font-size:13px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#333;text-align:center">
+            ${exp}
+          </button>`).join('')}
+        </div>
+      </div>
+
+      <!-- Step 3: Goals (hidden initially) -->
+      <div id="qs-step-3" style="display:none">
+        <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:4px">What are you hoping cannabis helps with?</div>
+        <div style="font-size:11px;color:#9a9c97;margin-bottom:12px">Select all that apply</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px" id="qs-goals-grid">
+          ${['Sleep','Anxiety','Pain relief','Stress','Focus','Mood','Nausea','General wellness'].map(g => `
+          <button onclick="qsToggleGoal(this,'${g}')"
+            style="padding:10px 8px;border:1.5px solid rgba(0,0,0,0.1);border-radius:9px;font-size:13px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#333;text-align:center">
+            ${g}
+          </button>`).join('')}
+        </div>
+        <button onclick="qsFinish()"
+          style="width:100%;padding:11px;background:#1a9968;color:white;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+          Start chatting with Ivy →
+        </button>
+      </div>
+
+      <!-- Progress dots -->
+      <div style="display:flex;justify-content:center;gap:6px;margin-top:16px" id="qs-dots">
+        <div id="qs-dot-1" style="width:8px;height:8px;border-radius:50%;background:#1a9968"></div>
+        <div id="qs-dot-2" style="width:8px;height:8px;border-radius:50%;background:#e0e0e0"></div>
+        <div id="qs-dot-3" style="width:8px;height:8px;border-radius:50%;background:#e0e0e0"></div>
+      </div>
+    </div>
+  `;
+
+  msgsEl.appendChild(card);
+}
+
+function qsNextStep(current) {
+  // Validate step 1
+  if (current === 1 && !quickSetupData.name) {
+    const inp = document.getElementById('qs-name-input');
+    if (inp) inp.style.border = '1.5px solid #e24b4a';
+    return;
+  }
+
+  document.getElementById('qs-step-' + current).style.display = 'none';
+  document.getElementById('qs-step-' + (current + 1)).style.display = 'block';
+
+  // Update progress dots
+  for (let i = 1; i <= 3; i++) {
+    const dot = document.getElementById('qs-dot-' + i);
+    if (dot) dot.style.background = i <= current + 1 ? '#1a9968' : '#e0e0e0';
+  }
+}
+
+function qsToggleGoal(btn, goal) {
+  const idx = quickSetupData.goals.indexOf(goal);
+  if (idx > -1) {
+    quickSetupData.goals.splice(idx, 1);
+    btn.style.background = '#f7f8f6';
+    btn.style.border = '1.5px solid rgba(0,0,0,0.1)';
+    btn.style.color = '#333';
+  } else {
+    quickSetupData.goals.push(goal);
+    btn.style.background = '#E1F5EE';
+    btn.style.border = '1.5px solid #1a9968';
+    btn.style.color = '#0d6647';
+  }
+}
+
+function qsFinish() {
+  if (quickSetupData.goals.length === 0) {
+    quickSetupData.goals = ['General wellness'];
+  }
+
+  // Save to profile
+  profile.name = quickSetupData.name;
+  profile.experience = quickSetupData.experience;
+  profile.goals = quickSetupData.goals;
+  if (!profile.joined) profile.joined = new Date().toLocaleDateString('en-US', { month:'short', year:'numeric' });
+  saveData();
+  refreshUI();
+
+  // Hide nudge banner since profile now exists
+  const nudge = document.getElementById('chat-profile-nudge');
+  if (nudge) nudge.style.display = 'none';
+
+  // Remove quick setup card and start real chat
+  const card = document.getElementById('quick-setup-card');
+  if (card) card.remove();
+
+  // Start personalized chat with the new profile data
+  const savedDisp = localStorage.getItem('bc_selected_dispensary');
+  const dispCtx = savedDisp ? ` I am shopping at ${JSON.parse(savedDisp).name}.` : '';
+  const nameGreet = quickSetupData.name === 'Just call me friend' ? 'friend' :
+                    quickSetupData.name === 'Anonymous' ? 'there' :
+                    quickSetupData.name;
+  const opener = `Hi! I'm ${nameGreet}. I'm ${quickSetupData.experience || 'new to cannabis'} and I'm looking for help with ${quickSetupData.goals.join(' and ')}. What do you recommend for me?${dispCtx}`;
   getBotReply(opener);
 }
 
