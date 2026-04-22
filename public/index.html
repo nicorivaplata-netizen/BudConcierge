@@ -2061,7 +2061,7 @@ function showQuickSetup() {
           Start chatting with Ivy →
         </button>
 
-        <button onclick="qsFinish()"
+        <button onclick="qsSkipHealth()"
           style="width:100%;margin-top:6px;padding:8px;border:none;border-radius:9px;font-size:12px;font-weight:400;background:transparent;cursor:pointer;font-family:inherit;color:#9a9c97">
           Skip — I'd rather not share this
         </button>
@@ -2101,6 +2101,14 @@ function qsNextStep(current) {
     const dot = document.getElementById('qs-dot-' + i);
     if (dot) dot.style.background = i <= current + 1 ? '#1a9968' : '#e0e0e0';
   }
+}
+
+function qsSkipHealth() {
+  // Explicitly clear any health data they may have partially selected
+  quickSetupData.conditions = [];
+  quickSetupData.otherCondition = '';
+  quickSetupData.medications = '';
+  qsFinish();
 }
 
 function qsToggleOtherCondition(btn) {
