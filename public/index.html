@@ -1946,7 +1946,7 @@ function startChat() {
 }
 
 // ── Quick Setup Card — shown inline in chat for new users ────────────────────
-let quickSetupData = { name: '', experience: '', goals: [], conditions: [], medications: '' };
+let quickSetupData = { name: '', experience: '', goals: [], conditions: [], otherCondition: '', medications: '' };
 
 function showQuickSetup() {
   const msgsEl = document.getElementById('messages');
@@ -2032,12 +2032,22 @@ function showQuickSetup() {
 
         <!-- Conditions grid -->
         <div style="font-size:11px;font-weight:600;color:#0d6647;letter-spacing:0.04em;margin-bottom:8px">HEALTH CONDITIONS (select any that apply)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px" id="qs-conditions-grid">
-          ${['Chronic pain','Anxiety','Depression','Insomnia','PTSD','Fibromyalgia','Arthritis','Migraines','Nausea','ADHD','IBS','Other'].map(c => `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px" id="qs-conditions-grid">
+          ${['Chronic pain','Anxiety','Depression','Insomnia','PTSD','Fibromyalgia','Arthritis','Migraines','Nausea','ADHD','IBS'].map(c => `
           <button onclick="qsToggleCondition(this,'${c}')"
             style="padding:8px 6px;border:1.5px solid rgba(0,0,0,0.1);border-radius:8px;font-size:12px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#333;text-align:center">
             ${c}
           </button>`).join('')}
+          <button id="qs-other-btn" onclick="qsToggleOtherCondition(this)"
+            style="padding:8px 6px;border:1.5px solid rgba(0,0,0,0.1);border-radius:8px;font-size:12px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#333;text-align:center">
+            Other
+          </button>
+        </div>
+        <div id="qs-other-input-wrap" style="display:none;margin-bottom:10px">
+          <input id="qs-other-condition-input" type="text" placeholder="Please describe your condition..."
+            maxlength="60"
+            style="width:100%;padding:9px 12px;border:1.5px solid #1a9968;border-radius:9px;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box"
+            oninput="quickSetupData.otherCondition=this.value">
         </div>
 
         <!-- Medications -->
@@ -2093,6 +2103,24 @@ function qsNextStep(current) {
   }
 }
 
+function qsToggleOtherCondition(btn) {
+  const wrap = document.getElementById('qs-other-input-wrap');
+  const isActive = btn.style.background === 'rgb(225, 245, 238)';
+  if (isActive) {
+    btn.style.background = '#f7f8f6';
+    btn.style.border = '1.5px solid rgba(0,0,0,0.1)';
+    btn.style.color = '#333';
+    wrap.style.display = 'none';
+    quickSetupData.otherCondition = '';
+  } else {
+    btn.style.background = '#E1F5EE';
+    btn.style.border = '1.5px solid #1a9968';
+    btn.style.color = '#0d6647';
+    wrap.style.display = 'block';
+    document.getElementById('qs-other-condition-input').focus();
+  }
+}
+
 function qsToggleCondition(btn, condition) {
   const idx = quickSetupData.conditions.indexOf(condition);
   if (idx > -1) {
@@ -2138,7 +2166,13 @@ function qsFinish() {
   profile.experience = quickSetupData.experience;
   profile.goals = quickSetupData.goals;
   if (quickSetupData.conditions && quickSetupData.conditions.length) {
-    profile.conditions = quickSetupData.conditions;
+    const allConditions = [...quickSetupData.conditions];
+    if (quickSetupData.otherCondition && quickSetupData.otherCondition.trim()) {
+      allConditions.push(quickSetupData.otherCondition.trim());
+    }
+    profile.conditions = allConditions;
+  } else if (quickSetupData.otherCondition && quickSetupData.otherCondition.trim()) {
+    profile.conditions = [quickSetupData.otherCondition.trim()];
   }
   if (quickSetupData.medications && quickSetupData.medications.trim()) {
     profile.medications = quickSetupData.medications.trim();
