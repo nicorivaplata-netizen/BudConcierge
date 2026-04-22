@@ -265,6 +265,17 @@
       <button onclick="newChat()" style="border:none;background:transparent;cursor:pointer;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600;color:#1a9968;border:1px solid #a8dfc9;background:#E1F5EE" title="Start new chat">New chat</button>
     </div>
 
+    <!-- Profile nudge — shown only when no profile exists -->
+    <div id="chat-profile-nudge" style="display:none;margin:10px 16px 0;background:#E1F5EE;border-radius:10px;padding:10px 14px;border:1px solid #a8dfc9">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:600;color:#0d6647;margin-bottom:2px">Get personalized recommendations</div>
+          <div style="font-size:11px;color:#4a9c78;line-height:1.4">Set up your profile so Ivy knows your health goals, experience, and wellness needs.</div>
+        </div>
+        <button onclick="switchTab('edit')" style="margin-left:10px;padding:6px 12px;background:#1a9968;color:white;border:none;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Set up profile</button>
+      </div>
+    </div>
+
     <div class="messages" id="messages"></div>
 
     <div class="disclaimer">Not medical advice · 21+ or valid medical card required</div>
@@ -1118,6 +1129,9 @@ function refreshUI() {
     document.getElementById('wb-msg').textContent       = 'Welcome back. Your profile is ready — jump straight into personalized recommendations.';
     document.getElementById('home-cta').textContent     = 'Start a new chat →';
     // home-badge hidden
+    // Hide profile nudge in chat when profile exists
+    const nudge = document.getElementById('chat-profile-nudge');
+    if (nudge) nudge.style.display = 'none';
     const profFields = [
       !!profile.name,
       !!profile.experience,
@@ -1148,6 +1162,9 @@ function refreshUI() {
     document.getElementById('quick-actions-label').textContent = 'Explore Ivy';
     const profileShortcut = document.getElementById('profile-shortcut');
     if (profileShortcut) profileShortcut.style.display = 'none';
+    // Show profile nudge in chat when no profile
+    const chatNudge = document.getElementById('chat-profile-nudge');
+    if (chatNudge) chatNudge.style.display = 'block';
   }
 
   // Profile fields
@@ -1578,7 +1595,16 @@ HOW TO RESPOND TO ${profile.name.toUpperCase()}:
 - If they have health conditions, name the condition in your recommendation explanation
 - Reference journal data when relevant — if something worked before, build on it
 - If they have medications listed, acknowledge this naturally`
-    : `No profile set up yet. Introduce yourself warmly as Ivy. Ask for their name first. Then gather information one question at a time in this order: experience level, what they hope cannabis helps with, any health conditions or medications, and product preference. Keep it warm and judgment-free. Recommend confidently once you have enough context.`;
+    : `No profile set up yet.
+
+Introduce yourself warmly as Ivy — one or two sentences maximum. Then ask for their name with this exact question: "First things first — what should I call you?"
+
+CRITICAL FOR NAME CHIPS: After asking for their name, end your message with chips in this EXACT format:
+CHIPS|||My name is [Name]|||Just call me friend|||I'd rather stay anonymous
+
+The "Just call me friend" option is important — some users want privacy and this honors that. If they choose "Just call me friend" or want to stay anonymous, warmly accept it, use "friend" throughout the conversation, and never push for their real name.
+
+Once you have their name or they have chosen a private option, ask one question at a time to learn about them: experience level first, then their main wellness goal, then any health conditions or medications. Keep every message warm, brief, and judgment-free. Never ask more than one question per message. Recommend confidently once you have enough context.`;
 
 
 
