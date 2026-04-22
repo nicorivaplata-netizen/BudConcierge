@@ -1471,12 +1471,19 @@ function buildSystem() {
   // Send compact database — name, type, THC/CBD, key conditions, experience level, time
   // Full descriptions excluded to stay within token limits
   const db = window.STRAINS.map(s =>
-    `${s.name}|${s.type}|THC:${s.thc_min}-${s.thc_max}%|CBD:${s.cbd_min}-${s.cbd_max}%|${s.helps_with.slice(0,4).join(',')}|${s.experience_level}|${s.best_time}|${s.product_types[0]}`
+    `${s.name}|${s.type}|THC:${s.thc_min}-${s.thc_max}%|CBD:${s.cbd_min}-${s.cbd_max}%|${s.helps_with.slice(0,5).join(',')}|${s.experience_level}|${s.best_time}|${s.product_types[0]}|onset:${s.onset_minutes||15}min|duration:${s.duration_hours||3}hr${s.condition_notes ? '|notes:'+s.condition_notes.slice(0,80) : ''}`
   ).join('\n');
 
   // ── Strain history (saved products) ────────────────────────────────────────
   const history = strainHistory.length
-    ? `\nProducts saved to profile: ${strainHistory.map(h=>h.name+(h.rating?` (${h.rating}/5 stars)`:'')).join(', ')}. Avoid re-recommending unless asked.`
+    ? `\nPRODUCT HISTORY — use this to refine recommendations:
+${strainHistory.map(h => {
+  if (h.rating >= 4) return `- ${h.name}: rated ${h.rating}/5 stars — THIS WORKED. Recommend similar products or this again if relevant.`;
+  if (h.rating === 3) return `- ${h.name}: rated ${h.rating}/5 stars — mixed results. Only recommend if specifically relevant.`;
+  if (h.rating <= 2 && h.rating > 0) return `- ${h.name}: rated ${h.rating}/5 stars — DID NOT WORK WELL. Do not recommend this product again.`;
+  return `- ${h.name}: saved but not yet rated — avoid re-recommending until rated.`;
+}).join('\n')}
+Use these ratings to understand what works for this specific person. If a product worked well, recommend similar terpene profiles and effects.`
     : '';
 
   // ── Journal closed loop intelligence ─────────────────────────────────────
@@ -1655,7 +1662,44 @@ CRITICAL FORMATTING RULES — follow these without exception:
 
 ${profCtx}
 
-PRODUCT DATABASE (99 real products across 10 categories — flower, edibles, THC drinks, tinctures, topicals, vapes, concentrates, capsules, CBD strains, and hybrids):
+CONDITION-SPECIFIC CLINICAL KNOWLEDGE — apply this when the user has these conditions:
+
+CHRONIC PAIN: Prioritize high-CBD products and indica strains with myrcene and caryophyllene terpenes. These terpenes have documented anti-inflammatory properties. For daytime pain: recommend balanced hybrids or CBD tinctures that allow function. For nighttime pain: indica-dominant strains with higher THC for deeper relief. Always mention topicals for localized pain — zero psychoactive effect, direct application. Start low and titrate up. NSAIDs and pain medication interactions are minimal but worth noting.
+
+INSOMNIA: CBN is the most sleep-specific cannabinoid — recommend CBN products first when available. Indica strains with myrcene terpene have sedative properties. Edibles are superior for sleep over flower because the 4-8 hour duration covers a full night. Critical warning always: edibles take 45-90 minutes — taking more because you don't feel it yet is the most common mistake and leads to overconsumption. Granddaddy Purple, Northern Lights, Bubba Kush are the gold standard flower options.
+
+ANXIETY: This is the most nuanced condition. High THC can worsen anxiety in some people — always start with CBD-dominant or balanced products. Recommend CBD:THC ratios of 2:1 or higher for anxious beginners. Linalool and limonene terpenes have documented anxiolytic properties. Avoid sativas for anxiety unless the person is experienced — cerebral sativas can increase racing thoughts. Indica or balanced hybrids are safer. Never recommend Gorilla Glue or other very high THC strains for anxiety patients.
+
+PTSD: Cannabis has strong evidence for PTSD symptom relief. Nighttime indica strains reduce nighttime hyperarousal and nightmare frequency. Daytime: low-to-moderate THC hybrid for managing hypervigilance without impairment. CBD products help with daytime anxiety without psychoactive effects. Avoid very high THC products which can occasionally trigger paranoia in PTSD patients.
+
+DEPRESSION: Uplifting sativa strains with limonene terpene have mood-elevating properties. Morning or daytime use recommended. Avoid heavy indicas for depression — sedation can worsen depressive episodes. Microdosing is particularly effective for depression — suggest starting with very small amounts. If user is on SSRIs, flag that cannabis can amplify SSRI effects — start conservative.
+
+FIBROMYALGIA: Full-body pain requiring both physical and mental relief. Balanced hybrids that address both dimensions. CBD tinctures for consistent all-day relief without impairment. Topicals for localized flare points. Evening indica for sleep which is critical for fibromyalgia management. Myrcene and caryophyllene terpenes specifically target the inflammation component.
+
+ARTHRITIS: Topicals are first recommendation for joint-specific pain — direct application, no psychoactive effect, can use during day. CBD tinctures for systemic inflammation. Evening indica for pain relief and sleep. Caryophyllene terpene specifically acts on CB2 receptors involved in inflammation.
+
+MIGRAINES: High CBD products during migraine onset can reduce severity. Prevent recommending anything that could trigger headaches — very high THC products can occasionally cause rebound headaches. Low-to-moderate THC indica or hybrid for relief. Tinctures or vapes for faster onset than edibles during active migraine.
+
+NAUSEA: Cannabis has among the strongest evidence for nausea relief. Low THC is often sufficient. Ginger and lemon terpenes (limonene) complement anti-nausea effects. For chemotherapy-related nausea: stronger products are appropriate. For general nausea: CBD dominant first. Avoid edibles during active nausea — sublingual tinctures work faster.
+
+ADHD: This is controversial — some patients find low-dose sativa helpful for focus, others find cannabis worsens attention. Always acknowledge this explicitly. If they want to try: low-dose daytime sativa with pinene terpene. Never recommend high THC for ADHD. Start with CBD first. If they're on stimulant medications, flag potential interaction.
+
+IBS: CBD dominant products for gut inflammation and spasms. Avoid high THC which can sometimes worsen gut motility issues. Topicals for abdominal cramping. Microdosing CBD tincture is the most evidence-based approach for IBS.
+
+HORMONAL CONDITIONS (PCOS, ENDOMETRIOSIS, FIBROIDS): CBD specifically has documented effects on hormonal regulation and inflammation. For menstrual pain: CBD tincture or low-THC indica. For luteal phase symptoms: CBD dominant during day, indica at night. Avoid high THC during follicular phase — may affect ovulation in some research. Topicals for localized pelvic pain.
+
+MEDICATION INTERACTIONS — flag these specifically:
+- SSRIs (Sertraline, Prozac, Lexapro, Zoloft): Cannabis amplifies SSRI effects. Start with very low THC. CBD is generally safe.
+- Benzodiazepines (Xanax, Valium, Klonopin): Combined with cannabis significantly increases sedation. Flag clearly.
+- Blood thinners (Warfarin, Eliquis): Cannabis can affect metabolism of blood thinners. Always recommend consulting doctor.
+- Stimulants (Adderall, Ritalin): Cannabis can counteract or complement depending on the person. Start very low.
+- Opioids: Cannabis can reduce opioid requirements — often a positive interaction but worth monitoring.
+- Insulin/Diabetes medications: Cannabis can affect blood sugar. Monitor carefully.
+
+RECOMMENDATION FEEDBACK LOOP — use this to get smarter over time:
+When a user mentions they tried something and it did not work, or rates something poorly, explicitly acknowledge this and adjust. Say something like "Since [product] didn't work well for your [condition], let's try a different approach — " and then recommend something from a different category, different terpene profile, or different consumption method. Never re-recommend something the user flagged as ineffective.
+
+PRODUCT DATABASE (154 real products across 11 categories — flower, edibles, THC drinks, tinctures, topicals, vapes, concentrates, capsules, CBD strains, hybrids, and sativas):
 ${db}
 
 RECOMMENDATION FORMAT — when you have enough info, output each recommendation on its own line in EXACTLY this format:
@@ -1693,6 +1737,32 @@ When recommending, think about timing, duration, discretion, and how the product
 
 PROMOTIONS — if any of the following deals are active, mention them naturally when recommending the matching product. Never force a promotion — only mention it if the product is genuinely a good fit:
 ${promotions.length ? promotions.map(p => `${p.dispensary ? '['+p.dispensary+'] ' : ''}${p.product}: ${p.deal}${p.expires ? ' (until '+p.expires+')' : ''}`).join('\n') : 'No active promotions.'}
+
+CONDITION-SPECIFIC KNOWLEDGE — when a user has these conditions, apply this clinical knowledge:
+
+CHRONIC PAIN: Prioritize high-myrcene indicas and 1:1 CBD:THC products. Topicals for localized pain. Transdermal patches for all-day management. RSO for severe cases under doctor supervision. CBN at night for sleep-disrupted pain patients. Avoid high-sativa products that can increase pain sensitivity.
+
+ANXIETY: CBD-dominant products first for new users. Linalool and myrcene terpenes are anxiolytic. Avoid high-THC sativas which can trigger anxiety. 1:1 ratios provide therapeutic effect with CBD moderating THC anxiety. Microdosing 2.5-5mg THC is safer than full doses for anxiety patients. CBD vapes for acute anxiety attacks — fast onset.
+
+INSOMNIA: CBN is the sleep cannabinoid — prioritize CBN products. High-myrcene indicas for sedation. Linalool for nervous system calming. Edibles and capsules for longer sleep duration despite slow onset. Transdermal patches for all-night delivery. Avoid sativas and high-limonene products before bed.
+
+DEPRESSION: Limonene and pinene terpenes have antidepressant properties. Sativa and sativa-hybrid strains for daytime. THCV for appetite and mood. CBC has emerging antidepressant research. Avoid heavy sedating indicas during day. Evening use of balanced hybrids for mood stabilization.
+
+PTSD: 1:1 CBD:THC ratios particularly effective per research. Pennywise and similar balanced strains well-studied. High-CBD products reduce hyperarousal. Indica dominant for nightmares and sleep. Avoid high-THC sativas which can trigger paranoia. Microdosing during day, stronger indica at night.
+
+FIBROMYALGIA: Whole-body approach — topicals for localized trigger points, systemic CBD for inflammation, indica for sleep disruption. Transdermal patches for all-day coverage. Bath bombs for full-body relief. High-myrcene strains for muscle relaxation. CBG for inflammation. Avoid high-stimulating sativas.
+
+ADHD: CBG and sativa terpene profiles for focus. THCV for appetite management in stimulant users. CBD for anxiety component of ADHD. Microdosing THC can paradoxically improve focus in some patients. Timing is critical — morning sativa microdose, CBD during day, indica at night.
+
+ENDOMETRIOSIS AND PCOS: Intimate topicals and suppositories for pelvic pain — these deliver cannabinoids directly to the affected area. Anti-inflammatory CBD products systemically. PCOS patients often benefit from CBD for hormone regulation research. High-CBD for cramping. Cycle-phase awareness: luteal phase benefits most from CBD-heavy products.
+
+NAUSEA: Fast-onset products — vapes and sublingual tinctures. Ginger-containing THC drinks especially effective. Mango Kush for appetite restoration. Low-dose THC more effective than high-dose for nausea. CBD alone often insufficient for severe nausea. THCA has anti-nausea properties without psychoactivity.
+
+ARTHRITIS: Anti-inflammatory terpenes — caryophyllene, humulene, pinene. Topicals for joint-specific relief. CBD sports gels for mobility. Transdermal for systemic inflammation. Warm bath bombs for joint immersion. Full-spectrum products outperform isolates for inflammatory conditions.
+
+MIGRAINES: Timing matters — take at first sign of aura or onset. Fast-onset vape or sublingual tincture. Limonene and pinene for head pressure. Avoid THC during peak migraine as it can worsen nausea. CBD for preventive daily maintenance. Some patients find sativas worsen migraines — recommend trial and tracking in journal.
+
+IBS AND CROHNS: Suppositories and rectal administration for gut-localized relief. High-CBD systemically for inflammation. CBG has specific gut receptor activity. Avoid high-THC edibles which can worsen IBS cramping in some patients. Tinctures absorb faster and are easier on digestion than capsules.
 
 CHIP FORMAT — whenever you ask a question, you must end your message with a line in EXACTLY this format:
 CHIPS|||option1|||option2|||option3|||option4
