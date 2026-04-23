@@ -2234,13 +2234,13 @@ function renderMedications() {
         style="width:100%;padding:8px 10px;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box;margin-bottom:8px;background:#fff">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
         <div>
-          <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-weight:500">DOSAGE</div>
+          <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-weight:500">DOSAGE <span style="font-weight:400;font-size:9px">(optional)</span></div>
           <input type="text" placeholder="e.g. 50mg" value="${m.dose}"
             oninput="updateMed(${m.id},'dose',this.value)"
             style="width:100%;padding:8px 10px;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box;background:#fff">
         </div>
         <div>
-          <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-weight:500">FREQUENCY</div>
+          <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-weight:500">FREQUENCY <span style="font-weight:400;font-size:9px">(optional)</span></div>
           <select onchange="updateMed(${m.id},'frequency',this.value)"
             style="width:100%;padding:8px 10px;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box;background:#fff;color:#111">
             <option value="once daily" ${m.frequency==='once daily'?'selected':''}>Once daily</option>
@@ -2251,7 +2251,7 @@ function renderMedications() {
         </div>
       </div>
       <div>
-        <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-weight:500">TIME OF DAY</div>
+        <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-weight:500">TIME OF DAY <span style="font-weight:400;font-size:9px">(optional)</span></div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
           ${['Morning','Afternoon','Evening','Bedtime'].map(t => `
           <button onclick="updateMed(${m.id},'time','${t.toLowerCase()}');this.parentElement.querySelectorAll('button').forEach(b=>b.style.background='#f7f8f6');this.parentElement.querySelectorAll('button').forEach(b=>b.style.color='#333');this.style.background='#E1F5EE';this.style.color='#0d6647'"
@@ -2266,13 +2266,15 @@ function renderMedications() {
 
 function getMedicationsString() {
   if (!medications.length) return '';
-  return medications.map(m => {
-    const parts = [m.name];
-    if (m.dose) parts.push(m.dose);
-    if (m.frequency) parts.push(m.frequency);
-    if (m.time) parts.push(`taken in the ${m.time}`);
-    return parts.filter(Boolean).join(' ');
-  }).join('; ');
+  return medications
+    .filter(m => m.name && m.name.trim())
+    .map(m => {
+      const parts = [m.name.trim()];
+      if (m.dose && m.dose.trim()) parts.push(m.dose.trim());
+      if (m.frequency && m.frequency !== 'once daily') parts.push(m.frequency);
+      if (m.time && m.time !== 'morning') parts.push('taken in the ' + m.time);
+      return parts.join(' ');
+    }).join('; ');
 }
 
 function qsSkipHealth() {
