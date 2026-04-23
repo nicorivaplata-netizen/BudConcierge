@@ -559,8 +559,15 @@
           <div>
             <div class="section-label" style="margin-bottom:4px">Medications <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
             <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">We flag known interactions and suggest speaking with your doctor. We never claim safety.</div>
-            <textarea id="edit-medications" placeholder="e.g. Sertraline, Metformin, Warfarin..." rows="2"
-              style="width:100%;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;resize:none;background:#fff;color:#111;font-family:inherit;box-sizing:border-box"></textarea>
+
+            <!-- Medication list -->
+            <div id="med-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px"></div>
+
+            <!-- Add medication button -->
+            <button onclick="addMedication()" id="add-med-btn"
+              style="width:100%;padding:9px;border:1.5px dashed rgba(0,0,0,0.15);border-radius:9px;font-size:13px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#1a9968">
+              + Add a medication
+            </button>
           </div>
 
         </div>
@@ -1359,8 +1366,22 @@ function openEdit() {
     b.classList.toggle('on', b.dataset.val === cycleVal);
   });
   // Restore medications
-  const medEl = document.getElementById('edit-medications');
-  if (medEl) medEl.value = profile.medications || '';
+  // Restore medication detail cards from saved string
+  medications = [];
+  if (profile.medications) {
+    const medEntries = profile.medications.split('; ');
+    medEntries.forEach(entry => {
+      if (!entry.trim()) return;
+      const parts = entry.split(' ');
+      const id = Date.now() + Math.random();
+      const freq = ['once daily','twice daily','three times daily','as needed'].find(f => entry.includes(f)) || 'once daily';
+      const time = ['morning','afternoon','evening','bedtime'].find(t => entry.includes(t)) || 'morning';
+      const dose = parts.find(p => /\d+mg/i.test(p)) || '';
+      const name = parts[0] || '';
+      medications.push({ id, name, dose, frequency: freq, time });
+    });
+  }
+  renderMedications();
   // Restore conditions other
   const condOtherEl = document.getElementById('conditions-other');
   if (condOtherEl) {
@@ -1448,7 +1469,7 @@ function saveProfile() {
     joined:     profile.joined || new Date().toLocaleDateString('en-US', { month:'short', year:'numeric' }),
     gender:     get1('gender'),
     conditions: conditionsList,
-    medications: document.getElementById('edit-medications')?.value.trim() || '',
+    medications: getMedicationsString(),
     hormonal:   (() => {
       const hormonalOther = document.getElementById('hormonal-other')?.value.trim();
       const full = [...hormonalList];
@@ -2180,6 +2201,80 @@ function qsNextStep(current) {
   }
 }
 
+// ── Medication detail system ─────────────────────────────────────────────────
+let medications = []; // array of {name, dose, frequency, time}
+
+function addMedication() {
+  const id = Date.now();
+  medications.push({ id, name: '', dose: '', frequency: 'once daily', time: 'morning' });
+  renderMedications();
+}
+
+function removeMedication(id) {
+  medications = medications.filter(m => m.id !== id);
+  renderMedications();
+}
+
+function updateMed(id, field, value) {
+  const med = medications.find(m => m.id === id);
+  if (med) med[field] = value;
+}
+
+function renderMedications() {
+  const list = document.getElementById('med-list');
+  if (!list) return;
+  list.innerHTML = medications.map(m => `
+    <div style="background:#f7f8f6;border-radius:10px;padding:12px;border:1px solid rgba(0,0,0,0.08)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:12px;font-weight:600;color:#0d6647">Medication</span>
+        <button onclick="removeMedication(${m.id})" style="border:none;background:transparent;color:#9a9c97;font-size:18px;cursor:pointer;padding:0;line-height:1">&times;</button>
+      </div>
+      <input type="text" placeholder="Medication name (e.g. Sertraline)" value="${m.name}"
+        oninput="updateMed(${m.id},'name',this.value)"
+        style="width:100%;padding:8px 10px;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box;margin-bottom:8px;background:#fff">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div>
+          <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-weight:500">DOSAGE</div>
+          <input type="text" placeholder="e.g. 50mg" value="${m.dose}"
+            oninput="updateMed(${m.id},'dose',this.value)"
+            style="width:100%;padding:8px 10px;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box;background:#fff">
+        </div>
+        <div>
+          <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-weight:500">FREQUENCY</div>
+          <select onchange="updateMed(${m.id},'frequency',this.value)"
+            style="width:100%;padding:8px 10px;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box;background:#fff;color:#111">
+            <option value="once daily" ${m.frequency==='once daily'?'selected':''}>Once daily</option>
+            <option value="twice daily" ${m.frequency==='twice daily'?'selected':''}>Twice daily</option>
+            <option value="three times daily" ${m.frequency==='three times daily'?'selected':''}>3x daily</option>
+            <option value="as needed" ${m.frequency==='as needed'?'selected':''}>As needed</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-weight:500">TIME OF DAY</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+          ${['Morning','Afternoon','Evening','Bedtime'].map(t => `
+          <button onclick="updateMed(${m.id},'time','${t.toLowerCase()}');this.parentElement.querySelectorAll('button').forEach(b=>b.style.background='#f7f8f6');this.parentElement.querySelectorAll('button').forEach(b=>b.style.color='#333');this.style.background='#E1F5EE';this.style.color='#0d6647'"
+            style="padding:7px 4px;border:1.5px solid rgba(0,0,0,0.1);border-radius:7px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;background:${m.time===t.toLowerCase()?'#E1F5EE':'#f7f8f6'};color:${m.time===t.toLowerCase()?'#0d6647':'#333'}">
+            ${t}
+          </button>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getMedicationsString() {
+  if (!medications.length) return '';
+  return medications.map(m => {
+    const parts = [m.name];
+    if (m.dose) parts.push(m.dose);
+    if (m.frequency) parts.push(m.frequency);
+    if (m.time) parts.push(`taken in the ${m.time}`);
+    return parts.filter(Boolean).join(' ');
+  }).join('; ');
+}
+
 function qsSkipHealth() {
   // Explicitly clear any health data they may have partially selected
   quickSetupData.conditions = [];
@@ -2262,6 +2357,9 @@ function qsFinish() {
   if (quickSetupData.medications && quickSetupData.medications.trim()) {
     profile.medications = quickSetupData.medications.trim();
   }
+  // Also merge any medications added via the full profile medication cards
+  const medString = getMedicationsString();
+  if (medString) profile.medications = medString;
   if (!profile.joined) profile.joined = new Date().toLocaleDateString('en-US', { month:'short', year:'numeric' });
   saveData();
   refreshUI();
