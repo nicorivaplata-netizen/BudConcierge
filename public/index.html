@@ -253,6 +253,12 @@
         <div class="section-label" style="margin-bottom:6px">My saved strains</div>
         <div class="card" style="padding:0;overflow:hidden" id="home-history-list"></div>
       </div>
+
+      <!-- Today's suggestion — shown when profile exists -->
+      <div id="home-suggestion" style="display:none">
+        <div class="section-label" style="margin-bottom:6px">Today's suggestion</div>
+        <div id="home-suggestion-card" class="card" style="cursor:pointer;padding:14px 16px" onclick="switchTab('chat')"></div>
+      </div>
     </div>
 
     <div class="navbar-placeholder"></div>
@@ -817,6 +823,42 @@ function saveJournalEntry() {
   setTimeout(() => { t.classList.remove('show'); switchTab('journal'); renderJournal(); }, 1000);
 }
 
+function getJournalInsights() {
+  if (journal.length < 3) return null;
+  // Best rated product type
+  const typeScores = {};
+  journal.forEach(e => {
+    if (!e.type) return;
+    if (!typeScores[e.type]) typeScores[e.type] = { total: 0, count: 0 };
+    typeScores[e.type].total += (e.rating || 3);
+    typeScores[e.type].count++;
+  });
+  let bestType = null, bestTypeAvg = 0;
+  Object.entries(typeScores).forEach(([t, v]) => {
+    const avg = v.total / v.count;
+    if (avg > bestTypeAvg) { bestTypeAvg = avg; bestType = t; }
+  });
+
+  // Best effect across all entries
+  const effectTotals = { sleep: 0, anxiety: 0, pain: 0, energy: 0, mood: 0 };
+  const effectLabels = { sleep: 'Sleep', anxiety: 'Anxiety relief', pain: 'Pain relief', energy: 'Energy / focus', mood: 'Mood lift' };
+  journal.forEach(e => {
+    Object.keys(effectTotals).forEach(k => { effectTotals[k] += (e.scores[k] || 5); });
+  });
+  let bestEffect = 'sleep';
+  Object.keys(effectTotals).forEach(k => {
+    if (effectTotals[k] > effectTotals[bestEffect]) bestEffect = k;
+  });
+  const bestEffectAvg = Math.round((effectTotals[bestEffect] / journal.length) * 10) / 10;
+
+  // Most used product
+  const products = {};
+  journal.forEach(e => { if (e.product) products[e.product] = (products[e.product]||0) + 1; });
+  const topProduct = Object.entries(products).sort((a,b)=>b[1]-a[1])[0];
+
+  return { bestType, bestTypeAvg: Math.round(bestTypeAvg*10)/10, bestEffect: effectLabels[bestEffect], bestEffectAvg, topProduct, count: journal.length };
+}
+
 function renderJournal() {
   const empty = document.getElementById('journal-empty');
   const list  = document.getElementById('journal-list');
@@ -824,9 +866,38 @@ function renderJournal() {
     empty.style.display = 'block'; list.style.display = 'none'; return;
   }
   empty.style.display = 'none'; list.style.display = 'flex';
+
   const scoreBar = (label, val) =>
     `<div style="margin-bottom:4px"><div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="font-size:11px;color:#9a9c97">${label}</span><span style="font-size:11px;font-weight:600;color:#1a9968">${val}/10</span></div><div style="height:4px;background:#f0f1ee;border-radius:2px"><div style="height:100%;width:${val*10}%;background:#1a9968;border-radius:2px"></div></div></div>`;
-  list.innerHTML = journal.map((e, i) => `
+
+  // Insights card
+  const ins = getJournalInsights();
+  const insightsHtml = ins ? `
+    <div style="background:linear-gradient(135deg,#1a9968,#0d6647);border-radius:14px;padding:16px 18px;margin-bottom:0">
+      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.75);letter-spacing:0.08em;margin-bottom:10px">YOUR PATTERNS (${ins.count} entries)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        ${ins.bestType ? `<div style="background:rgba(255,255,255,0.15);border-radius:9px;padding:10px 12px">
+          <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:2px">Best rated type</div>
+          <div style="font-size:14px;font-weight:700;color:white">${ins.bestType}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-top:1px">avg ${ins.bestTypeAvg}★ / 5</div>
+        </div>` : ''}
+        <div style="background:rgba(255,255,255,0.15);border-radius:9px;padding:10px 12px">
+          <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:2px">Top reported effect</div>
+          <div style="font-size:13px;font-weight:700;color:white">${ins.bestEffect}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-top:1px">avg ${ins.bestEffectAvg}/10</div>
+        </div>
+        ${ins.topProduct ? `<div style="background:rgba(255,255,255,0.15);border-radius:9px;padding:10px 12px;grid-column:1/-1">
+          <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:2px">Most logged product</div>
+          <div style="font-size:13px;font-weight:700;color:white">${ins.topProduct[0]}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-top:1px">${ins.topProduct[1]} ${ins.topProduct[1]===1?'entry':'entries'}</div>
+        </div>` : ''}
+      </div>
+      <button onclick="askIvyAboutPatterns()" style="width:100%;margin-top:10px;padding:9px;background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">
+        Ask Ivy about your patterns →
+      </button>
+    </div>` : '';
+
+  list.innerHTML = (insightsHtml ? insightsHtml : '') + journal.map((e, i) => `
     <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:14px 16px">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
         <div>
@@ -845,7 +916,33 @@ function renderJournal() {
       ${scoreBar('Energy / focus', e.scores.energy)}
       ${scoreBar('Mood', e.scores.mood)}
       ${e.notes ? `<div style="font-size:12px;color:#5a5c57;margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.06)">${e.notes}</div>` : ''}
+      <button onclick="askIvyAboutEntry(${i})" style="width:100%;margin-top:10px;padding:8px;border:1px solid #a8dfc9;background:#E1F5EE;color:#085041;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Ask Ivy about ${e.product} →</button>
     </div>`).join('');
+}
+
+function askIvyAboutEntry(i) {
+  const e = journal[i];
+  if (!e) return;
+  const scores = e.scores;
+  const top = Object.entries(scores).sort((a,b)=>b[1]-a[1])[0];
+  const effectLabel = {sleep:'sleep',anxiety:'anxiety relief',pain:'pain relief',energy:'energy and focus',mood:'mood'}[top[0]] || top[0];
+  const msg = `I logged ${e.product} (${e.type}) in my journal. I rated it ${e.rating||'?'}/5 stars. The biggest effect I noticed was ${effectLabel} (${top[1]}/10). ${e.notes ? 'Notes: ' + e.notes + '.' : ''} Can you help me understand why it worked that way and what similar products I might try?`;
+  switchTab('chat');
+  setTimeout(() => {
+    const inp = document.getElementById('chat-input');
+    if (inp) { inp.value = msg; inp.focus(); }
+  }, 200);
+}
+
+function askIvyAboutPatterns() {
+  const ins = getJournalInsights();
+  if (!ins) return;
+  const msg = `Based on my journal (${ins.count} entries), my best-rated product type is ${ins.bestType||'various'} and the top effect I report is ${ins.bestEffect}. Can you help me understand my patterns and suggest what I should try next?`;
+  switchTab('chat');
+  setTimeout(() => {
+    const inp = document.getElementById('chat-input');
+    if (inp) { inp.value = msg; inp.focus(); }
+  }, 200);
 }
 
 function deleteJournalEntry(i) {
@@ -1143,9 +1240,16 @@ function refreshUI() {
   document.getElementById('prof-avatar').textContent = ini;
 
   if (has) {
-    document.getElementById('home-title').textContent    = 'Hey, ' + profile.name + ' 👋';
-    document.getElementById('wb-greeting').textContent  = 'Welcome back, ' + profile.name + '!';
-    document.getElementById('wb-msg').textContent       = 'Welcome back. Your profile is ready — jump straight into personalized recommendations.';
+    const hr = new Date().getHours();
+    const todGreet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+    const todTip = hr < 12
+      ? 'Morning tip: Sativa-leaning strains or CBD products are great for daytime focus and energy.'
+      : hr < 17
+      ? 'Afternoon tip: A balanced hybrid can ease afternoon stress without slowing you down.'
+      : 'Evening tip: Indica-dominant strains and CBD tinctures are ideal for wind-down and sleep.';
+    document.getElementById('home-title').textContent    = todGreet + ', ' + profile.name;
+    document.getElementById('wb-greeting').textContent  = todGreet + ', ' + profile.name + '!';
+    document.getElementById('wb-msg').textContent       = todTip;
     document.getElementById('home-cta').textContent     = 'Start a new chat →';
     // home-badge hidden
     // Hide profile nudge in chat when profile exists
@@ -1224,6 +1328,55 @@ function refreshUI() {
   document.getElementById('home-history-section').style.display = strainHistory.length ? 'block' : 'none';
   const jsub = document.getElementById('journal-shortcut-sub');
   if (jsub) jsub.textContent = journal.length ? journal.length + ' entries logged' : 'Track how products make you feel';
+
+  // Today's suggestion card
+  const suggWrap = document.getElementById('home-suggestion');
+  const suggCard = document.getElementById('home-suggestion-card');
+  if (suggWrap && suggCard && profile.name) {
+    const hr = new Date().getHours();
+    const goals = (profile.goals||[]);
+    const isMorning = hr < 12, isEvening = hr >= 17;
+    let icon, headline, body, prompt;
+    if (isEvening && (goals.includes('Sleep') || goals.includes('Anxiety'))) {
+      icon = '🌙';
+      headline = 'Wind-down time';
+      body = 'Indica-dominant strains and CBD tinctures can help you relax and prepare for sleep.';
+      prompt = 'What should I use tonight to help with sleep and relaxation?';
+    } else if (isMorning && (goals.includes('Focus') || goals.includes('Stress'))) {
+      icon = '☀️';
+      headline = 'Start your day right';
+      body = 'A low-dose sativa or CBD-dominant product can keep you energized and clear-headed.';
+      prompt = 'What\'s a good morning option for focus and energy without too much THC?';
+    } else if (goals.includes('Pain relief') || goals.includes('Anxiety')) {
+      icon = '💚';
+      headline = 'Relief when you need it';
+      body = 'Balanced hybrids and topicals offer targeted relief throughout the day without heavy sedation.';
+      prompt = 'What do you recommend for ' + (goals[0]||'wellness') + ' right now?';
+    } else {
+      icon = '✨';
+      headline = 'Ask Ivy anything';
+      body = 'What are you feeling today? Ivy can suggest the right product for your mood and goals.';
+      prompt = 'What\'s a good recommendation for me today?';
+    }
+    suggCard.innerHTML = `<div style="display:flex;align-items:flex-start;gap:12px">
+      <div style="font-size:24px;line-height:1;flex-shrink:0;margin-top:2px">${icon}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:3px">${headline}</div>
+        <div style="font-size:12px;color:#5a5c57;line-height:1.55;margin-bottom:8px">${body}</div>
+        <div style="font-size:12px;font-weight:600;color:#1a9968">Ask Ivy →</div>
+      </div>
+    </div>`;
+    suggCard.onclick = () => {
+      switchTab('chat');
+      setTimeout(() => {
+        const inp = document.getElementById('chat-input');
+        if (inp) { inp.value = prompt; inp.focus(); }
+      }, 200);
+    };
+    suggWrap.style.display = 'block';
+  } else if (suggWrap) {
+    suggWrap.style.display = 'none';
+  }
 }
 
 function updateCompletion() {
@@ -1904,6 +2057,12 @@ function buildRecCard(s, reason) {
   const saved = strainHistory.find(h => h.name === s.name);
   const thcStr = s.thc_max <= 2 ? `${s.thc_min}–${s.thc_max}mg` : `${s.thc_min}–${s.thc_max}%`;
   const cbdStr = s.cbd_max >= 100 ? `${Math.round(s.cbd_min)}mg` : `${s.cbd_min}–${s.cbd_max}%`;
+
+  // Build a simple visual potency bar
+  const potencyPct = s.thc_max <= 2 ? 5 : Math.min(100, Math.round((s.thc_max / 35) * 100));
+  const potencyColor = potencyPct < 30 ? '#1a9968' : potencyPct < 60 ? '#EF9F27' : '#e24b4a';
+  const potencyLabel = potencyPct < 30 ? 'Mild' : potencyPct < 60 ? 'Moderate' : 'Strong';
+
   return `<div class="rec-card">
     <div class="rec-header">
       <span class="rec-name">${s.name}</span>
@@ -1915,11 +2074,20 @@ function buildRecCard(s, reason) {
       <span class="rec-stat">${s.best_time}</span>
       <span class="rec-stat">${s.experience_level}</span>
     </div>
+    ${s.thc_max > 2 ? `<div style="margin:6px 0 8px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+        <span style="font-size:10px;color:#9a9c97">Potency</span>
+        <span style="font-size:10px;font-weight:600;color:${potencyColor}">${potencyLabel}</span>
+      </div>
+      <div style="height:4px;background:#f0f1ee;border-radius:2px">
+        <div style="height:100%;width:${potencyPct}%;background:${potencyColor};border-radius:2px;transition:width .3s"></div>
+      </div>
+    </div>` : ''}
     <div class="rec-desc">${s.description}</div>
-    ${reason ? `<div class="rec-why">${reason}</div>` : ''}
-    ${s.terpenes.length ? `<div class="rec-terps">${s.terpenes.map(t=>`<span class="terp">${t}</span>`).join('')}</div>` : ''}
+    ${reason ? `<div class="rec-why"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> ${reason}</div>` : ''}
+    ${s.terpenes.length ? `<div class="rec-terps">${s.terpenes.map(t=>`<span class="terp" title="${t}">${t}</span>`).join('')}</div>` : ''}
     <button class="save-btn ${saved?'saved':''}" onclick="saveStrain('${s.id}',this)">
-      ${saved ? 'Saved to profile' : '+ Save to profile'}
+      ${saved ? '✓ Saved to profile' : '+ Save to profile'}
     </button>
   </div>`;
 }
