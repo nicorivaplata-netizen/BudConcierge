@@ -1471,7 +1471,7 @@ function buildSystem() {
   // Send compact database — name, type, THC/CBD, key conditions, experience level, time
   // Full descriptions excluded to stay within token limits
   const db = window.STRAINS.map(s =>
-    `${s.name}|${s.type}|THC:${s.thc_min}-${s.thc_max}%|CBD:${s.cbd_min}-${s.cbd_max}%|${s.helps_with.slice(0,5).join(',')}|${s.experience_level}|${s.best_time}|${s.product_types[0]}|onset:${s.onset_minutes||15}min|duration:${s.duration_hours||3}hr${s.condition_notes ? '|notes:'+s.condition_notes.slice(0,80) : ''}`
+    `${s.name}|${s.type}|THC:${s.thc_min}-${s.thc_max}%|CBD:${s.cbd_min}-${s.cbd_max}%|${(s.helps_with||[]).slice(0,5).join(',')}|${s.experience_level||'any'}|${s.best_time||'anytime'}|${(s.product_types||['flower'])[0]}|onset:${s.onset_minutes||15}min|duration:${s.duration_hours||3}hr${s.condition_notes ? '|notes:'+s.condition_notes.slice(0,80) : ''}`
   ).join('\n');
 
   // ── Strain history (saved products) ────────────────────────────────────────
