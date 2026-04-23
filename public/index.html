@@ -1147,9 +1147,9 @@ function refreshUI() {
     const profFields = [
       !!profile.name,
       !!profile.experience,
-      !!(Array.isArray(profile.time) ? profile.time.length > 0 : !!profile.time),
-      !!(profile.products && profile.products.length > 0),
-      !!(profile.goals && profile.goals.length > 0)
+      !!(Array.isArray(profile.time) ? (profile.time||[]).length > 0 : !!profile.time),
+      !!(profile.products && (profile.products||[]).length > 0),
+      !!(profile.goals && (profile.goals||[]).length > 0)
     ];
     const profDone = profFields.filter(Boolean).length;
     const badgeText = profDone === 5 ? 'Complete' : profDone >= 3 ? 'In progress' : 'Getting started';
@@ -1163,7 +1163,7 @@ function refreshUI() {
     document.getElementById('quick-actions-label').textContent = 'Quick start';
     const profileShortcut = document.getElementById('profile-shortcut');
     if (profileShortcut) profileShortcut.style.display = 'block';
-    const goals = profile.goals && profile.goals.length ? 'Personalized for: ' + profile.goals.slice(0,2).join(', ') : 'Ask anything — no profile needed to start';
+    const goals = profile.goals && (profile.goals||[]).length ? 'Personalized for: ' + (profile.goals||[]).slice(0,2).join(', ') : 'Ask anything — no profile needed to start';
     document.getElementById('chat-shortcut-sub').textContent = goals;
   } else {
     document.getElementById('home-title').textContent   = 'Ivy';
@@ -1195,14 +1195,14 @@ function refreshUI() {
     }
   }
   const timeVal = Array.isArray(profile.time)
-    ? profile.time.join(', ')
+    ? (profile.time||[]).join(', ')
     : (profile.time || '');
   setField('pf-time', timeVal);
   setField('pf-thc', profile.experience ? thcLabel(profile.experience) : '');
   document.getElementById('pf-products').innerHTML = pills(profile.products, 'pill-green');
   document.getElementById('pf-goals').innerHTML    = pills(profile.goals, 'pill-purple');
   const condEl = document.getElementById('pf-conditions');
-  if (condEl) condEl.innerHTML = profile.conditions && profile.conditions.length ? pills(profile.conditions, 'pill-purple') : '<span class="pref-val empty">Not set</span>';
+  if (condEl) condEl.innerHTML = profile.conditions && (profile.conditions||[]).length ? pills(profile.conditions, 'pill-purple') : '<span class="pref-val empty">Not set</span>';
   const medEl = document.getElementById('pf-medications');
   if (medEl) { medEl.textContent = profile.medications || 'Not set'; medEl.className = profile.medications ? 'pref-val' : 'pref-val empty'; }
   const genEl = document.getElementById('pf-gender');
@@ -1229,8 +1229,8 @@ function updateCompletion() {
     { done: !!profile.name,                           label: 'Name' },
     { done: !!profile.experience,                     label: 'Experience level' },
     { done: !!profile.time,                           label: 'Preferred time' },
-    { done: profile.products && profile.products.length > 0, label: 'Product types' },
-    { done: profile.goals && profile.goals.length > 0,       label: 'Goals' },
+    { done: profile.products && (profile.products||[]).length > 0, label: 'Product types' },
+    { done: profile.goals && (profile.goals||[]).length > 0,       label: 'Goals' },
     { done: strainHistory.length > 0,                 label: 'First strain saved' },
   ];
 
@@ -1586,7 +1586,7 @@ WHO THEY ARE:
     profile.experience === 'Daily use' ? 'they are a daily user with high tolerance. Standard doses may not be effective. Consider potency carefully.' :
     'experience unknown — start conservative and ask.'
   }
-- Preferred time of use: ${Array.isArray(profile.time) ? profile.time.join(', ') : (profile.time || 'not specified')}
+- Preferred time of use: ${Array.isArray(profile.time) ? (profile.time||[]).join(', ') : (profile.time || 'not specified')}
 - Product preferences: ${(profile.products||[]).join(', ') || 'open to any product type'}
 - Wellness goals: ${(profile.goals||[]).join(', ') || 'general wellness'}
 - THC comfort level: ${thcLabel(profile.experience)}
@@ -1594,7 +1594,7 @@ ${(() => { const sp = Array.isArray(profile.strain_pref) ? profile.strain_pref :
 ${profile.gender ? '- Gender: ' + profile.gender : ''}
 
 HEALTH CONTEXT — most important section. Shape every recommendation around this:
-${profile.conditions && profile.conditions.length ? `- Health conditions: ${profile.conditions.join(', ')}
+${profile.conditions && (profile.conditions||[]).length ? `- Health conditions: ${(profile.conditions||[]).join(', ')}
 For each condition, actively shape your recommendation. Explain specifically why the product addresses their condition. Make the condition the reason for the recommendation, not an afterthought.` : '- No health conditions listed.'}
 ${profile.medications ? `- Current medications: ${profile.medications}
 IMPORTANT: Flag any known cannabis interactions gently. Always suggest consulting their doctor. Specific interactions to know: SSRIs plus cannabis can amplify effects; blood thinners like warfarin have documented interactions; benzodiazepines combined with cannabis can increase sedation significantly.` : ''}
@@ -1606,7 +1606,7 @@ PCOS benefits from CBD for inflammation and hormone regulation. Endometriosis be
 
 ${history}${journalCtx}
 
-HOW TO RESPOND TO ${profile.name.toUpperCase()}:
+HOW TO RESPOND TO ${(profile.name||'this user').toUpperCase()}:
 - Greet them by name naturally in your first message only
 - You have their full profile — ask one focused clarifying question if truly needed, then recommend
 - Never ask about experience, goals, or product preferences — you already know these
@@ -1614,7 +1614,7 @@ HOW TO RESPOND TO ${profile.name.toUpperCase()}:
 - If they have health conditions, name the condition in your recommendation explanation
 - Reference journal data when relevant — if something worked before, build on it
 - If they have medications listed, acknowledge this naturally
-${!profile.conditions && !profile.conditions.length && !profile.medications ? `
+${!profile.conditions && !(profile.conditions||[]).length && !profile.medications ? `
 SAFETY AWARENESS: This user has not shared health conditions or medications. Before your first specific product recommendation, ask naturally: "One quick thing that helps me be more accurate — do you take any medications or have any health conditions I should know about? Totally optional." Ask this once only. If they skip it, proceed confidently with recommendations.` : ''}`
     : `No profile set up yet.
 
@@ -2011,7 +2011,7 @@ function startChat() {
   const savedDisp = localStorage.getItem('bc_selected_dispensary');
   const dispCtx = savedDisp ? ` I am shopping at ${JSON.parse(savedDisp).name}.` : '';
   const hasJournal = journal && journal.length > 0;
-  const opener = `I'm ${profile.name}. Based on my profile — ${profile.experience||'some'} experience, goals: ${(profile.goals||[]).join(', ')||'general wellness'}, prefer: ${(profile.products||[]).join(', ')||'open to anything'}${hasJournal ? `, and I have ${journal.length} journal entries logged` : ''} — what do you recommend for me today?${dispCtx}`;
+  const opener = `I'm ${profile.name||'a user'}. Based on my profile — ${profile.experience||'some'} experience, goals: ${(profile.goals||[]).join(', ')||'general wellness'}, prefer: ${(profile.products||[]).join(', ')||'open to anything'}${hasJournal ? `, and I have ${journal.length} journal entries logged` : ''} — what do you recommend for me today?${dispCtx}`;
   getBotReply(opener);
 }
 
