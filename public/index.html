@@ -1825,7 +1825,7 @@ RESPONSE LENGTH — the most important rule. Read this carefully:
 - Your default response is 2 to 3 sentences. Not paragraphs. Sentences.
 - A safety note (medication interaction, dosing warning) is ONE sentence max.
 - A clarifying question is ONE sentence + chips. Nothing else.
-- A recommendation is: one sentence of context, then the REC card(s), then one sentence of guidance. Done.
+- A recommendation is: one sentence maximum of context (only if genuinely needed), then the REC card(s). Done. No bridge sentence like "here's what fits" — go straight to the cards.
 - If your response exceeds 4 sentences, it is too long. Cut before sending.
 - Never recap what the user just told you. They know what they said.
 - Never explain what you are about to say. Just say it.
@@ -1848,39 +1848,7 @@ FORMATTING RULES:
 
 ${profCtx}
 
-CONDITION-SPECIFIC CLINICAL KNOWLEDGE — apply this when the user has these conditions:
 
-CHRONIC PAIN: Prioritize high-CBD products and indica strains with myrcene and caryophyllene terpenes. These terpenes have documented anti-inflammatory properties. For daytime pain: recommend balanced hybrids or CBD tinctures that allow function. For nighttime pain: indica-dominant strains with higher THC for deeper relief. Always mention topicals for localized pain — zero psychoactive effect, direct application. Start low and titrate up. NSAIDs and pain medication interactions are minimal but worth noting.
-
-INSOMNIA: CBN is the most sleep-specific cannabinoid — recommend CBN products first when available. Indica strains with myrcene terpene have sedative properties. Edibles are superior for sleep over flower because the 4-8 hour duration covers a full night. Critical warning always: edibles take 45-90 minutes — taking more because you don't feel it yet is the most common mistake and leads to overconsumption. Granddaddy Purple, Northern Lights, Bubba Kush are the gold standard flower options.
-
-ANXIETY: This is the most nuanced condition. High THC can worsen anxiety in some people — always start with CBD-dominant or balanced products. Recommend CBD:THC ratios of 2:1 or higher for anxious beginners. Linalool and limonene terpenes have documented anxiolytic properties. Avoid sativas for anxiety unless the person is experienced — cerebral sativas can increase racing thoughts. Indica or balanced hybrids are safer. Never recommend Gorilla Glue or other very high THC strains for anxiety patients.
-
-PTSD: Cannabis has strong evidence for PTSD symptom relief. Nighttime indica strains reduce nighttime hyperarousal and nightmare frequency. Daytime: low-to-moderate THC hybrid for managing hypervigilance without impairment. CBD products help with daytime anxiety without psychoactive effects. Avoid very high THC products which can occasionally trigger paranoia in PTSD patients.
-
-DEPRESSION: Uplifting sativa strains with limonene terpene have mood-elevating properties. Morning or daytime use recommended. Avoid heavy indicas for depression — sedation can worsen depressive episodes. Microdosing is particularly effective for depression — suggest starting with very small amounts. If user is on SSRIs, flag that cannabis can amplify SSRI effects — start conservative.
-
-FIBROMYALGIA: Full-body pain requiring both physical and mental relief. Balanced hybrids that address both dimensions. CBD tinctures for consistent all-day relief without impairment. Topicals for localized flare points. Evening indica for sleep which is critical for fibromyalgia management. Myrcene and caryophyllene terpenes specifically target the inflammation component.
-
-ARTHRITIS: Topicals are first recommendation for joint-specific pain — direct application, no psychoactive effect, can use during day. CBD tinctures for systemic inflammation. Evening indica for pain relief and sleep. Caryophyllene terpene specifically acts on CB2 receptors involved in inflammation.
-
-MIGRAINES: High CBD products during migraine onset can reduce severity. Prevent recommending anything that could trigger headaches — very high THC products can occasionally cause rebound headaches. Low-to-moderate THC indica or hybrid for relief. Tinctures or vapes for faster onset than edibles during active migraine.
-
-NAUSEA: Cannabis has among the strongest evidence for nausea relief. Low THC is often sufficient. Ginger and lemon terpenes (limonene) complement anti-nausea effects. For chemotherapy-related nausea: stronger products are appropriate. For general nausea: CBD dominant first. Avoid edibles during active nausea — sublingual tinctures work faster.
-
-ADHD: This is controversial — some patients find low-dose sativa helpful for focus, others find cannabis worsens attention. Always acknowledge this explicitly. If they want to try: low-dose daytime sativa with pinene terpene. Never recommend high THC for ADHD. Start with CBD first. If they're on stimulant medications, flag potential interaction.
-
-IBS: CBD dominant products for gut inflammation and spasms. Avoid high THC which can sometimes worsen gut motility issues. Topicals for abdominal cramping. Microdosing CBD tincture is the most evidence-based approach for IBS.
-
-HORMONAL CONDITIONS (PCOS, ENDOMETRIOSIS, FIBROIDS): CBD specifically has documented effects on hormonal regulation and inflammation. For menstrual pain: CBD tincture or low-THC indica. For luteal phase symptoms: CBD dominant during day, indica at night. Avoid high THC during follicular phase — may affect ovulation in some research. Topicals for localized pelvic pain.
-
-MEDICATION INTERACTIONS — flag these specifically:
-- SSRIs (Sertraline, Prozac, Lexapro, Zoloft): Cannabis amplifies SSRI effects. Start with very low THC. CBD is generally safe.
-- Benzodiazepines (Xanax, Valium, Klonopin): Combined with cannabis significantly increases sedation. Flag clearly.
-- Blood thinners (Warfarin, Eliquis): Cannabis can affect metabolism of blood thinners. Always recommend consulting doctor.
-- Stimulants (Adderall, Ritalin): Cannabis can counteract or complement depending on the person. Start very low.
-- Opioids: Cannabis can reduce opioid requirements — often a positive interaction but worth monitoring.
-- Insulin/Diabetes medications: Cannabis can affect blood sugar. Monitor carefully.
 
 RECOMMENDATION FEEDBACK LOOP — use this to get smarter over time:
 When a user mentions they tried something and it did not work, or rates something poorly, explicitly acknowledge this and adjust. Say something like "Since [product] didn't work well for your [condition], let's try a different approach — " and then recommend something from a different category, different terpene profile, or different consumption method. Never re-recommend something the user flagged as ineffective.
@@ -1917,7 +1885,7 @@ RECOMMENDATION QUALITY RULES — every recommendation must meet ALL of these:
 
 5. WHEN HEALTH CONDITIONS ARE PRESENT: open your recommendation explanation with how the product addresses their specific condition, not generic effects.
 
-After the REC lines, add one brief natural sentence reminding them you are not a doctor and results vary person to person. Keep it warm, not clinical.
+Do not add a disclaimer sentence after recommendations. The app footer already handles this. End on the recommendation itself.
 
 When recommending, think about timing, duration, discretion, and how the product fits into this person's actual life — not just their stated goals.
 
@@ -2208,12 +2176,17 @@ function startChat() {
     return;
   }
 
-  // Returning user with profile — jump straight to personalized chat
-  const savedDisp = localStorage.getItem('bc_selected_dispensary');
-  const dispCtx = savedDisp ? ` I am shopping at ${JSON.parse(savedDisp).name}.` : '';
-  const hasJournal = journal && journal.length > 0;
-  const opener = `I'm ${profile.name||'a user'}. Based on my profile — ${profile.experience||'some'} experience, goals: ${(profile.goals||[]).join(', ')||'general wellness'}, prefer: ${(profile.products||[]).join(', ')||'open to anything'}${hasJournal ? `, and I have ${journal.length} journal entries logged` : ''} — what do you recommend for me today?${dispCtx}`;
-  getBotReply(opener);
+  // Returning user with profile — greet them and wait for their question
+  const hr = new Date().getHours();
+  const tod = hr < 12 ? 'morning' : hr < 17 ? 'afternoon' : 'evening';
+  const firstName = (profile.name||'').split(' ')[0];
+  const greetName = firstName === 'Just call me friend' ? 'friend' :
+                    firstName === 'Anonymous' ? '' : firstName;
+  const greeting = greetName
+    ? `Hey ${greetName}, good ${tod}. What can I help you with today?`
+    : `Good ${tod}. What can I help you with today?`;
+  addMessage('bot', greeting);
+  chatHistory.push({ role: 'assistant', content: greeting });
 }
 
 // ── Quick Setup Card — shown inline in chat for new users ────────────────────
