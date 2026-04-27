@@ -2110,10 +2110,9 @@ function clearProfile() {
     localStorage.removeItem('bc_profile_v1');
     localStorage.removeItem('bc_history_v1');
     localStorage.removeItem('bc_journal_v1');
-    localStorage.removeItem('bc_onboarded_v1');
     localStorage.removeItem('bc_promotions_v1');
     localStorage.removeItem('bc_selected_dispensary');
-    // bc_age_verified_v1 intentionally NOT removed
+    // bc_age_verified_v1 and bc_onboarded_v1 intentionally NOT removed
   } catch(e) {}
 
   // Reset UI elements
