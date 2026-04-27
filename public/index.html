@@ -1476,7 +1476,7 @@ function renderHistory(id) {
 
 // ─── Home CTA ─────────────────────────────────────────────────────────────────
 function handleCTA() {
-  if (profile.name) { switchTab('chat'); }
+  if (profile.name) { switchTab('chat'); setTimeout(() => newChat(), 100); }
   else { openEdit(); }
 }
 
