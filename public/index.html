@@ -2096,25 +2096,31 @@ function clearAllStrains() {
 
 function clearProfile() {
   if (!confirm("Reset your entire profile? This cannot be undone.")) return;
-  // Clear in-memory state first
-  profile = { name:"", experience:"", time:"", products:[], goals:[], joined:"" };
+
+  // Reset ALL in-memory state to clean defaults
+  profile = { name:"", experience:"", time:"", products:[], goals:[], conditions:[], medications:"", hormonal:"", hormonal_conditions:"", cycle:"", gender:"", strain_pref:[], joined:"" };
   strainHistory = [];
-  // Clear localStorage directly
-  try { localStorage.removeItem('bc_profile_v1'); } catch(e) {}
-  try { localStorage.removeItem('bc_history_v1'); } catch(e) {}
-  try { localStorage.removeItem('bc_onboarded_v1'); } catch(e) {}
-  try { localStorage.removeItem('bc_age_verified_v1'); } catch(e) {}
-  // Save empty state
-  saveData();
+  journal = [];
+  promotions = [];
+  chatHistory = [];
   chatInitialized = false;
-  // Force all UI elements to reflect empty state
+
+  // Wipe every localStorage key the app uses
+  const keys = ['bc_profile_v1','bc_history_v1','bc_journal_v1','bc_onboarded_v1','bc_age_verified_v1','bc_promotions_v1','bc_selected_dispensary'];
+  keys.forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+
+  // Do NOT call saveData() here — it would re-write the empty objects back to storage
+  // which is fine, but calling removeItem above already cleared them cleanly
+
+  // Reset UI
   document.getElementById('prof-name').textContent = 'Set up your profile';
   document.getElementById('prof-since').textContent = '';
   document.getElementById('prof-avatar').textContent = '?';
   document.getElementById('home-avatar').textContent = '?';
   document.getElementById('wb-avatar').textContent = '?';
+  document.getElementById('messages').innerHTML = '';
   refreshUI();
-  toast("prof-toast", "Profile reset");
+  toast("prof-toast", "Profile reset — fresh start!");
 }
 
 function hoverStars(el, n) {
