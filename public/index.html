@@ -191,7 +191,7 @@
         <div class="section-label" id="quick-actions-label">Explore Ivy</div>
 
         <!-- Chat card -->
-        <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('chat')">
+        <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('chat'); setTimeout(() => { if (!chatInitialized) startChat(); }, 100)">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
             <div style="display:flex;align-items:center;gap:8px">
               <div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
@@ -202,6 +202,20 @@
             <span style="color:#bbb">›</span>
           </div>
           <div style="font-size:13px;color:#888;padding-left:40px" id="chat-shortcut-sub">Ask anything — no profile needed to start</div>
+        </div>
+
+        <!-- Profile nudge card — only shown when no profile exists -->
+        <div id="profile-nudge" class="card" style="display:none;padding:14px 16px;background:linear-gradient(135deg,#f0faf5,#e1f5ee);border:1.5px solid #a8dfc9;cursor:pointer" onclick="switchTab('profile')">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:36px;height:36px;border-radius:10px;background:#1a9968;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:700;color:#0a5c3a;margin-bottom:2px">Get more from Ivy</div>
+              <div style="font-size:12px;color:#3a7a5a;line-height:1.5">A 2 minute profile means every recommendation is built around you specifically.</div>
+            </div>
+            <span style="color:#1a9968;font-size:18px;font-weight:300">›</span>
+          </div>
         </div>
 
         <!-- Find dispensary card -->
@@ -1330,6 +1344,10 @@ function refreshUI() {
   if (jsub) jsub.textContent = journal.length ? journal.length + ' entries logged' : 'Track how products make you feel';
 
   // Today's suggestion card
+  // Profile nudge — show when no profile, hide when profile exists
+  const nudge = document.getElementById('profile-nudge');
+  if (nudge) nudge.style.display = profile.name ? 'none' : 'block';
+
   const suggWrap = document.getElementById('home-suggestion');
   const suggCard = document.getElementById('home-suggestion-card');
   if (suggWrap && suggCard && profile.name) {
