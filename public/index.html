@@ -2097,6 +2097,9 @@ function clearAllStrains() {
 function clearProfile() {
   if (!confirm("Reset your entire profile? This cannot be undone.")) return;
 
+  // Nuclear clear — wipe everything in localStorage for this domain
+  try { localStorage.clear(); } catch(e) {}
+
   // Reset ALL in-memory state to clean defaults
   profile = { name:"", experience:"", time:"", products:[], goals:[], conditions:[], medications:"", hormonal:"", hormonal_conditions:"", cycle:"", gender:"", strain_pref:[], joined:"" };
   strainHistory = [];
@@ -2105,22 +2108,18 @@ function clearProfile() {
   chatHistory = [];
   chatInitialized = false;
 
-  // Wipe every localStorage key the app uses
-  const keys = ['bc_profile_v1','bc_history_v1','bc_journal_v1','bc_onboarded_v1','bc_age_verified_v1','bc_promotions_v1','bc_selected_dispensary'];
-  keys.forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
-
-  // Do NOT call saveData() here — it would re-write the empty objects back to storage
-  // which is fine, but calling removeItem above already cleared them cleanly
-
-  // Reset UI
+  // Reset UI elements immediately
   document.getElementById('prof-name').textContent = 'Set up your profile';
   document.getElementById('prof-since').textContent = '';
   document.getElementById('prof-avatar').textContent = '?';
   document.getElementById('home-avatar').textContent = '?';
   document.getElementById('wb-avatar').textContent = '?';
   document.getElementById('messages').innerHTML = '';
-  refreshUI();
-  toast("prof-toast", "Profile reset — fresh start!");
+  document.getElementById('chat-shortcut-sub').textContent = 'Ask anything — no profile needed to start';
+  document.getElementById('journal-shortcut-sub').textContent = 'Track how products make you feel';
+
+  // Force reload — page will boot fresh from empty localStorage
+  setTimeout(() => { window.location.reload(); }, 800);
 }
 
 function hoverStars(el, n) {
