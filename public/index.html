@@ -2097,11 +2097,6 @@ function clearAllStrains() {
 function clearProfile() {
   if (!confirm("Reset your entire profile? This cannot be undone.")) return;
 
-  // Clear all profile data but preserve age verification
-  const ageVerified = localStorage.getItem('bc_age_verified_v1');
-  try { localStorage.clear(); } catch(e) {}
-  if (ageVerified) { try { localStorage.setItem('bc_age_verified_v1', ageVerified); } catch(e) {} }
-
   // Reset ALL in-memory state to clean defaults
   profile = { name:"", experience:"", time:"", products:[], goals:[], conditions:[], medications:"", hormonal:"", hormonal_conditions:"", cycle:"", gender:"", strain_pref:[], joined:"" };
   strainHistory = [];
@@ -2110,7 +2105,18 @@ function clearProfile() {
   chatHistory = [];
   chatInitialized = false;
 
-  // Reset UI elements immediately
+  // Clear storage but keep age verification so user doesn't hit age gate again
+  try {
+    localStorage.removeItem('bc_profile_v1');
+    localStorage.removeItem('bc_history_v1');
+    localStorage.removeItem('bc_journal_v1');
+    localStorage.removeItem('bc_onboarded_v1');
+    localStorage.removeItem('bc_promotions_v1');
+    localStorage.removeItem('bc_selected_dispensary');
+    // bc_age_verified_v1 intentionally NOT removed
+  } catch(e) {}
+
+  // Reset UI elements
   document.getElementById('prof-name').textContent = 'Set up your profile';
   document.getElementById('prof-since').textContent = '';
   document.getElementById('prof-avatar').textContent = '?';
@@ -2120,8 +2126,11 @@ function clearProfile() {
   document.getElementById('chat-shortcut-sub').textContent = 'Ask anything — no profile needed to start';
   document.getElementById('journal-shortcut-sub').textContent = 'Track how products make you feel';
 
-  // Force reload — page will boot fresh from empty localStorage
-  setTimeout(() => { window.location.reload(); }, 800);
+  // Navigate directly to home — no reload needed
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-home').classList.add('active');
+  refreshUI();
+  toast("prof-toast", "Profile reset — fresh start!");
 }
 
 function hoverStars(el, n) {
