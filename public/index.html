@@ -2097,8 +2097,10 @@ function clearAllStrains() {
 function clearProfile() {
   if (!confirm("Reset your entire profile? This cannot be undone.")) return;
 
-  // Nuclear clear — wipe everything in localStorage for this domain
+  // Clear all profile data but preserve age verification
+  const ageVerified = localStorage.getItem('bc_age_verified_v1');
   try { localStorage.clear(); } catch(e) {}
+  if (ageVerified) { try { localStorage.setItem('bc_age_verified_v1', ageVerified); } catch(e) {} }
 
   // Reset ALL in-memory state to clean defaults
   profile = { name:"", experience:"", time:"", products:[], goals:[], conditions:[], medications:"", hormonal:"", hormonal_conditions:"", cycle:"", gender:"", strain_pref:[], joined:"" };
