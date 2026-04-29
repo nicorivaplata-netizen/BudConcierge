@@ -617,11 +617,23 @@
       </div>
     </div>
     <div class="content">
+
+      <!-- Partner dispensaries with live inventory -->
+      <div>
+        <div class="section-label" style="margin-bottom:10px">Partner dispensaries</div>
+        <div style="font-size:13px;color:#5a5c57;line-height:1.6;margin-bottom:12px">Select a partner dispensary and Ivy will recommend only products actually in stock right now.</div>
+        <div id="partner-selector"></div>
+        <div id="partner-status" style="font-size:12px;margin-top:8px;line-height:1.5"></div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;margin:4px 0">
+        <div style="flex:1;height:1px;background:rgba(0,0,0,0.07)"></div>
+        <span style="font-size:11px;color:#9a9c97;font-weight:500">OR SEARCH ANY DISPENSARY</span>
+        <div style="flex:1;height:1px;background:rgba(0,0,0,0.07)"></div>
+      </div>
+
+      <!-- Google Places search -->
       <div class="card" style="display:flex;flex-direction:column;gap:10px">
-        <div style="font-size:13px;color:#5a5c57;line-height:1.55">Find licensed dispensaries near you. Selecting one helps Ivy tailor your experience and context.</div>
-        <div style="font-size:11px;color:#9a9c97;background:#f7f8f6;border-radius:8px;padding:8px 11px;line-height:1.5">
-          Live menu integration coming soon. Recommendations currently use our curated product database.
-        </div>
         <div style="display:flex;gap:8px">
           <input type="text" id="disp-search" placeholder="City, zip code, or name..." onkeydown="if(event.key==='Enter')searchDispensaries()"
             style="flex:1;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111">
@@ -633,12 +645,7 @@
       </div>
 
       <div id="disp-status" style="font-size:13px;color:#9a9c97;text-align:center;padding:8px 0"></div>
-
       <div id="disp-results" style="display:flex;flex-direction:column;gap:10px"></div>
-
-      <div style="font-size:11px;color:#bbb;text-align:center;line-height:1.5;padding:4px 0">
-        Selecting a dispensary tailors your chat experience. Full live inventory integration is in development.
-      </div>
     </div>
     <div class="navbar-placeholder"></div>
   </div>
@@ -1063,11 +1070,75 @@ function renderDispensaries(list) {
 function selectDispensary(id, name, website) {
   localStorage.setItem('bc_selected_dispensary', JSON.stringify({ id, name, website }));
   chatInitialized = false;
-  // Show confirmation instead of auto-navigating
   const status = document.getElementById('disp-status');
   status.textContent = name + ' selected. Head to Chat for personalized recommendations.';
   status.style.color = '#1a9968';
   status.style.fontWeight = '600';
+}
+
+// ─── Partner Dispensary Selector (Apify inventory) ────────────────────────────
+function renderPartnerSelector() {
+  const container = document.getElementById('partner-selector');
+  if (!container) return;
+  const savedDisp = localStorage.getItem('bc_selected_dispensary');
+  let savedSlug = null;
+  try { savedSlug = JSON.parse(savedDisp)?.slug; } catch(e) {}
+
+  const groups = {
+    'High Profile': Object.entries(DISPENSARIES).filter(([,d]) => d.brand === 'High Profile'),
+    'Story Cannabis': Object.entries(DISPENSARIES).filter(([,d]) => d.brand === 'Story Cannabis'),
+    'PurSpirit': Object.entries(DISPENSARIES).filter(([,d]) => d.brand === 'PurSpirit'),
+  };
+
+  container.innerHTML = Object.entries(groups).map(([brand, locs]) => `
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:600;color:#1a9968;margin-bottom:6px;letter-spacing:0.04em">${brand}</div>
+      ${locs.map(([slug, d]) => `
+        <button onclick="selectPartnerDispensary('${slug}', this)" style="width:100%;text-align:left;padding:11px 14px;margin-bottom:5px;border:1.5px solid ${savedSlug===slug ? '#1a9968' : 'rgba(0,0,0,0.08)'};background:${savedSlug===slug ? '#e8f7f1' : 'white'};border-radius:10px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;transition:all 0.15s">
+          <div>
+            <div style="font-size:13px;font-weight:${savedSlug===slug ? '700' : '500'};color:${savedSlug===slug ? '#0d6647' : '#111310'}">${d.name}</div>
+            <div style="font-size:11px;color:#9a9c97;margin-top:2px">${selectedDispensary?.slug===slug && selectedDispensary?.inventory ? selectedDispensary.inventory.length + ' products in stock' : 'Tap to load live inventory'}</div>
+          </div>
+          ${savedSlug===slug ? '<span style="color:#1a9968;font-size:18px;font-weight:600">✓</span>' : '<span style="color:#ccc;font-size:18px">›</span>'}
+        </button>`).join('')}
+    </div>`).join('') + `
+    <button onclick="clearPartnerDispensary()" style="width:100%;text-align:center;padding:10px;border:1px solid rgba(0,0,0,0.06);background:#f7f8f6;border-radius:10px;cursor:pointer;font-family:inherit;font-size:12px;color:#9a9c97;margin-top:4px">
+      Clear selection
+    </button>`;
+}
+
+async function selectPartnerDispensary(slug, btn) {
+  const originalContent = btn.innerHTML;
+  btn.innerHTML = '<span style="color:#1a9968;font-size:13px;font-weight:500">Loading live inventory...</span>';
+  btn.disabled = true;
+  const inv = await fetchInventory(slug);
+  btn.disabled = false;
+  if (inv) {
+    localStorage.setItem('bc_selected_dispensary', JSON.stringify({ slug, name: DISPENSARIES[slug].name }));
+    chatInitialized = false;
+    renderPartnerSelector();
+    const status = document.getElementById('partner-status');
+    if (status) {
+      status.textContent = inv.length + ' products loaded from ' + DISPENSARIES[slug].name + '. Head to Chat for personalized recommendations.';
+      status.style.color = '#1a9968';
+    }
+  } else {
+    btn.innerHTML = originalContent;
+    const status = document.getElementById('partner-status');
+    if (status) {
+      status.textContent = 'Could not load inventory. Check your connection and try again.';
+      status.style.color = '#e24b4a';
+    }
+  }
+}
+
+function clearPartnerDispensary() {
+  selectedDispensary = null;
+  localStorage.removeItem('bc_selected_dispensary');
+  chatInitialized = false;
+  renderPartnerSelector();
+  const status = document.getElementById('partner-status');
+  if (status) { status.textContent = ''; }
 }
 
 // ─── Onboarding ──────────────────────────────────────────────────────────────
@@ -1241,6 +1312,7 @@ function switchTab(tab) {
   }
   if (tab === 'chat' && !chatInitialized) startChat();
   if (tab === 'journal') renderJournal();
+  if (tab === 'find' || tab === 'dispensary') setTimeout(() => renderPartnerSelector(), 50);
   refreshUI();
 }
 
@@ -1819,6 +1891,7 @@ Once you have their name or they have chosen a private option, ask one question 
 
 
 
+  const inventoryCtx = buildInventoryContext();
   return `You are Ivy — a warm, knowledgeable, non-judgmental cannabis wellness guide. You speak like a brilliant, caring friend — never a clinician, never a salesperson.
 
 Your belief: cannabis is a legitimate wellness tool. Every person deserves honest, personalized, stigma-free guidance. Treat a 68-year-old with arthritis and a daily user asking for something stronger with the same warmth and respect.
@@ -1923,7 +1996,8 @@ IBS AND CROHNS: Suppositories and rectal administration for gut-localized relief
 
 CHIP FORMAT — whenever you ask a question, you must end your message with a line in EXACTLY this format:
 CHIPS|||option1|||option2|||option3|||option4
-The chips must be short (2 to 4 words max) and directly answer the specific question you just asked. Never show generic chips. If you ask about pain type, show chips like: Muscle soreness|||Joint pain|||Headaches|||Back pain. If you ask about product, show: Flower|||Edibles|||THC drink|||Tincture. If you ask about experience: First time|||Occasional|||Regular|||Daily. If you are making recommendations and not asking a question, do not include a CHIPS line.`;
+The chips must be short (2 to 4 words max) and directly answer the specific question you just asked. Never show generic chips. If you ask about pain type, show chips like: Muscle soreness|||Joint pain|||Headaches|||Back pain. If you ask about product, show: Flower|||Edibles|||THC drink|||Tincture. If you ask about experience: First time|||Occasional|||Regular|||Daily. If you are making recommendations and not asking a question, do not include a CHIPS line.
+${inventoryCtx}`;
 }
 
 async function getBotReply(userMsg) {
@@ -2563,6 +2637,66 @@ const inp = document.getElementById('chat-input');
 inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
 inp.addEventListener('input', () => { inp.style.height = 'auto'; inp.style.height = Math.min(inp.scrollHeight, 90) + 'px'; });
 
+// ─── Dispensary Registry ──────────────────────────────────────────────────────
+const DISPENSARIES = {
+  'mo-pineville-hp':        { name: 'High Profile — Pineville, MO',       brand: 'High Profile',  state: 'MO' },
+  'mo-chesterfield-hp':     { name: 'High Profile — Chesterfield, MO',    brand: 'High Profile',  state: 'MO' },
+  'high-profile-columbia':  { name: 'High Profile — Columbia, MO',        brand: 'High Profile',  state: 'MO' },
+  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO', brand: 'High Profile', state: 'MO' },
+  'story-dunlap':           { name: 'Story Cannabis — Phoenix, AZ',        brand: 'Story Cannabis', state: 'AZ' },
+  'story-mechanicsville':   { name: 'Story Cannabis — Mechanicsville, MD', brand: 'Story Cannabis', state: 'MD' },
+  'story-cleveland':        { name: 'Story Cannabis — Cleveland, OH',      brand: 'Story Cannabis', state: 'OH' },
+  'purspirit-fayetteville': { name: 'PurSpirit — Fayetteville, AR',        brand: 'PurSpirit',     state: 'AR' },
+};
+
+let selectedDispensary = null; // { slug, name, brand, inventory[] }
+
+async function fetchInventory(slug) {
+  try {
+    const res = await fetch(`/api/inventory?slug=${slug}`);
+    if (!res.ok) throw new Error('Inventory fetch failed');
+    const data = await res.json();
+    selectedDispensary = { slug, ...DISPENSARIES[slug], inventory: data.inventory };
+    localStorage.setItem('bc_selected_dispensary', JSON.stringify({ slug, name: DISPENSARIES[slug].name }));
+    console.log(`Loaded ${data.inventory.length} products for ${data.dispensary}`);
+    return data.inventory;
+  } catch(e) {
+    console.warn('Could not load inventory:', e.message);
+    return null;
+  }
+}
+
+function buildInventoryContext() {
+  if (!selectedDispensary || !selectedDispensary.inventory?.length) return '';
+  const inv = selectedDispensary.inventory;
+  // Group by category for cleaner context
+  const byCategory = {};
+  inv.forEach(p => {
+    const cat = p.category || 'Other';
+    if (!byCategory[cat]) byCategory[cat] = [];
+    byCategory[cat].push(p);
+  });
+  let ctx = `
+CURRENT ${selectedDispensary.name.toUpperCase()} INVENTORY (${inv.length} products in stock right now):
+`;
+  ctx += `IMPORTANT: Only recommend products from this inventory. If a product is not listed here, do not recommend it.
+
+`;
+  Object.entries(byCategory).forEach(([cat, products]) => {
+    ctx += `${cat.toUpperCase()}:
+`;
+    products.slice(0, 20).forEach(p => {
+      ctx += `- ${p.name}${p.brand ? ` by ${p.brand}` : ''}`;
+      if (p.type) ctx += ` [${p.type}]`;
+      if (p.thc) ctx += ` THC:${p.thc}`;
+      if (p.cbd) ctx += ` CBD:${p.cbd}`;
+      if (p.price) ctx += ` $${p.price}`;
+      ctx += '\n';
+    });
+  });
+  return ctx;
+}
+
 // ─── Boot ─────────────────────────────────────────────────────────────────────
 loadData();
 loadJournal();
@@ -2570,6 +2704,15 @@ refreshUI();
 renderJournal();
 showOnboardIfNeeded();
 injectNavbars('home');
+
+// Restore selected dispensary from storage
+const savedDisp = localStorage.getItem('bc_selected_dispensary');
+if (savedDisp) {
+  try {
+    const { slug } = JSON.parse(savedDisp);
+    if (slug && DISPENSARIES[slug]) fetchInventory(slug);
+  } catch(e) {}
+}
 </script>
 </body>
 </html>
