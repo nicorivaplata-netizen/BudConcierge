@@ -1,21 +1,22 @@
 // api/inventory.js — Vercel serverless function
-// Fetches live dispensary inventory via Apify Dutchie scraper
+// Fetches live dispensary inventory via Apify Weedmaps scraper
+// Switched from Dutchie (Cloudflare blocked) to Weedmaps (proven, 42 users)
 
 const APIFY_TOKEN = process.env.APIFY_TOKEN;
-const ACTOR_ID = 'tfmcg3~dutchie-dispensary-scraper';
+const WEEDMAPS_ACTOR = 'kinaesthetic_millionaire~weedmaps-dispensaries-products';
 
 const cache = {};
 const CACHE_TTL = 4 * 60 * 60 * 1000;
 
 const DISPENSARIES = {
-  'high-profile-pineville':      { name: 'High Profile — Pineville, MO',        brand: 'High Profile',   url: 'https://dutchie.com/dispensary/high-profile-pineville' },
-  'mo-chesterfield-hp':          { name: 'High Profile — Chesterfield, MO',     brand: 'High Profile',   url: 'https://dutchie.com/dispensary/mo-chesterfield-hp' },
-  'mo-columbia-hp':              { name: 'High Profile — Columbia, MO',         brand: 'High Profile',   url: 'https://dutchie.com/dispensary/mo-columbia-hp' },
-  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO',   brand: 'High Profile',   url: 'https://dutchie.com/dispensary/high-profile-cape-girardeau' },
-  'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis', url: 'https://dutchie.com/dispensary/story-dunlap' },
-  'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', url: 'https://dutchie.com/dispensary/story-mechanicsville' },
-  'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', url: 'https://dutchie.com/dispensary/story-cleveland' },
-  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      url: 'https://dutchie.com/dispensary/purspirit-fayetteville' },
+  'high-profile-pineville':      { name: 'High Profile — Pineville, MO',        brand: 'High Profile',   wmSlug: 'high-profile-pineville' },
+  'mo-chesterfield-hp':          { name: 'High Profile — Chesterfield, MO',     brand: 'High Profile',   wmSlug: 'high-profile-chesterfield' },
+  'mo-columbia-hp':              { name: 'High Profile — Columbia, MO',         brand: 'High Profile',   wmSlug: 'high-profile-46' },
+  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO',   brand: 'High Profile',   wmSlug: 'high-profile-cape-girardeau' },
+  'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis', wmSlug: 'story-dunlap' },
+  'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', wmSlug: 'story-mechanicsville' },
+  'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', wmSlug: 'story-cleveland' },
+  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      wmSlug: 'purspirit-cannabis-co' },
 };
 
 export default async function handler(req, res) {
@@ -35,52 +36,44 @@ export default async function handler(req, res) {
   }
 
   const dispensary = DISPENSARIES[slug];
+  const wmUrl = `https://weedmaps.com/dispensaries/${dispensary.wmSlug}`;
 
   try {
     const apifyRes = await fetch(
-      `https://api.apify.com/v2/acts/${ACTOR_ID}/run-sync-get-dataset-items?token=${APIFY_TOKEN}&timeout=120`,
+      `https://api.apify.com/v2/acts/${WEEDMAPS_ACTOR}/run-sync-get-dataset-items?token=${APIFY_TOKEN}&timeout=120`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          // Pass full URL and slug — actor may use either
-          startUrls: [{ url: dispensary.url }],
-          dispensarySlug: slug,
-          dispensaryUrl: dispensary.url,
+          startUrls: [{ url: wmUrl }],
           maxItems: 200,
-          includeOutOfStock: false,
-          // Enable residential proxy to bypass Cloudflare on Dutchie
-          proxyConfiguration: {
-            useApifyProxy: true,
-            apifyProxyGroups: ['RESIDENTIAL'],
-          },
         }),
       }
     );
 
     if (!apifyRes.ok) {
       const err = await apifyRes.text();
-      console.error('Apify error:', apifyRes.status, err);
+      console.error('Apify Weedmaps error:', apifyRes.status, err);
       return res.status(502).json({ error: `Apify returned ${apifyRes.status}: ${err}` });
     }
 
     const items = await apifyRes.json();
-    console.log(`Got ${items.length} items for ${slug}`);
+    console.log(`Got ${items.length} raw items for ${slug} from Weedmaps`);
 
+    // Weedmaps scraper returns product data directly
     const inventory = items
-      .filter(item => item.product && item.price != null)
+      .filter(item => item.name)
       .map(item => ({
-        name:     item.product?.name || item.name || '',
-        brand:    item.product?.brand?.name || item.brand || '',
-        category: item.product?.category || item.category || '',
-        type:     item.product?.strainType || item.strainType || '',
-        thc:      formatCannabinoid(item.product?.cannabinoids?.thcContent) || item.thc || '',
-        cbd:      formatCannabinoid(item.product?.cannabinoids?.cbdContent) || item.cbd || '',
-        price:    item.price,
-        effects:  (item.product?.effects || item.effects || []).slice(0, 5),
-        terpenes: (item.product?.terpenes || item.terpenes || []).slice(0, 4),
-      }))
-      .filter(p => p.name);
+        name:     item.name || '',
+        brand:    item.brand || item.brandName || '',
+        category: item.category || item.type || '',
+        type:     item.strainType || item.strain_type || '',
+        thc:      item.thc || item.thcContent || '',
+        cbd:      item.cbd || item.cbdContent || '',
+        price:    item.price || item.priceHalf || '',
+        effects:  (item.effects || []).slice(0, 5),
+        terpenes: (item.terpenes || []).slice(0, 4),
+      }));
 
     const result = {
       dispensary: dispensary.name,
@@ -99,11 +92,4 @@ export default async function handler(req, res) {
     console.error('Inventory fetch error:', err);
     return res.status(500).json({ error: err.message });
   }
-}
-
-function formatCannabinoid(cannabinoid) {
-  if (!cannabinoid?.range) return '';
-  const [min, max] = cannabinoid.range;
-  const unit = cannabinoid.unit || '%';
-  return min === max ? `${min}${unit}` : `${min}-${max}${unit}`;
 }
