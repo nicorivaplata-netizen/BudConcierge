@@ -1108,25 +1108,29 @@ function renderPartnerSelector() {
 }
 
 async function selectPartnerDispensary(slug, btn) {
-  const originalContent = btn.innerHTML;
-  btn.innerHTML = '<span style="color:#1a9968;font-size:13px;font-weight:500">Loading live inventory...</span>';
+  const status = document.getElementById('partner-status');
   btn.disabled = true;
+
   const inv = await fetchInventory(slug);
   btn.disabled = false;
-  if (inv) {
+
+  if (inv && inv.length > 0) {
     localStorage.setItem('bc_selected_dispensary', JSON.stringify({ slug, name: DISPENSARIES[slug].name }));
     chatInitialized = false;
     renderPartnerSelector();
-    const status = document.getElementById('partner-status');
     if (status) {
       status.textContent = inv.length + ' products loaded from ' + DISPENSARIES[slug].name + '. Head to Chat for personalized recommendations.';
       status.style.color = '#1a9968';
     }
-  } else {
-    btn.innerHTML = originalContent;
-    const status = document.getElementById('partner-status');
+  } else if (inv !== null) {
+    renderPartnerSelector();
     if (status) {
-      status.textContent = 'Could not load inventory. Check your connection and try again.';
+      status.textContent = 'Inventory for this location is being prepared. Check back soon.';
+      status.style.color = '#9a9c97';
+    }
+  } else {
+    if (status) {
+      status.textContent = 'Could not load inventory. Try again in a moment.';
       status.style.color = '#e24b4a';
     }
   }
@@ -2656,6 +2660,12 @@ async function fetchInventory(slug) {
     const res = await fetch(`/api/inventory?slug=${slug}`);
     if (!res.ok) throw new Error('Inventory fetch failed');
     const data = await res.json();
+
+    if (data.status === 'NO_DATA') {
+      console.log(`No inventory data yet for ${slug}`);
+      return [];
+    }
+
     selectedDispensary = { slug, ...DISPENSARIES[slug], inventory: data.inventory };
     localStorage.setItem('bc_selected_dispensary', JSON.stringify({ slug, name: DISPENSARIES[slug].name }));
     console.log(`Loaded ${data.inventory.length} products for ${data.dispensary}`);
