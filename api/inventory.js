@@ -8,9 +8,9 @@ const cache = {};
 const CACHE_TTL = 4 * 60 * 60 * 1000;
 
 const DISPENSARIES = {
-  'mo-pineville-hp':             { name: 'High Profile — Pineville, MO',        brand: 'High Profile'  },
+  'high-profile-pineville':      { name: 'High Profile — Pineville, MO',        brand: 'High Profile'  },
   'mo-chesterfield-hp':          { name: 'High Profile — Chesterfield, MO',     brand: 'High Profile'  },
-  'high-profile-columbia':       { name: 'High Profile — Columbia, MO',         brand: 'High Profile'  },
+  'mo-columbia-hp':              { name: 'High Profile — Columbia, MO',         brand: 'High Profile'  },
   'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO',   brand: 'High Profile'  },
   'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis'},
   'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis'},
