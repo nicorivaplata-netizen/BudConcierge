@@ -2064,8 +2064,9 @@ function addMessage(role, content, chips) {
             (name||'').trim().toLowerCase().includes(p.strain?.toLowerCase() || '')
           );
           if (invProduct) {
+            const invId = 'inv-' + (invProduct.name||'').toLowerCase().replace(/[^a-z0-9]/g,'').substr(0,8);
             strain = {
-              id: 'inv-' + Math.random().toString(36).substr(2,6),
+              id: invId,
               name: invProduct.name || name,
               type: invProduct.type || 'Hybrid',
               description: `${invProduct.brand ? invProduct.brand + ' · ' : ''}${invProduct.category || 'Cannabis product'} available at ${selectedDispensary.name}.`,
@@ -2257,13 +2258,29 @@ function saveStrainRated(id, rating, container) {
 }
 
 function saveStrain(id, btn) {
-  const s = window.STRAINS.find(x => x.id === id);
+  let s = window.STRAINS.find(x => x.id === id);
+
+  // Handle live inventory products — id starts with 'inv-'
+  if (!s && id.startsWith('inv-') && selectedDispensary?.inventory?.length) {
+    const invProduct = selectedDispensary.inventory.find(p =>
+      'inv-' + p.name?.toLowerCase().replace(/[^a-z0-9]/g,'').substr(0,8) === id ||
+      btn?.closest('.rec-card')?.querySelector('.rec-name')?.textContent === p.name
+    );
+    if (invProduct) {
+      s = { name: invProduct.name, type: invProduct.type || 'Hybrid' };
+    } else {
+      // Fallback — get name from the card itself
+      const cardName = btn?.closest('.rec-card')?.querySelector('.rec-name')?.textContent;
+      if (cardName) s = { name: cardName, type: 'Hybrid' };
+    }
+  }
+
   if (!s) return;
   if (strainHistory.find(h => h.name === s.name)) { toast('prof-toast', 'Already saved'); return; }
   strainHistory.unshift({ name: s.name, type: s.type, rating: 0, date: 'Today' });
   if (strainHistory.length > 20) strainHistory = strainHistory.slice(0, 20);
   saveData();
-  btn.textContent = 'Saved to profile'; btn.classList.add('saved');
+  btn.textContent = '✓ Saved to profile'; btn.classList.add('saved');
   refreshUI();
   toast('prof-toast', s.name + ' saved to your profile!');
 }
