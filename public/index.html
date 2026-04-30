@@ -617,25 +617,11 @@
       </div>
     </div>
     <div class="content">
-
-      <!-- Partner dispensaries with live inventory -->
-      <div>
-        <div class="section-label" style="margin-bottom:10px">Partner dispensaries</div>
-        <div style="font-size:13px;color:#5a5c57;line-height:1.6;margin-bottom:12px">Select a partner dispensary and Ivy will recommend only products actually in stock right now.</div>
-        <div id="partner-selector"></div>
-        <div id="partner-status" style="font-size:12px;margin-top:8px;line-height:1.5"></div>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:10px;margin:4px 0">
-        <div style="flex:1;height:1px;background:rgba(0,0,0,0.07)"></div>
-        <span style="font-size:11px;color:#9a9c97;font-weight:500">OR SEARCH ANY DISPENSARY</span>
-        <div style="flex:1;height:1px;background:rgba(0,0,0,0.07)"></div>
-      </div>
-
-      <!-- Google Places search -->
+      <!-- Search bar -->
       <div class="card" style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:13px;color:#5a5c57;line-height:1.6">Search your dispensary. Partner dispensaries show live inventory so Ivy only recommends what is actually in stock.</div>
         <div style="display:flex;gap:8px">
-          <input type="text" id="disp-search" placeholder="City, zip code, or name..." onkeydown="if(event.key==='Enter')searchDispensaries()"
+          <input type="text" id="disp-search" placeholder="Dispensary name or city..." onkeydown="if(event.key==='Enter')searchDispensaries()"
             style="flex:1;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111">
           <button onclick="searchDispensaries()" style="padding:10px 14px;background:#1a9968;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">Search</button>
         </div>
@@ -644,7 +630,22 @@
         </button>
       </div>
 
+      <!-- Currently selected dispensary -->
+      <div id="current-disp-card" style="display:none">
+        <div class="section-label" style="margin-bottom:8px">Currently selected</div>
+        <div class="card" style="padding:14px 16px;background:#e8f7f1;border-color:#a8dfc9">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div id="current-disp-name" style="font-size:14px;font-weight:700;color:#0d6647"></div>
+              <div id="current-disp-count" style="font-size:12px;color:#3a7a5a;margin-top:2px"></div>
+            </div>
+            <button onclick="clearPartnerDispensary()" style="font-size:11px;color:#9a9c97;border:1px solid rgba(0,0,0,0.1);background:white;padding:5px 10px;border-radius:6px;cursor:pointer;font-family:inherit">Clear</button>
+          </div>
+        </div>
+      </div>
+
       <div id="disp-status" style="font-size:13px;color:#9a9c97;text-align:center;padding:8px 0"></div>
+      <div id="partner-status" style="font-size:12px;color:#1a9968;padding:4px 0;line-height:1.5"></div>
       <div id="disp-results" style="display:flex;flex-direction:column;gap:10px"></div>
     </div>
     <div class="navbar-placeholder"></div>
@@ -1040,20 +1041,38 @@ function setDispStatus(msg) {
   document.getElementById('disp-status').textContent = msg;
 }
 
+function findPartnerSlug(name) {
+  // Match a search result name to a partner dispensary slug
+  const nameLower = (name||'').toLowerCase();
+  return Object.entries(DISPENSARIES).find(([slug, d]) =>
+    nameLower.includes(d.name.toLowerCase().split('—')[0].trim().toLowerCase()) ||
+    nameLower.includes((d.wmSlug||'').replace(/-/g,' '))
+  )?.[0] || null;
+}
+
 function renderDispensaries(list) {
   const el = document.getElementById('disp-results');
   setDispStatus('');
   if (!list.length) { setDispStatus('No dispensaries found. Try a different search.'); return; }
-  el.innerHTML = list.map(d => `
-    <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:14px 16px">
+  el.innerHTML = list.map(d => {
+    const partnerSlug = findPartnerSlug(d.name);
+    const isPartner = !!partnerSlug;
+    const borderColor = isPartner ? '#a8dfc9' : 'rgba(0,0,0,0.08)';
+    const bgColor = isPartner ? '#f5fcf9' : '#fff';
+    return `
+    <div style="background:${bgColor};border:1.5px solid ${borderColor};border-radius:14px;padding:14px 16px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px">
         <div style="flex:1">
-          ${d.website
-            ? `<a href="${d.website}" target="_blank" style="font-size:14px;font-weight:600;color:#1a9968;margin-bottom:3px;display:block;text-decoration:none">${d.name} ↗</a>`
-            : `<div style="font-size:14px;font-weight:600;color:#111;margin-bottom:3px">${d.name}</div>`
-          }
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            ${d.website
+              ? `<a href="${d.website}" target="_blank" style="font-size:14px;font-weight:700;color:${isPartner?'#0d6647':'#1a9968'};text-decoration:none">${d.name} ↗</a>`
+              : `<div style="font-size:14px;font-weight:700;color:#111">${d.name}</div>`
+            }
+            ${isPartner ? `<span style="font-size:9px;font-weight:700;background:#1a9968;color:white;padding:2px 7px;border-radius:10px;letter-spacing:0.06em;flex-shrink:0">LIVE INVENTORY</span>` : ''}
+          </div>
           <div style="font-size:12px;color:#9a9c97;margin-bottom:${d.phone?'2px':'0'}">${d.address}</div>
           ${d.phone ? `<a href="tel:${d.phone}" style="font-size:12px;color:#1a9968;text-decoration:none">${d.phone}</a>` : ''}
+          ${isPartner ? `<div style="font-size:11px;color:#1a9968;margin-top:4px;font-weight:500">Ivy will recommend only products currently in stock here</div>` : ''}
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
           ${d.rating ? `<span style="font-size:12px;color:#EF9F27">★ ${d.rating}</span>` : ''}
@@ -1061,10 +1080,56 @@ function renderDispensaries(list) {
         </div>
       </div>
       <div style="display:flex;gap:8px">
-        ${d.website ? `<a href="${d.website}" target="_blank" style="flex:1;padding:8px;border:1px solid #a8dfc9;border-radius:8px;font-size:12px;font-weight:600;color:#085041;text-align:center;text-decoration:none;background:#E1F5EE">Visit website</a>` : ''}
-        <button onclick="selectDispensary('${d.id}','${d.name.replace(/'/g,"\'")}','${d.website||''}')" style="flex:1;padding:8px;background:#1a9968;border:none;border-radius:8px;font-size:12px;font-weight:600;color:#fff;cursor:pointer">Use for chat</button>
+        ${d.website ? `<a href="${d.website}" target="_blank" style="flex:1;padding:9px;border:1px solid #a8dfc9;border-radius:8px;font-size:12px;font-weight:600;color:#085041;text-align:center;text-decoration:none;background:#E1F5EE">Visit website</a>` : ''}
+        <button onclick="${isPartner ? `usePartnerForChat('${partnerSlug}',this)` : `selectDispensary('${d.id}','${d.name.replace(/'/g,"\'")}','${d.website||''}')`}"
+          style="flex:1;padding:9px;background:${isPartner?'#1a9968':'#1a9968'};border:none;border-radius:8px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit">
+          ${isPartner ? '⚡ Use for Chat' : 'Use for Chat'}
+        </button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
+}
+
+async function usePartnerForChat(slug, btn) {
+  const orig = btn.innerHTML;
+  btn.innerHTML = 'Loading inventory...';
+  btn.disabled = true;
+  const inv = await fetchInventory(slug);
+  btn.disabled = false;
+  if (inv !== null) {
+    localStorage.setItem('bc_selected_dispensary', JSON.stringify({ slug, name: DISPENSARIES[slug].name }));
+    chatInitialized = false;
+    updateCurrentDispCard();
+    const status = document.getElementById('partner-status');
+    if (status) {
+      status.textContent = inv.length > 0
+        ? '⚡ ' + inv.length + ' products loaded from ' + DISPENSARIES[slug].name + '. Head to Chat for live recommendations.'
+        : DISPENSARIES[slug].name + ' selected. Inventory coming soon.';
+    }
+    btn.innerHTML = '✓ Selected';
+    btn.style.background = '#0d6647';
+  } else {
+    btn.innerHTML = orig;
+    btn.style.background = '#e24b4a';
+    setTimeout(() => { btn.innerHTML = orig; btn.style.background = '#1a9968'; }, 2000);
+  }
+}
+
+function updateCurrentDispCard() {
+  const saved = localStorage.getItem('bc_selected_dispensary');
+  const card = document.getElementById('current-disp-card');
+  if (!card) return;
+  if (!saved) { card.style.display = 'none'; return; }
+  try {
+    const { slug, name, id } = JSON.parse(saved);
+    const dispName = slug && DISPENSARIES[slug] ? DISPENSARIES[slug].name : name;
+    const inv = selectedDispensary?.inventory;
+    document.getElementById('current-disp-name').textContent = dispName || name;
+    document.getElementById('current-disp-count').textContent = inv?.length
+      ? '⚡ ' + inv.length + ' products in stock'
+      : slug ? 'Live inventory partner' : 'Selected for chat';
+    card.style.display = 'block';
+  } catch(e) { card.style.display = 'none'; }
 }
 
 function selectDispensary(id, name, website) {
@@ -1140,7 +1205,7 @@ function clearPartnerDispensary() {
   selectedDispensary = null;
   localStorage.removeItem('bc_selected_dispensary');
   chatInitialized = false;
-  renderPartnerSelector();
+  updateCurrentDispCard();
   const status = document.getElementById('partner-status');
   if (status) { status.textContent = ''; }
 }
@@ -1316,7 +1381,7 @@ function switchTab(tab) {
   }
   if (tab === 'chat' && !chatInitialized) startChat();
   if (tab === 'journal') renderJournal();
-  if (tab === 'find' || tab === 'dispensary') setTimeout(() => renderPartnerSelector(), 50);
+  if (tab === 'find' || tab === 'dispensary') setTimeout(() => updateCurrentDispCard(), 50);
   refreshUI();
 }
 
@@ -2684,14 +2749,16 @@ inp.addEventListener('input', () => { inp.style.height = 'auto'; inp.style.heigh
 
 // ─── Dispensary Registry ──────────────────────────────────────────────────────
 const DISPENSARIES = {
-  'high-profile-pineville':        { name: 'High Profile — Pineville, MO',       brand: 'High Profile',  state: 'MO' },
-  'mo-chesterfield-hp':     { name: 'High Profile — Chesterfield, MO',    brand: 'High Profile',  state: 'MO' },
-  'mo-columbia-hp':  { name: 'High Profile — Columbia, MO',        brand: 'High Profile',  state: 'MO' },
-  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO', brand: 'High Profile', state: 'MO' },
-  'story-dunlap':           { name: 'Story Cannabis — Phoenix, AZ',        brand: 'Story Cannabis', state: 'AZ' },
-  'story-mechanicsville':   { name: 'Story Cannabis — Mechanicsville, MD', brand: 'Story Cannabis', state: 'MD' },
-  'story-cleveland':        { name: 'Story Cannabis — Cleveland, OH',      brand: 'Story Cannabis', state: 'OH' },
-  'purspirit-fayetteville': { name: 'PurSpirit — Fayetteville, AR',        brand: 'PurSpirit',     state: 'AR' },
+  'high-profile-pineville':      { name: 'High Profile — Pineville, MO',        brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-pineville' },
+  'mo-chesterfield-hp':          { name: 'High Profile — Chesterfield, MO',     brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-chesterfield' },
+  'mo-columbia-hp':              { name: 'High Profile — Columbia, MO',         brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-columbia' },
+  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO',   brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-cape-girardeau' },
+  'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis', state: 'AZ', wmSlug: 'story-dunlap' },
+  'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', state: 'MD', wmSlug: 'story-mechanicsville' },
+  'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', state: 'OH', wmSlug: 'story-cleveland' },
+  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      state: 'AR', wmSlug: 'purspirit-cannabis-co' },
+  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', wmSlug: 'the-source-rogers' },
+  'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       state: 'AR', wmSlug: 'the-hill-fayetteville' },
 };
 
 let selectedDispensary = null; // { slug, name, brand, inventory[] }

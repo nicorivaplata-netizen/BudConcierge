@@ -68,7 +68,7 @@ async function fetchFromJane(storeId) {
   let page = 1;
 
   while (true) {
-    const url = `https://api.iheartjane.com/v1/stores/${storeId}/products?per_page=50&page=${page}`;
+    const url = `https://api.iheartjane.com/roots/menu_api/v1/stores/${storeId}/products?per_page=50&page=${page}`;
     const res = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15',
