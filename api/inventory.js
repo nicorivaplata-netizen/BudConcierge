@@ -67,42 +67,76 @@ async function fetchFromJane(storeId) {
   const allProducts = [];
   let page = 1;
 
-  while (true) {
-    const url = `https://api.iheartjane.com/roots/menu_api/v1/stores/${storeId}/products?per_page=50&page=${page}`;
-    const res = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15',
-        'Accept': 'application/json',
-        'Origin': 'https://www.iheartjane.com',
-        'Referer': `https://www.iheartjane.com/stores/${storeId}/menu`,
+  // Try multiple known Jane API product endpoints
+  const endpoints = [
+    (id, pg) => `https://api.iheartjane.com/v1/stores/${id}/menu/products?per_page=50&page=${pg}`,
+    (id, pg) => `https://api.iheartjane.com/v1/stores/${id}/products?per_page=50&page=${pg}&show_hidden=false`,
+    (id, pg) => `https://api.iheartjane.com/v2/stores/${id}/products?per_page=50&page=${pg}`,
+  ];
+
+  const headers = {
+    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15',
+    'Accept': 'application/json',
+    'Origin': 'https://www.iheartjane.com',
+    'Referer': `https://www.iheartjane.com/stores/${storeId}/menu`,
+    'x-requested-with': 'XMLHttpRequest',
+  };
+
+  // Try each endpoint until one works
+  let workingEndpoint = null;
+  for (const endpointFn of endpoints) {
+    try {
+      const testUrl = endpointFn(storeId, 1);
+      const testRes = await fetch(testUrl, { headers });
+      if (testRes.ok) {
+        const testData = await testRes.json();
+        const products = testData?.products || testData?.data || testData?.items || [];
+        if (products.length > 0) {
+          workingEndpoint = endpointFn;
+          // Add first page results
+          products.forEach(p => allProducts.push(parseJaneProduct(p)));
+          page = 2;
+          break;
+        }
       }
-    });
+    } catch(e) { continue; }
+  }
 
-    if (!res.ok) break;
+  if (!workingEndpoint) {
+    console.log(`No working endpoint found for store ${storeId}`);
+    return [];
+  }
 
-    const data = await res.json();
-    const products = data?.products || data?.data || [];
-    if (!products.length) break;
-
-    products.forEach(p => {
-      allProducts.push({
-        name:     p.name || p.product_name || '',
-        brand:    p.brand || p.brand_name || '',
-        category: p.kind || p.category || p.product_type || '',
-        type:     p.root_subtype || p.strain_type || '',
-        thc:      p.percent_thc ? `${p.percent_thc}%` : '',
-        cbd:      p.percent_cbd ? `${p.percent_cbd}%` : '',
-        price:    p.price_med || p.price_rec || p.price || '',
-      });
-    });
-
-    if (products.length < 50) break;
-    page++;
-    if (page > 10) break;
+  // Paginate remaining pages
+  while (true) {
+    try {
+      const url = workingEndpoint(storeId, page);
+      const res = await fetch(url, { headers });
+      if (!res.ok) break;
+      const data = await res.json();
+      const products = data?.products || data?.data || data?.items || [];
+      if (!products.length) break;
+      products.forEach(p => allProducts.push(parseJaneProduct(p)));
+      if (products.length < 50) break;
+      page++;
+      if (page > 12) break;
+    } catch(e) { break; }
   }
 
   cache[storeId] = { data: allProducts, timestamp: Date.now() };
   return allProducts;
+}
+
+function parseJaneProduct(p) {
+  return {
+    name:     p.name || p.product_name || '',
+    brand:    p.brand || p.brand_name || p.brand_subtype || '',
+    category: p.kind || p.category || p.product_type || p.type || '',
+    type:     p.root_subtype || p.strain_type || p.lineage || '',
+    thc:      p.percent_thc ? `${p.percent_thc}%` : (p.thc_content || ''),
+    cbd:      p.percent_cbd ? `${p.percent_cbd}%` : (p.cbd_content || ''),
+    price:    p.price_med || p.price_rec || p.price || p.base_price || '',
+  };
 }
 
 export default async function handler(req, res) {
