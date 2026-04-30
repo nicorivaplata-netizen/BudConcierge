@@ -1041,13 +1041,25 @@ function setDispStatus(msg) {
   document.getElementById('disp-status').textContent = msg;
 }
 
-function findPartnerSlug(name) {
+function findPartnerSlug(name, address) {
   // Match a search result name to a partner dispensary slug
   const nameLower = (name||'').toLowerCase();
-  return Object.entries(DISPENSARIES).find(([slug, d]) =>
-    nameLower.includes(d.name.toLowerCase().split('—')[0].trim().toLowerCase()) ||
-    nameLower.includes((d.wmSlug||'').replace(/-/g,' '))
-  )?.[0] || null;
+  const addrLower = (address||'').toLowerCase();
+
+  return Object.entries(DISPENSARIES).find(([slug, d]) => {
+    const dispName = d.name.toLowerCase().split('—')[0].trim();
+    const dispState = (d.state||'').toLowerCase();
+    const nameMatches = nameLower.includes(dispName) || nameLower.includes((d.wmSlug||'').replace(/-/g,' '));
+    if (!nameMatches) return false;
+    // If dispensary has a state, verify address matches
+    if (dispState && addrLower && !addrLower.includes(dispState) && !addrLower.includes(getStateName(dispState))) return false;
+    return true;
+  })?.[0] || null;
+}
+
+function getStateName(abbr) {
+  const states = { 'mo': 'missouri', 'ar': 'arkansas', 'az': 'arizona', 'md': 'maryland', 'oh': 'ohio' };
+  return states[abbr.toLowerCase()] || abbr;
 }
 
 function renderDispensaries(list) {
@@ -1055,7 +1067,7 @@ function renderDispensaries(list) {
   setDispStatus('');
   if (!list.length) { setDispStatus('No dispensaries found. Try a different search.'); return; }
   el.innerHTML = list.map(d => {
-    const partnerSlug = findPartnerSlug(d.name);
+    const partnerSlug = findPartnerSlug(d.name, d.address);
     const isPartner = !!partnerSlug;
     const borderColor = isPartner ? '#a8dfc9' : 'rgba(0,0,0,0.08)';
     const bgColor = isPartner ? '#f5fcf9' : '#fff';
@@ -2115,13 +2127,18 @@ function addMessage(role, content, chips) {
   div.className = 'msg ' + role;
 
   let textLines = [], recHtml = '';
+  const shownRecs = new Set();
 
   if (role === 'bot') {
     content.split('\n').forEach(line => {
       if (line.startsWith('REC|||')) {
         const [, name, reason] = line.split('|||');
+        // Skip duplicate product names in same response
+        const trimmedName = (name||'').trim().toLowerCase();
+        if (shownRecs.has(trimmedName)) return;
+        shownRecs.add(trimmedName);
         // First try to find in static strains database
-        let strain = window.STRAINS.find(s => s.name.toLowerCase() === (name||'').trim().toLowerCase());
+        let strain = window.STRAINS.find(s => s.name.toLowerCase() === trimmedName);
         // If not found, check live inventory
         if (!strain && selectedDispensary?.inventory?.length) {
           const invProduct = selectedDispensary.inventory.find(p =>
@@ -2787,7 +2804,7 @@ async function fetchInventory(slug) {
       return [];
     }
 
-    selectedDispensary = { slug, ...DISPENSARIES[slug], inventory: data.inventory };
+    selectedDispensary = { slug, ...DISPENSARIES[slug], inventory: data.inventory, summary: data.summary };
     localStorage.setItem('bc_selected_dispensary', JSON.stringify({ slug, name: DISPENSARIES[slug].name }));
     console.log(`Loaded ${data.inventory.length} products for ${data.dispensary}`);
     return data.inventory;
@@ -2798,9 +2815,47 @@ async function fetchInventory(slug) {
 }
 
 function buildInventoryContext() {
-  if (!selectedDispensary || !selectedDispensary.inventory?.length) return '';
-  const inv = selectedDispensary.inventory;
-  // Group by category for cleaner context
+  if (!selectedDispensary) return '';
+  const name = selectedDispensary.name;
+  const summary = selectedDispensary.summary;
+  const inv = selectedDispensary.inventory || [];
+
+  // Jane facets data — use catalog summary
+  if (summary?.isFacetsData) {
+    const kinds = summary.kinds || {};
+    const brands = summary.topBrands || [];
+    const feelings = summary.feelings || [];
+    let ctx = `
+CURRENT ${name.toUpperCase()} CATALOG (${summary.totalProducts} products in stock):
+`;
+    ctx += `IMPORTANT: This dispensary carries these product types. Recommend products that fit this catalog.
+
+`;
+    ctx += `PRODUCT TYPES IN STOCK:
+`;
+    Object.entries(kinds).forEach(([kind, count]) => {
+      ctx += `- ${kind}: ${count} products
+`;
+    });
+    ctx += `
+TOP BRANDS CARRIED:
+`;
+    brands.forEach(b => { ctx += `- ${b.name} (${b.count} products)
+`; });
+    if (feelings.length) {
+      ctx += `
+CUSTOMER-REPORTED EFFECTS:
+`;
+      ctx += feelings.join(', ') + '\n';
+    }
+    ctx += `
+When recommending, refer to specific brands this dispensary carries (listed above). Do not recommend generic strain names — recommend products from these brands in the correct category.
+`;
+    return ctx;
+  }
+
+  // Static inventory — individual products
+  if (!inv.length) return '';
   const byCategory = {};
   inv.forEach(p => {
     const cat = p.category || 'Other';
@@ -2808,9 +2863,9 @@ function buildInventoryContext() {
     byCategory[cat].push(p);
   });
   let ctx = `
-CURRENT ${selectedDispensary.name.toUpperCase()} INVENTORY (${inv.length} products in stock right now):
+CURRENT ${name.toUpperCase()} INVENTORY (${inv.length} products in stock right now):
 `;
-  ctx += `IMPORTANT: Only recommend products from this inventory. If a product is not listed here, do not recommend it.
+  ctx += `IMPORTANT: Only recommend products from this inventory.
 
 `;
   Object.entries(byCategory).forEach(([cat, products]) => {
