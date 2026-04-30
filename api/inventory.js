@@ -9,17 +9,12 @@ const DISPENSARIES = {
   'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis', source: 'static' },
   'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', source: 'static' },
   'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', source: 'static' },
-  // Arkansas — iHeartJane (store IDs confirmed from network inspection)
-  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      source: 'jane', janeStoreId: 3773 },
-  'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       source: 'jane', janeStoreId: 4817 },
-  // The Source uses a different platform — static JSON for now
+  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      source: 'static' },
+  'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       source: 'static' },
   'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     source: 'static' },
 };
 
-const cache = {};
-const CACHE_TTL = 4 * 60 * 60 * 1000;
-
-function parseWeedmapsTitle(title) {
+function parseTitle(title) {
   const result = { name: title, brand: '', category: '', type: '' };
   const lower = title.toLowerCase();
 
@@ -41,13 +36,14 @@ function parseWeedmapsTitle(title) {
   }
 
   if (!result.category) {
-    if (lower.includes('flower'))                                result.category = 'Flower';
-    else if (lower.includes('edible')||lower.includes('gummy')) result.category = 'Edible';
-    else if (lower.includes('vape')||lower.includes('cart'))    result.category = 'Vape';
-    else if (lower.includes('pre-roll')||lower.includes('preroll')) result.category = 'Pre-Roll';
+    if (lower.includes('flower') || lower.includes('smalls') || lower.includes('prepack')) result.category = 'Flower';
+    else if (lower.includes('edible') || lower.includes('gummy') || lower.includes('chocolate') || lower.includes('taffy') || lower.includes('chew')) result.category = 'Edible';
+    else if (lower.includes('vape') || lower.includes('cart') || lower.includes('disposable') || lower.includes('aio')) result.category = 'Vape';
+    else if (lower.includes('pre-roll') || lower.includes('preroll')) result.category = 'Pre-Roll';
     else if (lower.includes('tincture'))                        result.category = 'Tincture';
-    else if (lower.includes('topical')||lower.includes('cream')) result.category = 'Topical';
-    else if (lower.includes('concentrate')||lower.includes('wax')) result.category = 'Concentrate';
+    else if (lower.includes('topical') || lower.includes('patch') || lower.includes('balm') || lower.includes('cream') || lower.includes('freeze')) result.category = 'Topical';
+    else if (lower.includes('concentrate') || lower.includes('wax') || lower.includes('rosin') || lower.includes('resin')) result.category = 'Concentrate';
+    else if (lower.includes('drink') || lower.includes('soda') || lower.includes('cola')) result.category = 'Drink';
   }
 
   if (!result.type) {
@@ -60,107 +56,29 @@ function parseWeedmapsTitle(title) {
   return result;
 }
 
-async function fetchFromJane(storeId) {
-  const cached = cache[storeId];
-  if (cached && Date.now() - cached.timestamp < CACHE_TTL) return cached.data;
-
-  const allProducts = [];
-  let page = 1;
-
-  // Try multiple known Jane API product endpoints
-  const endpoints = [
-    (id, pg) => `https://api.iheartjane.com/v1/stores/${id}/menu/products?per_page=50&page=${pg}`,
-    (id, pg) => `https://api.iheartjane.com/v1/stores/${id}/products?per_page=50&page=${pg}&show_hidden=false`,
-    (id, pg) => `https://api.iheartjane.com/v2/stores/${id}/products?per_page=50&page=${pg}`,
-  ];
-
-  const headers = {
-    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15',
-    'Accept': 'application/json',
-    'Origin': 'https://www.iheartjane.com',
-    'Referer': `https://www.iheartjane.com/stores/${storeId}/menu`,
-    'x-requested-with': 'XMLHttpRequest',
-  };
-
-  // Try each endpoint until one works
-  let workingEndpoint = null;
-  for (const endpointFn of endpoints) {
-    try {
-      const testUrl = endpointFn(storeId, 1);
-      const testRes = await fetch(testUrl, { headers });
-      if (testRes.ok) {
-        const testData = await testRes.json();
-        const products = testData?.products || testData?.data || testData?.items || [];
-        if (products.length > 0) {
-          workingEndpoint = endpointFn;
-          // Add first page results
-          products.forEach(p => allProducts.push(parseJaneProduct(p)));
-          page = 2;
-          break;
-        }
-      }
-    } catch(e) { continue; }
-  }
-
-  if (!workingEndpoint) {
-    console.log(`No working endpoint found for store ${storeId}`);
-    return [];
-  }
-
-  // Paginate remaining pages
-  while (true) {
-    try {
-      const url = workingEndpoint(storeId, page);
-      const res = await fetch(url, { headers });
-      if (!res.ok) break;
-      const data = await res.json();
-      const products = data?.products || data?.data || data?.items || [];
-      if (!products.length) break;
-      products.forEach(p => allProducts.push(parseJaneProduct(p)));
-      if (products.length < 50) break;
-      page++;
-      if (page > 12) break;
-    } catch(e) { break; }
-  }
-
-  cache[storeId] = { data: allProducts, timestamp: Date.now() };
-  return allProducts;
-}
-
-function parseJaneProduct(p) {
-  return {
-    name:     p.name || p.product_name || '',
-    brand:    p.brand || p.brand_name || p.brand_subtype || '',
-    category: p.kind || p.category || p.product_type || p.type || '',
-    type:     p.root_subtype || p.strain_type || p.lineage || '',
-    thc:      p.percent_thc ? `${p.percent_thc}%` : (p.thc_content || ''),
-    cbd:      p.percent_cbd ? `${p.percent_cbd}%` : (p.cbd_content || ''),
-    price:    p.price_med || p.price_rec || p.price || p.base_price || '',
-  };
-}
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   const { slug } = req.query;
-
   if (!slug) return res.status(400).json({ error: 'Missing dispensary slug' });
   const disp = DISPENSARIES[slug];
   if (!disp) return res.status(404).json({ error: `Unknown dispensary: ${slug}` });
 
   try {
-    let inventory = [];
+    const filePath = join(process.cwd(), 'public', 'data', `${slug}.json`);
+    const raw = readFileSync(filePath, 'utf8');
+    const items = JSON.parse(raw);
 
-    if (disp.source === 'jane') {
-      inventory = await fetchFromJane(disp.janeStoreId);
-    } else {
-      const filePath = join(process.cwd(), 'public', 'data', `${slug}.json`);
-      const raw = readFileSync(filePath, 'utf8');
-      const items = JSON.parse(raw);
-      inventory = items.filter(i => i.title).map(i => parseWeedmapsTitle(i.title));
-    }
+    const inventory = items.filter(i => i.title).map(i => {
+      const parsed = parseTitle(i.title);
+      if (i.thc)   parsed.thc   = i.thc;
+      if (i.cbd)   parsed.cbd   = i.cbd;
+      if (i.price) parsed.price = i.price;
+      if (i.type)  parsed.type  = i.type;
+      return parsed;
+    });
 
     return res.status(200).json({
       dispensary: disp.name,
@@ -168,7 +86,6 @@ export default async function handler(req, res) {
       slug,
       count:      inventory.length,
       inventory,
-      source:     disp.source,
       status:     'READY',
     });
 

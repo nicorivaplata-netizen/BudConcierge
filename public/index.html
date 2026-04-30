@@ -2334,18 +2334,31 @@ function saveStrain(id, btn) {
     if (invProduct) {
       s = { name: invProduct.name, type: invProduct.type || 'Hybrid' };
     } else {
-      // Fallback — get name from the card itself
       const cardName = btn?.closest('.rec-card')?.querySelector('.rec-name')?.textContent;
       if (cardName) s = { name: cardName, type: 'Hybrid' };
     }
   }
 
   if (!s) return;
-  if (strainHistory.find(h => h.name === s.name)) { toast('prof-toast', 'Already saved'); return; }
+
+  // Toggle — if already saved, remove it
+  const existingIndex = strainHistory.findIndex(h => h.name === s.name);
+  if (existingIndex > -1) {
+    strainHistory.splice(existingIndex, 1);
+    saveData();
+    btn.textContent = '+ Save to profile';
+    btn.classList.remove('saved');
+    refreshUI();
+    toast('prof-toast', s.name + ' removed from your profile');
+    return;
+  }
+
+  // Save it
   strainHistory.unshift({ name: s.name, type: s.type, rating: 0, date: 'Today' });
   if (strainHistory.length > 20) strainHistory = strainHistory.slice(0, 20);
   saveData();
-  btn.textContent = '✓ Saved to profile'; btn.classList.add('saved');
+  btn.textContent = '✓ Saved to profile';
+  btn.classList.add('saved');
   refreshUI();
   toast('prof-toast', s.name + ' saved to your profile!');
 }
