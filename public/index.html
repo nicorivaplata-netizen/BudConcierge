@@ -2333,12 +2333,10 @@ function addMessage(role, content, chips) {
         const [, name, reason] = line.split('|||');
         // Skip duplicate product names in same response
         const trimmedName = (name||'').trim().toLowerCase();
-        if (shownRecs.has(trimmedName)) return;
-        shownRecs.add(trimmedName);
-        // Also track by first word to catch "Rebel Rider Flower" vs "Rebel Rider"
-        const firstWords = trimmedName.split(' ').slice(0,2).join(' ');
-        if (firstWords.length > 4 && shownRecs.has(firstWords)) return;
-        shownRecs.add(firstWords);
+        // Strip category words before dedup check
+        const cleanName = trimmedName.replace(/\s*(flower|edible|vape|extract|tincture|topical|gummy|gummies|cartridge|disposable|pre-roll)\s*/gi, '').trim();
+        if (shownRecs.has(cleanName)) return;
+        shownRecs.add(cleanName);
         // First try to find in static strains database
         let strain = window.STRAINS.find(s => s.name.toLowerCase() === trimmedName);
         // If not found, check live inventory
@@ -2486,7 +2484,7 @@ function buildRecCard(s, reason) {
       ${(!isLive && s.best_time && s.best_time !== 'Ask budtender') ? `<span class="rec-stat">${s.best_time}</span>` : isLive ? `<span class="rec-stat">${inferBestTime(s)}</span>` : ''}
       ${(!isLive && s.experience_level) ? `<span class="rec-stat">${s.experience_level}</span>` : ''}
     </div>
-    ${(s.thc_max > 2 || (isLive && potencyPct > 0)) ? `<div style="margin:6px 0 8px">
+    ${potencyPct > 0 ? `<div style="margin:6px 0 8px">
       <div style="display:flex;justify-content:space-between;margin-bottom:3px">
         <span style="font-size:10px;color:#9a9c97">Potency</span>
         <span style="font-size:10px;font-weight:600;color:${potencyColor}">${potencyLabel}</span>
