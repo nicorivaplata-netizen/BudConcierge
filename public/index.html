@@ -105,17 +105,23 @@
 
       <div style="flex:1;display:flex;flex-direction:column;justify-content:center;width:100%">
 
-        <!-- Slide 1 — Welcome + privacy -->
-        <div id="ob-slide-1" class="ob-slide" style="width:100%">
-          <h2 style="font-size:22px;font-weight:700;color:#111310;margin-bottom:8px;letter-spacing:-0.5px;line-height:1.2;text-align:center">Your private cannabis guide</h2>
-          <p style="font-size:14px;color:#5a5c57;line-height:1.7;text-align:center;margin-bottom:16px">Personalized recommendations based on your wellness needs. Private, judgment-free, always on your side.</p>
-          <div style="display:flex;align-items:center;gap:8px;background:#E1F5EE;border-radius:10px;padding:10px 14px;margin-bottom:8px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <span style="font-size:12px;color:#0d6647;font-weight:500">Your data stays on your device. Never sold. Never shared.</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;background:#E1F5EE;border-radius:10px;padding:10px 14px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-            <span style="font-size:12px;color:#0d6647;font-weight:500">No judgment. Ever. Ask about anything.</span>
+        <!-- Slide 1 — Welcome -->
+        <div id="ob-slide-1" class="ob-slide" style="width:100%;text-align:center">
+          <h2 style="font-size:24px;font-weight:700;color:#111310;margin-bottom:12px;letter-spacing:-0.5px;line-height:1.2">Meet Ivy</h2>
+          <p style="font-size:14px;color:#5a5c57;line-height:1.75;margin-bottom:20px">Ivy is your personal cannabis wellness guide. Tell her what you need help with and she'll recommend exactly what's right for you — no guesswork, no judgment.</p>
+          <div style="display:flex;flex-direction:column;gap:8px;text-align:left">
+            <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:#f7f8f6;border-radius:10px">
+              <span style="font-size:18px">💬</span>
+              <span style="font-size:13px;color:#3a3c37;font-weight:500">Ask about sleep, pain, anxiety, focus, or anything else</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:#f7f8f6;border-radius:10px">
+              <span style="font-size:18px">🏪</span>
+              <span style="font-size:13px;color:#3a3c37;font-weight:500">See what's in stock at dispensaries near you</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:#f7f8f6;border-radius:10px">
+              <span style="font-size:18px">📓</span>
+              <span style="font-size:13px;color:#3a3c37;font-weight:500">Track what works and build your personal profile</span>
+            </div>
           </div>
         </div>
 
@@ -144,11 +150,11 @@
           <h2 style="font-size:22px;font-weight:700;color:#111310;margin-bottom:6px;letter-spacing:-0.5px">Your cannabis experience?</h2>
           <p style="font-size:13px;color:#9a9c97;margin-bottom:18px">Ivy adjusts recommendations to your comfort level.</p>
           <div style="display:flex;flex-direction:column;gap:10px" id="ob-exp-btns">
-            ${['Never tried it', 'Tried it once or twice', 'Use occasionally', 'Use regularly', 'Very experienced'].map((exp, i) => `
-            <button onclick="selectObExp('${exp}')" id="ob-exp-${i}"
-              style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">
-              ${exp}
-            </button>`).join('')}
+            <button onclick="selectObExp('Never tried it')" class="ob-exp-btn" style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">Never tried it</button>
+            <button onclick="selectObExp('Tried it once or twice')" class="ob-exp-btn" style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">Tried it once or twice</button>
+            <button onclick="selectObExp('Use occasionally')" class="ob-exp-btn" style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">Use occasionally</button>
+            <button onclick="selectObExp('Use regularly')" class="ob-exp-btn" style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">Use regularly</button>
+            <button onclick="selectObExp('Very experienced')" class="ob-exp-btn" style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">Very experienced</button>
           </div>
         </div>
 
@@ -157,11 +163,16 @@
           <h2 style="font-size:22px;font-weight:700;color:#111310;margin-bottom:6px;letter-spacing:-0.5px">What are you hoping cannabis helps with?</h2>
           <p style="font-size:13px;color:#9a9c97;margin-bottom:14px">Select all that apply. You can always update this later.</p>
           <div style="display:flex;flex-wrap:wrap;gap:8px" id="ob-goals-btns">
-            ${['Sleep', 'Pain relief', 'Anxiety', 'Stress', 'Focus', 'Mood', 'Nausea', 'Appetite', 'Inflammation', 'Just curious'].map(goal => `
-            <button onclick="toggleObGoal('${goal}', this)"
-              style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">
-              ${goal}
-            </button>`).join('')}
+            <button onclick="toggleObGoal('Sleep', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Sleep</button>
+            <button onclick="toggleObGoal('Pain relief', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Pain relief</button>
+            <button onclick="toggleObGoal('Anxiety', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Anxiety</button>
+            <button onclick="toggleObGoal('Stress', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Stress</button>
+            <button onclick="toggleObGoal('Focus', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Focus</button>
+            <button onclick="toggleObGoal('Mood', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Mood</button>
+            <button onclick="toggleObGoal('Nausea', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Nausea</button>
+            <button onclick="toggleObGoal('Appetite', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Appetite</button>
+            <button onclick="toggleObGoal('Inflammation', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Inflammation</button>
+            <button onclick="toggleObGoal('Just curious', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Just curious</button>
           </div>
         </div>
 
@@ -175,7 +186,10 @@
           <div class="ob-dot" id="ob-dot-3" style="width:8px;height:8px"></div>
           <div class="ob-dot" id="ob-dot-4" style="width:8px;height:8px"></div>
         </div>
-        <button class="btn-primary" id="ob-btn" onclick="nextSlide()">Get started</button>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button id="ob-back-btn" onclick="prevSlide()" style="display:none;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#5a5c57;flex-shrink:0">← Back</button>
+          <button class="btn-primary" id="ob-btn" onclick="nextSlide()" style="flex:1">Get started</button>
+        </div>
         <button onclick="finishOnboard()" style="background:transparent;border:none;color:#9a9c97;font-size:13px;cursor:pointer;padding:6px">Skip for now</button>
       </div>
 
@@ -1309,13 +1323,14 @@ const obData = { name: '', experience: '', goals: [] };
 function selectObExp(exp) {
   obData.experience = exp;
   // Highlight selected
-  document.querySelectorAll('[id^="ob-exp-"]').forEach(btn => {
-    btn.style.background = btn.textContent.trim() === exp ? '#E1F5EE' : '#fff';
-    btn.style.borderColor = btn.textContent.trim() === exp ? '#1a9968' : 'rgba(0,0,0,0.1)';
-    btn.style.color = btn.textContent.trim() === exp ? '#085041' : '#111';
-    btn.style.fontWeight = btn.textContent.trim() === exp ? '600' : '400';
+  document.querySelectorAll('.ob-exp-btn').forEach(btn => {
+    const selected = btn.textContent.trim() === exp;
+    btn.style.background = selected ? '#E1F5EE' : '#fff';
+    btn.style.borderColor = selected ? '#1a9968' : 'rgba(0,0,0,0.1)';
+    btn.style.color = selected ? '#085041' : '#111';
+    btn.style.fontWeight = selected ? '600' : '400';
   });
-  setTimeout(() => nextSlide(), 300);
+  setTimeout(() => nextSlide(), 350);
 }
 
 function toggleObGoal(goal, btn) {
@@ -1383,13 +1398,28 @@ function goToSlide(n) {
   const currDot = document.getElementById('ob-dot-' + obSlide);
   if (curr) curr.style.display = 'block';
   if (currDot) currDot.classList.add('active');
+  // Update next button label
   const btn = document.getElementById('ob-btn');
   if (btn) btn.textContent = obSlide === OB_TOTAL ? 'Start using Ivy →' : 'Next';
+  // Show/hide back button
+  const backBtn = document.getElementById('ob-back-btn');
+  if (backBtn) backBtn.style.display = obSlide > 1 ? 'block' : 'none';
   // Focus name input on slide 2
   if (obSlide === 2) setTimeout(() => { const inp = document.getElementById('ob-name-input'); if (inp) inp.focus(); }, 100);
 }
 
+function prevSlide() {
+  if (obSlide > 1) goToSlide(obSlide - 1);
+}
+
 function nextSlide() {
+  // Validate name on slide 2
+  if (obSlide === 2 && !obData.name) {
+    const inp = document.getElementById('ob-name-input');
+    if (inp) { inp.style.borderColor = '#e24b4a'; inp.focus(); }
+    setTimeout(() => { if (inp) inp.style.borderColor = 'rgba(0,0,0,0.12)'; }, 1500);
+    return;
+  }
   if (obSlide < OB_TOTAL) {
     goToSlide(obSlide + 1);
   } else {
