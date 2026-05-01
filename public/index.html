@@ -2219,7 +2219,11 @@ function addMessage(role, content, chips) {
               type: invProduct.type || 'Hybrid',
               description: `${invProduct.brand ? invProduct.brand + ' · ' : ''}${invProduct.category || 'Cannabis product'} available at ${selectedDispensary.name}.`,
               thc_min: 0, thc_max: 0, cbd_min: 0, cbd_max: 0,
-              best_time: 'Ask budtender', experience_level: 'All levels',
+              thc: invProduct.thc || '',
+              cbd: invProduct.cbd || '',
+              price: invProduct.price || '',
+              category: invProduct.category || '',
+              best_time: '', experience_level: '',
               terpenes: [], effects: [],
               isLiveInventory: true,
             };
@@ -2331,7 +2335,7 @@ function buildRecCard(s, reason) {
       ${(s.thc_max > 0 || (isLive && thcStr && thcStr !== 'Ask budtender')) ? `<span class="rec-stat"><strong>THC</strong> ${thcStr}</span>` : thcStr === 'Ask budtender' ? `<span class="rec-stat" style="color:#9a9c97"><strong>THC</strong> Ask budtender</span>` : ''}
       ${(s.cbd_max > 0.5 || (isLive && cbdStr)) ? `<span class="rec-stat"><strong>CBD</strong> ${cbdStr}</span>` : ''}
       ${(!isLive && s.best_time && s.best_time !== 'Ask budtender') ? `<span class="rec-stat">${s.best_time}</span>` : isLive ? `<span class="rec-stat">${inferBestTime(s)}</span>` : ''}
-      <span class="rec-stat">${s.experience_level || 'All levels'}</span>
+      ${(!isLive && s.experience_level) ? `<span class="rec-stat">${s.experience_level}</span>` : isLive && s.price ? `<span class="rec-stat" style="color:#1a9968;font-weight:600">${s.price}</span>` : ''}
     </div>
     ${(s.thc_max > 2 || (isLive && potencyPct > 0)) ? `<div style="margin:6px 0 8px">
       <div style="display:flex;justify-content:space-between;margin-bottom:3px">
