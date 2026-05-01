@@ -1042,20 +1042,32 @@ function setDispStatus(msg) {
 }
 
 function findPartnerSlug(name, address) {
-  // Match a search result name to a partner dispensary slug
   const nameLower = (name||'').toLowerCase();
   const addrLower = (address||'').toLowerCase();
 
   return Object.entries(DISPENSARIES).find(([slug, d]) => {
     const dispName = d.name.toLowerCase().split('—')[0].trim();
     const dispState = (d.state||'').toLowerCase();
-    const nameMatches = nameLower.includes(dispName) || nameLower.includes((d.wmSlug||'').replace(/-/g,' '));
-    if (!nameMatches) return false;
-    // If dispensary has a state, verify address matches
-    if (dispState && addrLower && !addrLower.includes(dispState) && !addrLower.includes(getStateName(dispState))) return false;
-    // If dispensary has a city, verify city matches
     const dispCity = (d.city||'').toLowerCase();
-    if (dispCity && addrLower && !addrLower.includes(dispCity)) return false;
+    const altNames = (d.altNames||[]);
+
+    // Check name match — primary name, wm slug, or alt names
+    const nameMatches = nameLower.includes(dispName) ||
+      nameLower.includes((d.wmSlug||'').replace(/-/g,' ')) ||
+      altNames.some(alt => nameLower.includes(alt));
+    if (!nameMatches) return false;
+
+    // State check
+    if (dispState && addrLower) {
+      const stateMatch = addrLower.includes(dispState) || addrLower.includes(getStateName(dispState));
+      if (!stateMatch) return false;
+    }
+
+    // City check — only enforce if name is generic (appears in multiple states)
+    const genericBrands = ['the source', 'green leaf', 'rise'];
+    const isGeneric = genericBrands.some(g => dispName.includes(g));
+    if (isGeneric && dispCity && addrLower && !addrLower.includes(dispCity)) return false;
+
     return true;
   })?.[0] || null;
 }
@@ -2140,14 +2152,27 @@ function addMessage(role, content, chips) {
         const trimmedName = (name||'').trim().toLowerCase();
         if (shownRecs.has(trimmedName)) return;
         shownRecs.add(trimmedName);
+        // Also track by first word to catch "Rebel Rider Flower" vs "Rebel Rider"
+        const firstWords = trimmedName.split(' ').slice(0,2).join(' ');
+        if (firstWords.length > 4 && shownRecs.has(firstWords)) return;
+        shownRecs.add(firstWords);
         // First try to find in static strains database
         let strain = window.STRAINS.find(s => s.name.toLowerCase() === trimmedName);
         // If not found, check live inventory
         if (!strain && selectedDispensary?.inventory?.length) {
+          const searchName = (name||'').trim().toLowerCase();
+          // Strip common category words Ivy might append
+          const cleanSearch = searchName.replace(/\s*(flower|edible|vape|extract|tincture|topical|gummy|gummies|cartridge|disposable|pre-roll)\s*/gi, '').trim();
+          // Try exact match first, then partial — avoids wrong product matching
           const invProduct = selectedDispensary.inventory.find(p =>
-            p.name?.toLowerCase().includes((name||'').trim().toLowerCase()) ||
-            (name||'').trim().toLowerCase().includes(p.strain?.toLowerCase() || '')
-          );
+            p.name?.toLowerCase() === searchName ||
+            p.name?.toLowerCase() === cleanSearch
+          ) || selectedDispensary.inventory.find(p => {
+            const pName = p.name?.toLowerCase() || '';
+            const pClean = pName.replace(/\s*(flower|edible|vape|extract|tincture|topical|gummy|gummies|cartridge|disposable|pre-roll)\s*/gi, '').trim();
+            return pName.includes(cleanSearch) || cleanSearch.includes(pName) ||
+                   pClean.includes(cleanSearch) || cleanSearch.includes(pClean);
+          });
           if (invProduct) {
             const invId = 'inv-' + (invProduct.name||'').toLowerCase().replace(/[^a-z0-9]/g,'').substr(0,8);
             strain = {
@@ -2790,7 +2815,7 @@ const DISPENSARIES = {
   'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', state: 'MD', wmSlug: 'story-mechanicsville' },
   'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', state: 'OH', wmSlug: 'story-cleveland' },
   'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      state: 'AR', wmSlug: 'purspirit-cannabis-co' },
-  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', wmSlug: 'the-source-rogers', city: 'rogers' },
+  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', wmSlug: 'the-source-rogers', city: 'rogers', altNames: ['the source rogers', 'source rogers', 'the source craft'] },
   'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       state: 'AR', wmSlug: 'the-hill-fayetteville' },
 };
 
