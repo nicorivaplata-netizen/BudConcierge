@@ -2328,7 +2328,7 @@ function addMessage(role, content, chips) {
   const shownRecs = new Set();
 
   if (role === 'bot') {
-    content.split('\n').forEach(line => {
+    content.split(/\r?\n|\\n/).forEach(line => {
       if (line.startsWith('REC|||')) {
         const [, name, reason] = line.split('|||');
         // Skip duplicate product names in same response
