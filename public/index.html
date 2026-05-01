@@ -124,6 +124,10 @@
           </div>
           <h2 style="font-size:24px;font-weight:700;color:#111310;margin-bottom:12px;letter-spacing:-0.5px;line-height:1.2">Remembers what works for you</h2>
           <p style="font-size:14px;color:#5a5c57;line-height:1.75;padding:0 8px">Log your sessions and build a personal wellness profile over time. The more you use Ivy, the smarter your recommendations become.</p>
+          <div style="display:flex;align-items:center;justify-content:center;gap:5px;margin-top:14px;background:#E1F5EE;border-radius:8px;padding:8px 12px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span style="font-size:11px;color:#0d6647;font-weight:500">Your journal and profile stay private on your device.</span>
+          </div>
         </div>
 
         <!-- Slide 3 — Heart/wellness icon -->
@@ -135,6 +139,10 @@
           </div>
           <h2 style="font-size:24px;font-weight:700;color:#111310;margin-bottom:12px;letter-spacing:-0.5px;line-height:1.2">No judgment. Ever.</h2>
           <p style="font-size:14px;color:#5a5c57;line-height:1.75;padding:0 8px">Cannabis is wellness. Ivy is here for anyone who wants honest, private guidance — on their own terms, at their own pace.</p>
+          <div style="display:flex;align-items:center;justify-content:center;gap:5px;margin-top:14px;background:#E1F5EE;border-radius:8px;padding:8px 12px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span style="font-size:11px;color:#0d6647;font-weight:500">Ask about anything — Ivy never judges, never lectures.</span>
+          </div>
         </div>
 
       </div>
@@ -477,6 +485,8 @@
             <button class="opt-btn" data-field="products" data-val="Edibles" onclick="pickMany(this)">Edibles</button>
             <button class="opt-btn" data-field="products" data-val="THC drinks" onclick="pickMany(this)">THC drinks</button>
             <button class="opt-btn" data-field="products" data-val="Tinctures" onclick="pickMany(this)">Tinctures</button>
+            <button class="opt-btn" data-field="products" data-val="Concentrates" onclick="pickMany(this)">Concentrates</button>
+            <button class="opt-btn" data-field="products" data-val="Drinks" onclick="pickMany(this)">Drinks</button>
             <button class="opt-btn" data-field="products" data-val="Vape" onclick="pickMany(this)">Vape</button>
             <button class="opt-btn" data-field="products" data-val="Topicals" onclick="pickMany(this)">Topicals</button>
           </div>
@@ -1118,6 +1128,16 @@ function renderDispensaries(list) {
 }
 
 async function usePartnerForChat(slug, btn) {
+  // Toggle — if already selected, deselect
+  const saved = localStorage.getItem('bc_selected_dispensary');
+  let savedSlug = null;
+  try { savedSlug = JSON.parse(saved)?.slug; } catch(e) {}
+  if (savedSlug === slug) {
+    clearPartnerDispensary();
+    btn.innerHTML = '⚡ Use for Chat';
+    btn.style.background = '#1a9968';
+    return;
+  }
   const orig = btn.innerHTML;
   btn.innerHTML = 'Loading inventory...';
   btn.disabled = true;
@@ -1127,14 +1147,18 @@ async function usePartnerForChat(slug, btn) {
     localStorage.setItem('bc_selected_dispensary', JSON.stringify({ slug, name: DISPENSARIES[slug].name }));
     chatInitialized = false;
     updateCurrentDispCard();
-    const status = document.getElementById('partner-status');
-    if (status) {
-      status.textContent = inv.length > 0
-        ? '⚡ ' + inv.length + ' products loaded from ' + DISPENSARIES[slug].name + '. Head to Chat for live recommendations.'
-        : DISPENSARIES[slug].name + ' selected. Inventory coming soon.';
-    }
     btn.innerHTML = '✓ Selected';
     btn.style.background = '#0d6647';
+    // Auto-navigate to chat with dispensary context
+    setTimeout(() => {
+      switchTab('chat');
+      // Let chat initialize then send dispensary greeting
+      setTimeout(() => {
+        if (!chatInitialized) startChat();
+        // Inject dispensary context into next message
+        window._pendingDispensaryGreeting = DISPENSARIES[slug].name;
+      }, 300);
+    }, 600);
   } else {
     btn.innerHTML = orig;
     btn.style.background = '#e24b4a';
@@ -2094,7 +2118,7 @@ IBS AND CROHNS: Suppositories and rectal administration for gut-localized relief
 
 CHIP FORMAT — whenever you ask a question, you must end your message with a line in EXACTLY this format:
 CHIPS|||option1|||option2|||option3|||option4
-The chips must be short (2 to 4 words max) and directly answer the specific question you just asked. Never show generic chips. If you ask about pain type, show chips like: Muscle soreness|||Joint pain|||Headaches|||Back pain. If you ask about product, show: Flower|||Edibles|||THC drink|||Tincture. If you ask about experience: First time|||Occasional|||Regular|||Daily. If you are making recommendations and not asking a question, do not include a CHIPS line.
+The chips must be short (2 to 4 words max) and directly answer the specific question you just asked. Never show generic chips. If you ask about pain type, show chips like: Muscle soreness|||Joint pain|||Headaches|||Back pain. If you ask about product, show: Flower|||Edibles|||Vape|||Concentrates|||Tincture|||Drinks. If you ask about experience: First time|||Occasional|||Regular|||Daily. If you are making recommendations and not asking a question, do not include a CHIPS line.
 ${inventoryCtx}`;
 }
 
@@ -2243,14 +2267,33 @@ function buildRecCard(s, reason) {
   const [bg, tx] = window.TYPE_COLORS[s.type] || ['#E1F5EE','#085041'];
   const saved = strainHistory.find(h => h.name === s.name);
 
-  // Live inventory products don't have THC/CBD data
+  // Live inventory products — parse THC% string if available
   const isLive = s.isLiveInventory;
-  const thcStr = isLive ? 'Ask budtender' : (s.thc_max <= 2 ? `${s.thc_min}–${s.thc_max}mg` : `${s.thc_min}–${s.thc_max}%`);
-  const cbdStr = isLive ? '' : (s.cbd_max >= 100 ? `${Math.round(s.cbd_min)}mg` : `${s.cbd_min}–${s.cbd_max}%`);
+  let thcStr, cbdStr, potencyPct;
 
-  const potencyPct = isLive ? 0 : (s.thc_max <= 2 ? 5 : Math.min(100, Math.round((s.thc_max / 35) * 100)));
+  if (isLive) {
+    // Try to parse THC from string like "23.69%" or "100mg"
+    const thcRaw = s.thc || '';
+    const thcNum = parseFloat(thcRaw);
+    if (thcRaw.includes('%') && !isNaN(thcNum)) {
+      thcStr = thcRaw;
+      potencyPct = Math.min(100, Math.round((thcNum / 35) * 100));
+    } else if (thcRaw.includes('mg') && !isNaN(thcNum)) {
+      thcStr = thcRaw;
+      potencyPct = Math.min(100, Math.round((thcNum / 100) * 30)); // scale mg differently
+    } else {
+      thcStr = 'Ask budtender';
+      potencyPct = 0;
+    }
+    cbdStr = s.cbd || '';
+  } else {
+    thcStr = s.thc_max <= 2 ? `${s.thc_min}–${s.thc_max}mg` : `${s.thc_min}–${s.thc_max}%`;
+    cbdStr = s.cbd_max >= 100 ? `${Math.round(s.cbd_min)}mg` : `${s.cbd_min}–${s.cbd_max}%`;
+    potencyPct = s.thc_max <= 2 ? 5 : Math.min(100, Math.round((s.thc_max / 35) * 100));
+  }
+
   const potencyColor = potencyPct < 30 ? '#1a9968' : potencyPct < 60 ? '#EF9F27' : '#e24b4a';
-  const potencyLabel = potencyPct < 30 ? 'Mild' : potencyPct < 60 ? 'Moderate' : 'Strong';
+  const potencyLabel = potencyPct === 0 ? 'Unknown' : potencyPct < 30 ? 'Mild' : potencyPct < 60 ? 'Moderate' : 'Strong';
 
   return `<div class="rec-card">
     <div class="rec-header">
@@ -2447,6 +2490,17 @@ function startChat() {
     : `Good ${tod}. What can I help you with today?`;
   addMessage('bot', greeting);
   chatHistory.push({ role: 'assistant', content: greeting });
+
+  // If dispensary was just selected, send acknowledgment after greeting
+  if (window._pendingDispensaryGreeting) {
+    const dispName = window._pendingDispensaryGreeting;
+    window._pendingDispensaryGreeting = null;
+    setTimeout(() => {
+      const dispMsg = `I’ve loaded the live inventory from ${dispName} — I’ll only recommend products that are actually in stock there right now. What are you looking to help with today?`;
+      addMessage('bot', dispMsg, ['Sleep', 'Pain relief', 'Anxiety', 'Focus', 'Just browsing']);
+      chatHistory.push({ role: 'assistant', content: dispMsg });
+    }, 700);
+  }
 }
 
 // ── Quick Setup Card — shown inline in chat for new users ────────────────────
