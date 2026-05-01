@@ -1067,9 +1067,17 @@ function findPartnerSlug(name, address) {
       altNames.some(alt => nameLower.includes(alt));
     if (!nameMatches) return false;
 
-    // State check
+    // State check — address may not include state abbreviation, also check city
     if (dispState && addrLower) {
-      const stateMatch = addrLower.includes(dispState) || addrLower.includes(getStateName(dispState));
+      const knownCities = { 'ar': ['fayetteville', 'rogers', 'bentonville', 'fort smith', 'little rock'],
+                            'mo': ['pineville', 'chesterfield', 'columbia', 'cape girardeau'],
+                            'az': ['phoenix', 'tempe', 'scottsdale', 'mesa', 'dunlap'],
+                            'md': ['mechanicsville', 'baltimore', 'rockville'],
+                            'oh': ['cleveland', 'columbus', 'cincinnati'] };
+      const citiesForState = knownCities[dispState] || [];
+      const stateMatch = addrLower.includes(dispState) ||
+                         addrLower.includes(getStateName(dispState)) ||
+                         citiesForState.some(c => addrLower.includes(c));
       if (!stateMatch) return false;
     }
 
@@ -1150,15 +1158,21 @@ async function usePartnerForChat(slug, btn) {
     btn.innerHTML = '✓ Selected';
     btn.style.background = '#0d6647';
     // Auto-navigate to chat with dispensary context
+    window._pendingDispensaryGreeting = DISPENSARIES[slug].name;
     setTimeout(() => {
       switchTab('chat');
-      // Let chat initialize then send dispensary greeting
       setTimeout(() => {
-        if (!chatInitialized) startChat();
-        // Inject dispensary context into next message
-        window._pendingDispensaryGreeting = DISPENSARIES[slug].name;
-      }, 300);
-    }, 600);
+        if (!chatInitialized) {
+          startChat();
+        } else {
+          // Chat already open — inject greeting directly
+          const dispMsg = `I’ve loaded the live inventory from ${DISPENSARIES[slug].name} — I’ll only recommend products actually in stock there right now. What are you looking to help with today?`;
+          addMessage('bot', dispMsg, ['Sleep', 'Pain relief', 'Anxiety', 'Focus', 'Just browsing']);
+          chatHistory.push({ role: 'assistant', content: dispMsg });
+          window._pendingDispensaryGreeting = null;
+        }
+      }, 400);
+    }, 500);
   } else {
     btn.innerHTML = orig;
     btn.style.background = '#e24b4a';
