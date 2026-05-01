@@ -1053,6 +1053,9 @@ function findPartnerSlug(name, address) {
     if (!nameMatches) return false;
     // If dispensary has a state, verify address matches
     if (dispState && addrLower && !addrLower.includes(dispState) && !addrLower.includes(getStateName(dispState))) return false;
+    // If dispensary has a city, verify city matches
+    const dispCity = (d.city||'').toLowerCase();
+    if (dispCity && addrLower && !addrLower.includes(dispCity)) return false;
     return true;
   })?.[0] || null;
 }
@@ -2021,7 +2024,7 @@ CRITICAL: When you have enough information to make recommendations, you MUST use
 Give 2 to 3 recommendations using ONLY this format (one per line):
 REC|||Exact Product Name|||One sentence reason that names their specific condition or goal
 
-LIVE INVENTORY RULE: When a current dispensary inventory is provided above, you MUST only recommend products from that inventory list. Use the exact product name as it appears in the inventory. Do not recommend products from the general database when inventory is available.
+LIVE INVENTORY RULE: When a current dispensary inventory is provided above, you MUST only recommend products from that inventory list. Use the exact product name as it appears in the inventory. Do not recommend products from the general database when inventory is available. NEVER recommend the same product name twice in the same response — each REC line must be a different product.
 
 RECOMMENDATION QUALITY RULES — every recommendation must meet ALL of these:
 
@@ -2787,7 +2790,7 @@ const DISPENSARIES = {
   'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', state: 'MD', wmSlug: 'story-mechanicsville' },
   'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', state: 'OH', wmSlug: 'story-cleveland' },
   'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      state: 'AR', wmSlug: 'purspirit-cannabis-co' },
-  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', wmSlug: 'the-source-rogers' },
+  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', wmSlug: 'the-source-rogers', city: 'rogers' },
   'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       state: 'AR', wmSlug: 'the-hill-fayetteville' },
 };
 
