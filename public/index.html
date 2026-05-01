@@ -2277,6 +2277,18 @@ function addMessage(role, content, chips) {
   msgsEl.scrollTop = msgsEl.scrollHeight;
 }
 
+function inferBestTime(product) {
+  const cat = (product.category || '').toLowerCase();
+  const type = (product.type || '').toLowerCase();
+  if (cat.includes('topical') || cat.includes('patch')) return 'Anytime';
+  if (cat.includes('tincture')) return 'Sublingual';
+  if (cat.includes('edible') || cat.includes('drink')) return 'Plan ahead';
+  if (cat.includes('vape') || cat.includes('flower')) return 'Fast onset';
+  if (type.includes('indica')) return 'Evening';
+  if (type.includes('sativa')) return 'Daytime';
+  return 'Anytime';
+}
+
 function buildRecCard(s, reason) {
   const [bg, tx] = window.TYPE_COLORS[s.type] || ['#E1F5EE','#085041'];
   const saved = strainHistory.find(h => h.name === s.name);
@@ -2294,7 +2306,8 @@ function buildRecCard(s, reason) {
       potencyPct = Math.min(100, Math.round((thcNum / 35) * 100));
     } else if (thcRaw.includes('mg') && !isNaN(thcNum)) {
       thcStr = thcRaw;
-      potencyPct = Math.min(100, Math.round((thcNum / 100) * 30)); // scale mg differently
+      // Scale: 10mg=mild(20%), 40mg=moderate(40%), 100mg=strong(70%), 500mg+=max
+      potencyPct = thcNum <= 10 ? 15 : thcNum <= 40 ? 35 : thcNum <= 100 ? 60 : thcNum <= 300 ? 80 : 95;
     } else {
       thcStr = 'Ask budtender';
       potencyPct = 0;
@@ -2317,7 +2330,7 @@ function buildRecCard(s, reason) {
     <div class="rec-stats">
       ${(s.thc_max > 0 || (isLive && thcStr && thcStr !== 'Ask budtender')) ? `<span class="rec-stat"><strong>THC</strong> ${thcStr}</span>` : thcStr === 'Ask budtender' ? `<span class="rec-stat" style="color:#9a9c97"><strong>THC</strong> Ask budtender</span>` : ''}
       ${(s.cbd_max > 0.5 || (isLive && cbdStr)) ? `<span class="rec-stat"><strong>CBD</strong> ${cbdStr}</span>` : ''}
-      <span class="rec-stat">${s.best_time || 'Anytime'}</span>
+      ${(!isLive && s.best_time && s.best_time !== 'Ask budtender') ? `<span class="rec-stat">${s.best_time}</span>` : isLive ? `<span class="rec-stat">${inferBestTime(s)}</span>` : ''}
       <span class="rec-stat">${s.experience_level || 'All levels'}</span>
     </div>
     ${(s.thc_max > 2 || (isLive && potencyPct > 0)) ? `<div style="margin:6px 0 8px">
