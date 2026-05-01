@@ -1445,10 +1445,46 @@ function finishOnboard() {
   saveData();
 
   localStorage.setItem(OKEY, '1');
+
+  // Go straight to chat — Ivy greets them with context from onboarding
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-home').classList.add('active');
+  document.getElementById('screen-chat').classList.add('active');
   refreshUI();
-  injectNavbars('home');
+  injectNavbars('chat');
+
+  // Build personalized opening message from onboarding data
+  const firstName = (profile.name || '').split(' ')[0];
+  const greetName = firstName === 'Just call me friend' ? 'friend' :
+                    firstName === 'Anonymous' ? '' : firstName;
+  const goals = obData.goals.length ? obData.goals : [];
+  const topGoal = goals[0] || null;
+  const expLabel = {
+    'first_time': 'a first timer',
+    'beginner': 'fairly new to cannabis',
+    'occasional': 'an occasional user',
+    'regular': 'a regular user',
+    'experienced': 'very experienced'
+  }[profile.experience] || null;
+
+  let greeting = greetName ? `Hey ${greetName} — ` : '';
+  greeting += `I’m Ivy, your personal cannabis guide.`;
+  if (topGoal && expLabel) {
+    greeting += ` Since you’re ${expLabel} and looking for help with ${topGoal.toLowerCase()}, I can give you a really specific recommendation right now.`;
+  } else if (topGoal) {
+    greeting += ` You mentioned ${topGoal.toLowerCase()} — that’s a great place to start.`;
+  } else if (expLabel) {
+    greeting += ` As ${expLabel}, I’ll tailor everything to your comfort level.`;
+  }
+
+  const chips = topGoal ? [topGoal, 'Something else'] : ['Sleep', 'Pain relief', 'Anxiety', 'Just exploring'];
+
+  // Initialize chat then send personalized greeting
+  chatHistory = [];
+  chatInitialized = true;
+  const messagesEl = document.getElementById('messages');
+  if (messagesEl) messagesEl.innerHTML = '';
+  addMessage('bot', greeting, chips);
+  chatHistory.push({ role: 'assistant', content: greeting });
 }
 
 // ─── Storage keys ───────────────────────────────────────────────────────────
