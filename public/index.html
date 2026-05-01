@@ -2223,6 +2223,7 @@ function addMessage(role, content, chips) {
               cbd: invProduct.cbd || '',
               price: invProduct.price || '',
               category: invProduct.category || '',
+              menuUrl: selectedDispensary?.menuUrl || (DISPENSARIES[selectedDispensary?.slug]?.menuUrl) || '',
               best_time: '', experience_level: '',
               terpenes: [], effects: [],
               isLiveInventory: true,
@@ -2329,13 +2330,16 @@ function buildRecCard(s, reason) {
   return `<div class="rec-card">
     <div class="rec-header">
       <span class="rec-name">${s.name}</span>
-      <span class="rec-badge" style="background:${bg};color:${tx}">${s.type}</span>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        ${isLive && s.price ? `<span style="font-size:12px;font-weight:700;color:#1a9968">${s.price}</span>` : ''}
+        <span class="rec-badge" style="background:${bg};color:${tx}">${s.type}</span>
+      </div>
     </div>
     <div class="rec-stats">
       ${(s.thc_max > 0 || (isLive && thcStr && thcStr !== 'Ask budtender')) ? `<span class="rec-stat"><strong>THC</strong> ${thcStr}</span>` : thcStr === 'Ask budtender' ? `<span class="rec-stat" style="color:#9a9c97"><strong>THC</strong> Ask budtender</span>` : ''}
       ${(s.cbd_max > 0.5 || (isLive && cbdStr)) ? `<span class="rec-stat"><strong>CBD</strong> ${cbdStr}</span>` : ''}
       ${(!isLive && s.best_time && s.best_time !== 'Ask budtender') ? `<span class="rec-stat">${s.best_time}</span>` : isLive ? `<span class="rec-stat">${inferBestTime(s)}</span>` : ''}
-      ${(!isLive && s.experience_level) ? `<span class="rec-stat">${s.experience_level}</span>` : isLive && s.price ? `<span class="rec-stat" style="color:#1a9968;font-weight:600">${s.price}</span>` : ''}
+      ${(!isLive && s.experience_level) ? `<span class="rec-stat">${s.experience_level}</span>` : ''}
     </div>
     ${(s.thc_max > 2 || (isLive && potencyPct > 0)) ? `<div style="margin:6px 0 8px">
       <div style="display:flex;justify-content:space-between;margin-bottom:3px">
@@ -2349,6 +2353,7 @@ function buildRecCard(s, reason) {
     <div class="rec-desc">${s.description}</div>
     ${reason ? `<div class="rec-why"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> ${reason}</div>` : ''}
     ${s.terpenes.length ? `<div class="rec-terps">${s.terpenes.map(t=>`<span class="terp" title="${t}">${t}</span>`).join('')}</div>` : ''}
+    ${isLive && s.menuUrl ? `<a href="${s.menuUrl}" target="_blank" rel="noopener" style="display:block;width:100%;text-align:center;padding:9px;border:1px solid #a8dfc9;border-radius:10px;font-size:12px;font-weight:600;color:#085041;text-decoration:none;background:#E1F5EE;margin-bottom:6px;box-sizing:border-box">↗ View dispensary menu</a>` : ''}
     <button class="save-btn ${saved?'saved':''}" onclick="saveStrain('${s.id}',this)">
       ${saved ? '✓ Saved to profile' : '+ Save to profile'}
     </button>
@@ -2892,16 +2897,16 @@ inp.addEventListener('input', () => { inp.style.height = 'auto'; inp.style.heigh
 
 // ─── Dispensary Registry ──────────────────────────────────────────────────────
 const DISPENSARIES = {
-  'high-profile-pineville':      { name: 'High Profile — Pineville, MO',        brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-pineville' },
-  'mo-chesterfield-hp':          { name: 'High Profile — Chesterfield, MO',     brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-chesterfield' },
-  'mo-columbia-hp':              { name: 'High Profile — Columbia, MO',         brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-columbia' },
-  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO',   brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-cape-girardeau' },
-  'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis', state: 'AZ', wmSlug: 'story-dunlap' },
-  'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', state: 'MD', wmSlug: 'story-mechanicsville' },
-  'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', state: 'OH', wmSlug: 'story-cleveland' },
-  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      state: 'AR', wmSlug: 'purspirit-cannabis-co' },
-  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', wmSlug: 'the-source-rogers', city: 'rogers', altNames: ['the source rogers', 'source rogers', 'the source craft'] },
-  'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       state: 'AR', wmSlug: 'the-hill-fayetteville' },
+  'high-profile-pineville':      { name: 'High Profile — Pineville, MO',        brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-pineville' , menuUrl: 'https://highprofilecannabis.com/shop/pineville-dispensary' },
+  'mo-chesterfield-hp':          { name: 'High Profile — Chesterfield, MO',     brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-chesterfield' , menuUrl: 'https://highprofilecannabis.com/shop/chesterfield-dispensary' },
+  'mo-columbia-hp':              { name: 'High Profile — Columbia, MO',         brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-columbia' , menuUrl: 'https://highprofilecannabis.com/shop/columbia-dispensary' },
+  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO',   brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-cape-girardeau' , menuUrl: 'https://highprofilecannabis.com/shop/cape-girardeau-dispensary' },
+  'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis', state: 'AZ', wmSlug: 'story-dunlap' , menuUrl: 'https://storycannabis.com/shop/arizona/shop-dunlap/rec-menu' },
+  'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', state: 'MD', wmSlug: 'story-mechanicsville' , menuUrl: 'https://storycannabis.com/shop/maryland/shop-mechanicsville/med-menu' },
+  'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', state: 'OH', wmSlug: 'story-cleveland' , menuUrl: 'https://storycannabis.com/shop/ohio/shop-cleveland/rec-menu' },
+  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      state: 'AR', wmSlug: 'purspirit-cannabis-co' , menuUrl: 'https://menu.purspirit.com/shop/menu' },
+  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', wmSlug: 'the-source-rogers', city: 'rogers', altNames: ['the source rogers', 'source rogers', 'the source craft'] , menuUrl: 'https://www.thesource-mj.com/stores/the-source-rogers' },
+  'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       state: 'AR', wmSlug: 'the-hill-fayetteville' , menuUrl: 'https://thehillnwa.com/our-menu' },
 };
 
 let selectedDispensary = null; // { slug, name, brand, inventory[] }
@@ -2917,7 +2922,7 @@ async function fetchInventory(slug) {
       return [];
     }
 
-    selectedDispensary = { slug, ...DISPENSARIES[slug], inventory: data.inventory, summary: data.summary };
+    selectedDispensary = { slug, ...DISPENSARIES[slug], inventory: data.inventory, summary: data.summary, menuUrl: DISPENSARIES[slug]?.menuUrl || '' };
     localStorage.setItem('bc_selected_dispensary', JSON.stringify({ slug, name: DISPENSARIES[slug].name }));
     console.log(`Loaded ${data.inventory.length} products for ${data.dispensary}`);
     return data.inventory;
