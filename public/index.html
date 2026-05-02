@@ -2823,9 +2823,13 @@ function startChat() {
   chatHistory = [];
   document.getElementById('messages').innerHTML = '';
 
-  // Show quick setup for users without a profile
+  // No profile yet — Ivy will introduce herself and ask for name naturally
+  // through conversation (system prompt handles this)
   if (!profile.name) {
-    showQuickSetup();
+    const welcomeMsg = "Hi, I'm Ivy — your personal cannabis guide. I give personalized recommendations based on your needs, completely private and judgment-free. What can I help you with today?";
+    const welcomeChips = ['Sleep', 'Pain relief', 'Anxiety', 'Focus', 'Just exploring'];
+    addMessage('bot', welcomeMsg, welcomeChips);
+    chatHistory.push({ role: 'assistant', content: welcomeMsg });
     return;
   }
 
