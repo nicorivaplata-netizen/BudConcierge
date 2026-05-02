@@ -2407,7 +2407,23 @@ function addMessage(role, content, chips) {
       btn.className = 'chip';
       btn.textContent = c;
       btn.onclick = () => {
-        document.querySelectorAll('.chip').forEach(x => x.classList.add('used'));
+        // Mark all chips in previous messages as used, keep this set visible
+        document.querySelectorAll('.chips').forEach(chipSet => {
+          if (!chipSet.contains(btn)) {
+            chipSet.querySelectorAll('.chip').forEach(x => x.classList.add('used'));
+          }
+        });
+        // Mark selected chip as active, siblings as used
+        btn.parentElement.querySelectorAll('.chip').forEach(x => {
+          x.classList.add('used');
+          x.style.opacity = '0.4';
+        });
+        btn.classList.remove('used');
+        btn.style.opacity = '1';
+        btn.style.background = 'var(--green-mid)';
+        btn.style.borderColor = 'var(--green)';
+        btn.style.fontWeight = '600';
+        btn.style.pointerEvents = 'none';
         document.getElementById('chat-input').value = c;
         sendMessage();
       };

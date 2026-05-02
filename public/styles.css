@@ -165,7 +165,8 @@ html,body { height:100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont
   letter-spacing: -0.01em;
 }
 .chip:hover { background: var(--green-mid); border-color: var(--green); }
-.chip.used  { opacity:.35; pointer-events:none; }
+.chip.used  { opacity:.38; pointer-events:none; }
+.chip.selected { opacity:1; background:var(--green-mid); border-color:var(--green); color:var(--green-dark); font-weight:600; pointer-events:none; }
 
 /* Rec card — product recommendation */
 .rec-card {
