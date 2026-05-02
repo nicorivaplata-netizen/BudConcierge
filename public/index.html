@@ -2415,17 +2415,26 @@ function addMessage(role, content, chips) {
   if (chips && chips.length) {
     const cd = document.createElement('div');
     cd.className = 'chips';
-    // Multi-select only for the opening greeting — detect by checking if chips
-    // match the user's onboarding goals exactly (set in finishOnboard)
+    // Add hint text for multi-select
+    if (isMultiSelect) {
+      const hint = document.createElement('div');
+      hint.style.cssText = 'width:100%;font-size:11px;color:#9a9c97;margin-bottom:2px;font-style:italic';
+      hint.textContent = 'Tap all that apply, then confirm';
+      cd.appendChild(hint);
+    }
+    // Multi-select when:
+    // 1. Chips match user's profile goals (opening greeting)
+    // 2. Chips include a special marker "select:multiple" from Ivy
     const userGoals = (profile.goals || []).map(g => g.toLowerCase());
-    const chipGoals = chips.filter(c => c !== 'Something else').map(c => c.toLowerCase());
-    const isMultiSelect = chips.includes('Something else') && 
-                          chipGoals.length > 0 &&
-                          chipGoals.every(c => userGoals.includes(c)) &&
-                          userGoals.length > 1;
+    const chipGoals = chips.filter(c => c !== 'Something else' && c !== 'select:multiple').map(c => c.toLowerCase());
+    const hasMultipleGoals = userGoals.length > 1 && chipGoals.every(c => userGoals.includes(c));
+    const isMultiSelect = chips.includes('Something else') && chipGoals.length > 0 &&
+                          (hasMultipleGoals || chips.includes('select:multiple'));
+    // Clean chips — remove internal marker
+    const displayChips = chips.filter(c => c !== 'select:multiple');
     const selectedGoals = new Set();
 
-    chips.forEach(c => {
+    displayChips.forEach(c => {
       const btn = document.createElement('button');
       btn.className = 'chip';
       btn.textContent = c;
@@ -2746,7 +2755,7 @@ function startChat() {
     return;
   }
 
-  // Returning user with profile — greet them and wait for their question
+  // Returning user with profile — greet with awareness of their personalizations
   const hr = new Date().getHours();
   const tod = hr < 12 ? 'morning' : hr < 17 ? 'afternoon' : 'evening';
   const fullName = (profile.name||'').trim();
@@ -2754,10 +2763,36 @@ function startChat() {
   const greetName = fullName === 'Just call me friend' ? 'friend' :
                     fullName === 'Anonymous' ? '' :
                     firstName === 'Just' ? 'friend' : firstName;
-  const greeting = greetName
-    ? `Hey ${greetName}, good ${tod}. What can I help you with today?`
-    : `Good ${tod}. What can I help you with today?`;
-  addMessage('bot', greeting);
+
+  const goals = profile.goals || [];
+  const expLabel = {
+    'first_time': 'a first timer',
+    'beginner': 'fairly new to cannabis',
+    'occasional': 'an occasional user',
+    'regular': 'a regular user',
+    'experienced': 'very experienced'
+  }[profile.experience] || null;
+
+  let greeting = greetName ? `Hey ${greetName} — ` : '';
+  greeting += `good ${tod}.`;
+
+  // Acknowledge their goals if set
+  if (goals.length > 0) {
+    let goalsText = '';
+    if (goals.length === 1) goalsText = goals[0].toLowerCase();
+    else if (goals.length === 2) goalsText = `${goals[0].toLowerCase()} and ${goals[1].toLowerCase()}`;
+    else goalsText = goals.slice(0,-1).map(g=>g.toLowerCase()).join(', ') + ', and ' + goals[goals.length-1].toLowerCase();
+    greeting += ` What can I help you with today? I know you’ve been working on ${goalsText}.`;
+  } else {
+    greeting += ` What can I help you with today?`;
+  }
+
+  // Build chips from their goals or defaults
+  const greetChips = goals.length > 0
+    ? [...goals.slice(0,3), 'Something else']
+    : ['Sleep', 'Pain relief', 'Anxiety', 'Something else'];
+
+  addMessage('bot', greeting, greetChips);
   chatHistory.push({ role: 'assistant', content: greeting });
 
   // If dispensary was just selected, send acknowledgment after greeting
