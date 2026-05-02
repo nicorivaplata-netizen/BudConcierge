@@ -2415,31 +2415,84 @@ function addMessage(role, content, chips) {
   if (chips && chips.length) {
     const cd = document.createElement('div');
     cd.className = 'chips';
+    // Detect if this is a multi-select context (contains "Something else" with goals)
+    const isMultiSelect = chips.includes('Something else') && chips.length > 2;
+    const selectedGoals = new Set();
+
     chips.forEach(c => {
       const btn = document.createElement('button');
       btn.className = 'chip';
       btn.textContent = c;
-      btn.onclick = () => {
-        // Mark all chips in previous messages as used, keep this set visible
-        document.querySelectorAll('.chips').forEach(chipSet => {
-          if (!chipSet.contains(btn)) {
-            chipSet.querySelectorAll('.chip').forEach(x => x.classList.add('used'));
+
+      if (isMultiSelect && c !== 'Something else') {
+        // Multi-select mode for goal chips
+        btn.onclick = () => {
+          if (selectedGoals.has(c)) {
+            selectedGoals.delete(c);
+            btn.style.background = '';
+            btn.style.borderColor = '';
+            btn.style.color = '';
+            btn.style.fontWeight = '';
+          } else {
+            selectedGoals.add(c);
+            btn.style.background = 'var(--green-mid)';
+            btn.style.borderColor = 'var(--green)';
+            btn.style.color = 'var(--green-dark)';
+            btn.style.fontWeight = '600';
           }
-        });
-        // Mark selected chip as active, siblings as used
-        btn.parentElement.querySelectorAll('.chip').forEach(x => {
-          x.classList.add('used');
-          x.style.opacity = '0.4';
-        });
-        btn.classList.remove('used');
-        btn.style.opacity = '1';
-        btn.style.background = 'var(--green-mid)';
-        btn.style.borderColor = 'var(--green)';
-        btn.style.fontWeight = '600';
-        btn.style.pointerEvents = 'none';
-        document.getElementById('chat-input').value = c;
-        sendMessage();
-      };
+          // Show/update confirm button
+          let confirmBtn = cd.querySelector('.chip-confirm');
+          if (!confirmBtn) {
+            confirmBtn = document.createElement('button');
+            confirmBtn.className = 'chip chip-confirm';
+            confirmBtn.style.background = 'var(--green)';
+            confirmBtn.style.color = 'white';
+            confirmBtn.style.borderColor = 'var(--green)';
+            confirmBtn.style.fontWeight = '700';
+            confirmBtn.onclick = () => {
+              if (selectedGoals.size === 0) return;
+              cd.querySelectorAll('.chip').forEach(x => { x.classList.add('used'); x.style.pointerEvents = 'none'; });
+              const msg = selectedGoals.size === 1
+                ? [...selectedGoals][0]
+                : [...selectedGoals].join(' and ');
+              document.getElementById('chat-input').value = msg;
+              sendMessage();
+            };
+            cd.appendChild(confirmBtn);
+          }
+          confirmBtn.textContent = selectedGoals.size > 0 ? `Start with ${[...selectedGoals].join(' & ')} →` : 'Select what to focus on';
+          confirmBtn.style.opacity = selectedGoals.size > 0 ? '1' : '0.5';
+        };
+      } else if (c === 'Something else') {
+        // Something else — focus input immediately
+        btn.onclick = () => {
+          cd.querySelectorAll('.chip').forEach(x => { x.classList.add('used'); x.style.pointerEvents = 'none'; });
+          const input = document.getElementById('chat-input');
+          input.placeholder = 'Tell me what you need help with...';
+          input.focus();
+        };
+      } else {
+        // Normal single-select chip
+        btn.onclick = () => {
+          document.querySelectorAll('.chips').forEach(chipSet => {
+            if (!chipSet.contains(btn)) {
+              chipSet.querySelectorAll('.chip').forEach(x => x.classList.add('used'));
+            }
+          });
+          btn.parentElement.querySelectorAll('.chip').forEach(x => {
+            x.classList.add('used');
+            x.style.opacity = '0.4';
+          });
+          btn.classList.remove('used');
+          btn.style.opacity = '1';
+          btn.style.background = 'var(--green-mid)';
+          btn.style.borderColor = 'var(--green)';
+          btn.style.fontWeight = '600';
+          btn.style.pointerEvents = 'none';
+          document.getElementById('chat-input').value = c;
+          sendMessage();
+        };
+      }
       cd.appendChild(btn);
     });
     div.appendChild(cd);
