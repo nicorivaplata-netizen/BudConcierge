@@ -1491,21 +1491,26 @@ function finishOnboard() {
 
   const chips = goals.length ? [...goals.slice(0,3), 'Something else'] : ['Sleep', 'Pain relief', 'Anxiety', 'Just exploring'];
 
-  // Navigate to chat screen first, then send greeting after DOM settles
+  // Set initialized FIRST to prevent startChat being triggered by switchTab
   chatHistory = [];
   chatInitialized = true;
 
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-chat').classList.add('active');
-  refreshUI();
-  injectNavbars('chat');
+  // Store greeting to deliver after navigation
+  window._onboardGreeting = { greeting, chips };
 
+  // Use switchTab so navbars etc update correctly
+  switchTab('chat');
+
+  // Deliver greeting after everything settles
   setTimeout(() => {
+    if (!window._onboardGreeting) return;
+    const { greeting: g, chips: ch } = window._onboardGreeting;
+    window._onboardGreeting = null;
     const messagesEl = document.getElementById('messages');
     if (messagesEl) messagesEl.innerHTML = '';
-    addMessage('bot', greeting, chips);
-    chatHistory.push({ role: 'assistant', content: greeting });
-  }, 150);
+    addMessage('bot', g, ch);
+    chatHistory.push({ role: 'assistant', content: g });
+  }, 300);
 }
 
 // ─── Storage keys ───────────────────────────────────────────────────────────
