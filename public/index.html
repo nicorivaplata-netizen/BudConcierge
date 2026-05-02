@@ -1491,13 +1491,21 @@ function finishOnboard() {
 
   const chips = goals.length ? [...goals.slice(0,3), 'Something else'] : ['Sleep', 'Pain relief', 'Anxiety', 'Just exploring'];
 
-  // Initialize chat then send personalized greeting
+  // Navigate to chat screen first, then send greeting after DOM settles
   chatHistory = [];
   chatInitialized = true;
-  const messagesEl = document.getElementById('messages');
-  if (messagesEl) messagesEl.innerHTML = '';
-  addMessage('bot', greeting, chips);
-  chatHistory.push({ role: 'assistant', content: greeting });
+
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-chat').classList.add('active');
+  refreshUI();
+  injectNavbars('chat');
+
+  setTimeout(() => {
+    const messagesEl = document.getElementById('messages');
+    if (messagesEl) messagesEl.innerHTML = '';
+    addMessage('bot', greeting, chips);
+    chatHistory.push({ role: 'assistant', content: greeting });
+  }, 150);
 }
 
 // ─── Storage keys ───────────────────────────────────────────────────────────
