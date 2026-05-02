@@ -2241,7 +2241,7 @@ ${!(profile.conditions||[]).length && !profile.medications ? `- They have not sh
 Introduce yourself warmly as Ivy — one or two sentences maximum. Then ask for their name with this exact question: "First things first — what should I call you?"
 
 CRITICAL FOR NAME CHIPS: After asking for their name, end your message with chips in this EXACT format:
-CHIPS|||My name is [Name]|||Just call me friend|||I'd rather stay anonymous
+CHIPS|||Enter my name|||Just call me friend|||Stay anonymous
 
 The "Just call me friend" option is important — some users want privacy and this honors that. If they choose "Just call me friend" or want to stay anonymous, warmly accept it, use "friend" throughout the conversation, and never push for their real name.
 
@@ -2542,13 +2542,23 @@ function addMessage(role, content, chips) {
           confirmBtn.textContent = selectedGoals.size > 0 ? `Start with ${[...selectedGoals].join(' & ')} →` : 'Select what to focus on';
           confirmBtn.style.opacity = selectedGoals.size > 0 ? '1' : '0.5';
         };
-      } else if (c === 'Something else') {
-        // Something else — focus input immediately
+      } else if (c === 'Something else' || c === 'Enter my name') {
+        // Focus input immediately instead of sending chip text
         btn.onclick = () => {
           cd.querySelectorAll('.chip').forEach(x => { x.classList.add('used'); x.style.pointerEvents = 'none'; });
           const input = document.getElementById('chat-input');
-          input.placeholder = 'Tell me what you need help with...';
+          input.placeholder = c === 'Enter my name' ? 'Type your name...' : 'Tell me what you need help with...';
           input.focus();
+        };
+      } else if (c === 'Stay anonymous') {
+        btn.onclick = () => {
+          cd.querySelectorAll('.chip').forEach(x => { x.classList.add('used'); x.style.pointerEvents = 'none'; });
+          btn.style.opacity = '1';
+          btn.style.background = 'var(--green-mid)';
+          btn.style.borderColor = 'var(--green)';
+          btn.style.fontWeight = '600';
+          document.getElementById('chat-input').value = "I'd rather stay anonymous";
+          sendMessage();
         };
       } else {
         // Normal single-select chip
