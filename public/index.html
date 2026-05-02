@@ -1214,17 +1214,7 @@ async function usePartnerForChat(slug, btn) {
     window._pendingDispensaryGreeting = DISPENSARIES[slug].name;
     setTimeout(() => {
       switchTab('chat');
-      setTimeout(() => {
-        if (!chatInitialized) {
-          startChat();
-        } else {
-          // Chat already open — inject greeting directly
-          const dispMsg = `I’ve loaded the live inventory from ${DISPENSARIES[slug].name} — I’ll only recommend products actually in stock there right now. What are you looking to help with today?`;
-          addMessage('bot', dispMsg, ['Sleep', 'Pain relief', 'Anxiety', 'Focus', 'Just browsing']);
-          chatHistory.push({ role: 'assistant', content: dispMsg });
-          window._pendingDispensaryGreeting = null;
-        }
-      }, 400);
+      if (!chatInitialized) startChat();
     }, 500);
   } else {
     btn.innerHTML = orig;
@@ -2476,6 +2466,36 @@ function addMessage(role, content, chips) {
     const rc = document.createElement('div');
     rc.innerHTML = recHtml;
     div.appendChild(rc);
+
+    // Find near me button after rec cards
+    const findRow = document.createElement('div');
+    findRow.style.cssText = 'margin-top:10px;display:flex;gap:8px;flex-wrap:wrap';
+    try {
+      const savedRaw = localStorage.getItem('bc_selected_dispensary');
+      if (savedRaw) {
+        const savedObj = JSON.parse(savedRaw);
+        const dSlug = savedObj.slug;
+        const dInfo = dSlug && DISPENSARIES[dSlug] ? DISPENSARIES[dSlug] : null;
+        const dShortName = dInfo ? dInfo.name.split('\u2014')[0].trim() : (savedObj.name || '');
+        const dMenuUrl = dInfo ? (dInfo.menuUrl || '') : '';
+        if (dMenuUrl && dShortName) {
+          const viewBtn = document.createElement('a');
+          viewBtn.href = dMenuUrl;
+          viewBtn.target = '_blank';
+          viewBtn.rel = 'noopener';
+          viewBtn.style.cssText = 'padding:8px 14px;border:1.5px solid #a8dfc9;border-radius:20px;font-size:12px;font-weight:600;color:#085041;text-decoration:none;background:#E1F5EE;font-family:inherit';
+          viewBtn.textContent = 'View menu at ' + dShortName;
+          findRow.appendChild(viewBtn);
+        }
+      } else {
+        const findBtn = document.createElement('button');
+        findBtn.style.cssText = 'padding:8px 14px;border:1.5px solid #a8dfc9;border-radius:20px;font-size:12px;font-weight:600;color:#085041;background:#E1F5EE;cursor:pointer;font-family:inherit';
+        findBtn.textContent = 'Find a dispensary near me';
+        findBtn.onclick = function() { switchTab('find'); };
+        findRow.appendChild(findBtn);
+      }
+    } catch(e) {}
+    if (findRow.children.length > 0) div.appendChild(findRow);
   }
 
   if (chips && chips.length) {
@@ -2713,6 +2733,9 @@ function clearProfile() {
   promotions = [];
   chatHistory = [];
   chatInitialized = false;
+  selectedDispensary = null;
+  window._pendingDispensaryGreeting = null;
+  window._onboardGreeting = null;
 
   // Clear storage but keep age verification so user doesn't hit age gate again
   try {
