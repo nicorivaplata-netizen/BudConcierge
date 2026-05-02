@@ -234,6 +234,23 @@
       <div id="quick-actions" style="display:flex;flex-direction:column;gap:8px">
         <div class="section-label" id="quick-actions-label">Explore Ivy</div>
 
+        <!-- Dispensary shortcut — shown when a dispensary is selected -->
+        <div id="disp-shortcut-card" style="display:none;cursor:pointer;padding:14px 16px;background:linear-gradient(135deg,#0d6647,#1a9968);border-radius:14px;border:none"
+          onclick="useDispensaryShortcut()">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <div style="font-weight:700;font-size:14px;color:white" id="disp-shortcut-name">Chat with dispensary</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.8);margin-top:1px" id="disp-shortcut-sub">⚡ Live inventory loaded</div>
+              </div>
+            </div>
+            <span style="color:rgba(255,255,255,0.7);font-size:20px">›</span>
+          </div>
+        </div>
+
         <!-- Chat card -->
         <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('chat'); setTimeout(() => { if (!chatInitialized) startChat(); }, 100)">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
@@ -1307,8 +1324,23 @@ function clearPartnerDispensary() {
   localStorage.removeItem('bc_selected_dispensary');
   chatInitialized = false;
   updateCurrentDispCard();
+  refreshUI();
   const status = document.getElementById('partner-status');
   if (status) { status.textContent = ''; }
+}
+
+function useDispensaryShortcut() {
+  // Set pending greeting so startChat uses dispensary context
+  const savedDisp = localStorage.getItem('bc_selected_dispensary');
+  if (savedDisp) {
+    try {
+      const { slug } = JSON.parse(savedDisp);
+      const dispName = slug && DISPENSARIES[slug] ? DISPENSARIES[slug].name : '';
+      if (dispName) window._pendingDispensaryGreeting = dispName;
+    } catch(e) {}
+  }
+  chatInitialized = false;
+  switchTab('chat');
 }
 
 // ─── Onboarding ──────────────────────────────────────────────────────────────
@@ -1667,6 +1699,27 @@ function refreshUI() {
     if (profileShortcut) profileShortcut.style.display = 'block';
     const goals = profile.goals && (profile.goals||[]).length ? 'Personalized for: ' + (profile.goals||[]).slice(0,2).join(', ') : 'Ask anything — no profile needed to start';
     document.getElementById('chat-shortcut-sub').textContent = goals;
+
+  // Show dispensary shortcut if one is selected
+  const savedDisp = localStorage.getItem('bc_selected_dispensary');
+  const dispCard = document.getElementById('disp-shortcut-card');
+  if (dispCard) {
+    if (savedDisp) {
+      try {
+        const { slug, name } = JSON.parse(savedDisp);
+        const dispName = slug && DISPENSARIES[slug] ? DISPENSARIES[slug].name : name;
+        const shortName = dispName.split('—')[0].trim();
+        document.getElementById('disp-shortcut-name').textContent = `Chat with ${shortName}`;
+        const inv = selectedDispensary?.inventory;
+        document.getElementById('disp-shortcut-sub').textContent = inv?.length
+          ? `⚡ ${inv.length} products in stock right now`
+          : '⚡ Live inventory partner';
+        dispCard.style.display = 'block';
+      } catch(e) { dispCard.style.display = 'none'; }
+    } else {
+      dispCard.style.display = 'none';
+    }
+  }
   } else {
     document.getElementById('home-title').textContent   = 'Ivy';
     document.getElementById('wb-greeting').textContent  = 'Welcome to Ivy';
@@ -2803,8 +2856,11 @@ function startChat() {
     ? [...goals.slice(0,3), 'Something else']
     : ['Sleep', 'Pain relief', 'Anxiety', 'Something else'];
 
-  addMessage('bot', greeting, greetChips);
-  chatHistory.push({ role: 'assistant', content: greeting });
+  // Only send generic greeting if no dispensary greeting is pending
+  if (!window._pendingDispensaryGreeting) {
+    addMessage('bot', greeting, greetChips);
+    chatHistory.push({ role: 'assistant', content: greeting });
+  }
 
   // If dispensary was just selected, send acknowledgment after greeting
   if (window._pendingDispensaryGreeting) {
