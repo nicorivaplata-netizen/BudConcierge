@@ -1,0 +1,3371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="description" content="Ivy — Your personal AI cannabis guide. Private, judgment-free wellness recommendations tailored to you.">
+  <meta name="theme-color" content="#1D9E75">
+  <title>Ivy — Personal Cannabis Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <!-- PWA: makes it installable on phones like a real app -->
+  <link rel="manifest" href="manifest.json">
+
+<style>
+.ob-dot{width:8px;height:8px;border-radius:50%;background:#d3d1c7;transition:background .2s}
+.ob-dot.active{background:#1a9968}
+.ob-slide{width:100%}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════
+       AGE VERIFICATION SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-agegate" class="screen active">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2.5rem 2rem;text-align:center">
+
+      <!-- Ivy mark -->
+      <svg width="64" height="64" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:16px">
+        <circle cx="28" cy="28" r="28" fill="#1a9968"/>
+        <line x1="28" y1="42" x2="28" y2="14" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M28,34 C21,29 11,27 9,19 C15,19 23,25 28,34 Z" fill="white"/>
+        <path d="M28,34 C35,29 45,27 47,19 C41,19 33,25 28,34 Z" fill="white"/>
+        <path d="M28,24 C22,19 13,16 11,9 C17,11 24,17 28,24 Z" fill="white"/>
+        <path d="M28,24 C34,19 43,16 45,9 C39,11 32,17 28,24 Z" fill="white"/>
+      </svg>
+
+      <div style="font-size:22px;font-weight:700;color:#0d6647;letter-spacing:-0.5px;margin-bottom:4px">Ivy</div>
+      <div style="font-size:11px;color:#4a9c78;letter-spacing:0.15em;font-weight:500;margin-bottom:32px">YOUR PERSONAL CANNABIS GUIDE</div>
+
+      <div style="background:#f7f8f6;border-radius:16px;padding:28px 24px;width:100%;max-width:340px">
+        <div style="font-size:20px;font-weight:700;color:#111;margin-bottom:10px;letter-spacing:-0.3px">Age verification</div>
+        <div style="font-size:14px;color:#5a5c57;line-height:1.65;margin-bottom:24px">Ivy provides guidance on cannabis products. You must be 21 or older, or hold a valid medical cannabis card in your state, to continue.</div>
+
+        <button onclick="confirmAge()" style="width:100%;padding:14px;background:#1a9968;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px;font-family:inherit">
+          I am 21 or older
+        </button>
+
+        <button onclick="denyAge()" style="width:100%;padding:14px;background:transparent;color:#9a9c97;border:1px solid rgba(0,0,0,0.1);border-radius:10px;font-size:14px;cursor:pointer;font-family:inherit">
+          I am under 21
+        </button>
+      </div>
+
+      <div style="font-size:11px;color:#c5c7c2;margin-top:16px;line-height:1.6;max-width:300px">
+        By continuing you confirm you are of legal age to access cannabis information in your jurisdiction.
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:14px;max-width:300px">
+        <div style="display:flex;align-items:center;gap:7px;background:#f0faf5;border-radius:8px;padding:8px 12px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1a9968" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span style="font-size:11px;color:#0d6647;font-weight:500">Your data stays on your device only</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:7px;background:#f0faf5;border-radius:8px;padding:8px 12px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1a9968" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span style="font-size:11px;color:#0d6647;font-weight:500">Never sold, never shared, never tracked</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- UNDER 21 SCREEN -->
+  <div id="screen-underage" class="screen">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2.5rem 2rem;text-align:center">
+      <div style="width:64px;height:64px;border-radius:50%;background:#FCEBEB;display:flex;align-items:center;justify-content:center;margin-bottom:20px">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A32D2D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <div style="font-size:20px;font-weight:700;color:#111;margin-bottom:10px">Access restricted</div>
+      <div style="font-size:14px;color:#5a5c57;line-height:1.65;max-width:300px">Ivy is only available to adults 21 and older, or those with a valid medical cannabis card. Please check back when you meet the age requirement.</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       ONBOARDING SCREEN (first-time only)
+  ═══════════════════════════════════════════ -->
+  <div id="screen-onboard" class="screen">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:2.5rem 1.5rem 1.5rem">
+
+      <!-- Ivy logo -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:4px">
+        <svg width="48" height="48" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="28" cy="28" r="28" fill="#1a9968"/>
+  <line x1="28" y1="42" x2="28" y2="14" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M28,34 C21,29 11,27 9,19 C15,19 23,25 28,34 Z" fill="white"/>
+  <path d="M28,34 C35,29 45,27 47,19 C41,19 33,25 28,34 Z" fill="white"/>
+  <path d="M28,24 C22,19 13,16 11,9 C17,11 24,17 28,24 Z" fill="white"/>
+  <path d="M28,24 C34,19 43,16 45,9 C39,11 32,17 28,24 Z" fill="white"/>
+</svg>
+        <div style="font-size:20px;font-weight:700;color:#0d6647;letter-spacing:-0.5px">Ivy</div>
+      </div>
+
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;width:100%">
+
+        <!-- Slide 1 — Welcome -->
+        <div id="ob-slide-1" class="ob-slide" style="width:100%;text-align:center">
+          <h2 style="font-size:24px;font-weight:700;color:#111310;margin-bottom:12px;letter-spacing:-0.5px;line-height:1.2">Meet Ivy</h2>
+          <p style="font-size:14px;color:#5a5c57;line-height:1.75;margin-bottom:20px">Ivy is your personal cannabis wellness guide. Tell her what you need help with and she'll recommend exactly what's right for you — no guesswork, no judgment.</p>
+          <div style="display:flex;flex-direction:column;gap:8px;text-align:left">
+            <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:#f7f8f6;border-radius:10px">
+              <span style="font-size:18px">💬</span>
+              <span style="font-size:13px;color:#3a3c37;font-weight:500">Ask about sleep, pain, anxiety, focus, or anything else</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:#f7f8f6;border-radius:10px">
+              <span style="font-size:18px">🏪</span>
+              <span style="font-size:13px;color:#3a3c37;font-weight:500">See what's in stock at dispensaries near you</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:#f7f8f6;border-radius:10px">
+              <span style="font-size:18px">📓</span>
+              <span style="font-size:13px;color:#3a3c37;font-weight:500">Track what works and build your personal profile</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 — What should I call you? -->
+        <div id="ob-slide-2" class="ob-slide" style="width:100%;display:none">
+          <h2 style="font-size:22px;font-weight:700;color:#111310;margin-bottom:6px;letter-spacing:-0.5px">What should I call you?</h2>
+          <p style="font-size:13px;color:#9a9c97;margin-bottom:18px">Helps me personalize your experience.</p>
+          <input type="text" id="ob-name-input" placeholder="Your first name..." maxlength="30"
+            style="width:100%;padding:12px 14px;border:1.5px solid rgba(0,0,0,0.12);border-radius:12px;font-size:15px;font-family:inherit;color:#111;background:#fff;box-sizing:border-box;margin-bottom:12px"
+            oninput="obData.name=this.value.trim()"
+            onkeydown="if(event.key==='Enter')nextSlide()">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button onclick="obData.name='Just call me friend';document.getElementById('ob-name-input').value='Just call me friend';nextSlide()"
+              style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#f7f8f6;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57">
+              Just call me friend
+            </button>
+            <button onclick="obData.name='Anonymous';document.getElementById('ob-name-input').value='Anonymous';nextSlide()"
+              style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#f7f8f6;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57">
+              Stay anonymous
+            </button>
+          </div>
+        </div>
+
+        <!-- Slide 3 — Experience level -->
+        <div id="ob-slide-3" class="ob-slide" style="width:100%;display:none">
+          <h2 style="font-size:22px;font-weight:700;color:#111310;margin-bottom:6px;letter-spacing:-0.5px">Your cannabis experience?</h2>
+          <p style="font-size:13px;color:#9a9c97;margin-bottom:18px">Ivy adjusts recommendations to your comfort level.</p>
+          <div style="display:flex;flex-direction:column;gap:10px" id="ob-exp-btns">
+            <button onclick="selectObExp('Never tried it')" class="ob-exp-btn" style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">Never tried it</button>
+            <button onclick="selectObExp('Tried it once or twice')" class="ob-exp-btn" style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">Tried it once or twice</button>
+            <button onclick="selectObExp('Use occasionally')" class="ob-exp-btn" style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">Use occasionally</button>
+            <button onclick="selectObExp('Use regularly')" class="ob-exp-btn" style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">Use regularly</button>
+            <button onclick="selectObExp('Very experienced')" class="ob-exp-btn" style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">Very experienced</button>
+          </div>
+        </div>
+
+        <!-- Slide 4 — What are you hoping for? -->
+        <div id="ob-slide-4" class="ob-slide" style="width:100%;display:none">
+          <h2 style="font-size:22px;font-weight:700;color:#111310;margin-bottom:6px;letter-spacing:-0.5px">What are you hoping cannabis helps with?</h2>
+          <p style="font-size:13px;color:#9a9c97;margin-bottom:14px">Select all that apply. You can always update this later.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px" id="ob-goals-btns">
+            <button onclick="toggleObGoal('Sleep', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Sleep</button>
+            <button onclick="toggleObGoal('Pain relief', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Pain relief</button>
+            <button onclick="toggleObGoal('Anxiety', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Anxiety</button>
+            <button onclick="toggleObGoal('Stress', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Stress</button>
+            <button onclick="toggleObGoal('Focus', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Focus</button>
+            <button onclick="toggleObGoal('Mood', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Mood</button>
+            <button onclick="toggleObGoal('Nausea', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Nausea</button>
+            <button onclick="toggleObGoal('Appetite', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Appetite</button>
+            <button onclick="toggleObGoal('Inflammation', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Inflammation</button>
+            <button onclick="toggleObGoal('Just curious', this)" class="ob-goal-btn" style="padding:9px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:20px;background:#fff;font-size:13px;cursor:pointer;font-family:inherit;color:#5a5c57;transition:all 0.15s">Just curious</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
+        <div style="display:flex;justify-content:center;gap:8px;margin-bottom:2px">
+          <div class="ob-dot active" id="ob-dot-1" style="width:8px;height:8px"></div>
+          <div class="ob-dot" id="ob-dot-2" style="width:8px;height:8px"></div>
+          <div class="ob-dot" id="ob-dot-3" style="width:8px;height:8px"></div>
+          <div class="ob-dot" id="ob-dot-4" style="width:8px;height:8px"></div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button id="ob-back-btn" onclick="prevSlide()" style="display:none;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#5a5c57;flex-shrink:0">← Back</button>
+          <button class="btn-primary" id="ob-btn" onclick="nextSlide()" style="flex:1">Get started</button>
+        </div>
+        <button onclick="finishOnboard()" style="background:transparent;border:none;color:#9a9c97;font-size:13px;cursor:pointer;padding:6px">Skip for now</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       HOME SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-home" class="screen">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:8px;flex:1">
+        <svg width="28" height="28" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="28" cy="28" r="28" fill="#1a9968"/>
+  <line x1="28" y1="42" x2="28" y2="14" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M28,34 C21,29 11,27 9,19 C15,19 23,25 28,34 Z" fill="white"/>
+  <path d="M28,34 C35,29 45,27 47,19 C41,19 33,25 28,34 Z" fill="white"/>
+  <path d="M28,24 C22,19 13,16 11,9 C17,11 24,17 28,24 Z" fill="white"/>
+  <path d="M28,24 C34,19 43,16 45,9 C39,11 32,17 28,24 Z" fill="white"/>
+</svg>
+        <div>
+          <div class="topbar-title" id="home-title" style="line-height:1.1">Ivy</div>
+          <div class="topbar-sub">Your personal cannabis guide</div>
+        </div>
+      </div>
+      <div class="wb-avatar" id="home-avatar" style="width:34px;height:34px;font-size:13px;cursor:pointer" onclick="switchTab('profile')">?</div>
+    </div>
+
+    <div class="content">
+      <!-- Welcome banner -->
+      <div class="card welcome-banner" style="background:linear-gradient(135deg,#1a9968 0%,#0d6647 100%);border:none">
+        <div class="wb-avatar" id="wb-avatar" style="background:rgba(255,255,255,0.2);color:white;border:2px solid rgba(255,255,255,0.3)">?</div>
+        <div>
+          <div class="wb-title" id="wb-greeting" style="color:white">Welcome to Ivy</div>
+          <div class="wb-sub" id="wb-msg" style="color:rgba(255,255,255,0.85)">Your private cannabis guide — personalized, judgment-free, and always on your side.</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="home-cta" onclick="handleCTA()">Set up my profile</button>
+
+      <!-- Quick actions — always visible, works with or without profile -->
+      <div id="quick-actions" style="display:flex;flex-direction:column;gap:8px">
+        <div class="section-label" id="quick-actions-label">Explore Ivy</div>
+
+        <!-- Dispensary shortcut — shown when a dispensary is selected -->
+        <div id="disp-shortcut-card" style="display:none;cursor:pointer;padding:14px 16px;background:linear-gradient(135deg,#0d6647,#1a9968);border-radius:14px;border:none"
+          onclick="useDispensaryShortcut()">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <div style="font-weight:700;font-size:14px;color:white" id="disp-shortcut-name">Chat with dispensary</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.8);margin-top:1px" id="disp-shortcut-sub">⚡ Live inventory loaded</div>
+              </div>
+            </div>
+            <span style="color:rgba(255,255,255,0.7);font-size:20px">›</span>
+          </div>
+        </div>
+
+        <!-- Chat card -->
+        <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('chat'); setTimeout(() => { if (!chatInitialized) startChat(); }, 100)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <span style="font-weight:600;font-size:14px">Chat with Ivy</span>
+            </div>
+            <span style="color:#bbb">›</span>
+          </div>
+          <div style="font-size:13px;color:#888;padding-left:40px" id="chat-shortcut-sub">Ask anything — no profile needed to start</div>
+        </div>
+
+        <!-- Profile nudge card — only shown when no profile exists -->
+        <div id="profile-nudge" class="card" style="display:none;padding:14px 16px;background:linear-gradient(135deg,#f0faf5,#e1f5ee);border:1.5px solid #a8dfc9;cursor:pointer" onclick="switchTab('profile')">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:36px;height:36px;border-radius:10px;background:#1a9968;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:700;color:#0a5c3a;margin-bottom:2px">Get more from Ivy</div>
+              <div style="font-size:12px;color:#3a7a5a;line-height:1.5">A 2 minute profile means every recommendation is built around you specifically.</div>
+            </div>
+            <span style="color:#1a9968;font-size:18px;font-weight:300">›</span>
+          </div>
+        </div>
+
+        <!-- Find dispensary card -->
+        <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('dispensary')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <span style="font-weight:600;font-size:14px">Find a dispensary</span>
+            </div>
+            <span style="color:#bbb">›</span>
+          </div>
+          <div style="font-size:13px;color:#888;padding-left:40px">Search licensed dispensaries near you</div>
+        </div>
+
+        <!-- Journal card -->
+        <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('journal')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              </div>
+              <span style="font-weight:600;font-size:14px">My Journal</span>
+            </div>
+            <span style="color:#bbb">›</span>
+          </div>
+          <div style="font-size:13px;color:#888;padding-left:40px" id="journal-shortcut-sub">Track how products make you feel</div>
+        </div>
+
+        <!-- Profile card — only shown after profile exists -->
+        <div id="profile-shortcut" class="card" style="cursor:pointer;padding:13px 16px;display:none" onclick="switchTab('profile')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <span style="font-weight:600;font-size:14px">Update my preferences</span>
+            </div>
+            <span style="color:#bbb">›</span>
+          </div>
+          <div style="font-size:13px;color:#888;padding-left:40px">Edit goals, tolerance, wellness profile</div>
+        </div>
+
+      </div>
+
+      <!-- Strain history on home -->
+      <div id="home-history-section" style="display:none">
+        <div class="section-label" style="margin-bottom:6px">My saved strains</div>
+        <div class="card" style="padding:0;overflow:hidden" id="home-history-list"></div>
+      </div>
+
+      <!-- Today's suggestion — shown when profile exists -->
+      <div id="home-suggestion" style="display:none">
+        <div class="section-label" style="margin-bottom:6px">Today's suggestion</div>
+        <div id="home-suggestion-card" class="card" style="cursor:pointer;padding:14px 16px" onclick="switchTab('chat')"></div>
+      </div>
+    </div>
+
+    <div class="navbar-placeholder"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       CHAT SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-chat" class="screen">
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('home')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div style="flex:1">
+        <div class="topbar-title">Ivy</div>
+        <div class="topbar-sub">Personalized cannabis guidance</div>
+      </div>
+      <button onclick="newChat()" style="border:none;background:transparent;cursor:pointer;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600;color:#1a9968;border:1px solid #a8dfc9;background:#E1F5EE" title="Start new chat">New chat</button>
+    </div>
+
+    <!-- Profile nudge — shown only when no profile exists -->
+    <div id="chat-profile-nudge" style="display:none;margin:10px 16px 0;background:#E1F5EE;border-radius:10px;padding:10px 14px;border:1px solid #a8dfc9">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:600;color:#0d6647;margin-bottom:2px">Get personalized recommendations</div>
+          <div style="font-size:11px;color:#4a9c78;line-height:1.4">Set up your profile so Ivy knows your health goals, experience, and wellness needs.</div>
+        </div>
+        <button onclick="switchTab('edit')" style="margin-left:10px;padding:6px 12px;background:#1a9968;color:white;border:none;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Set up profile</button>
+      </div>
+    </div>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="disclaimer">Wellness guidance only — not medical advice · 21+ or valid medical card required · Your data stays private on your device</div>
+
+    <div class="input-row">
+      <textarea class="chat-input" id="chat-input" placeholder="Ask anything..." rows="1"></textarea>
+      <button class="send-btn" onclick="sendMessage()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="navbar-placeholder"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       PROFILE SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-profile" class="screen">
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('home')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="topbar-title" style="flex:1">My profile</div>
+      <span id="prof-badge" style="font-size:10px;background:#E1F5EE;color:#085041;padding:2px 8px;border-radius:10px;font-weight:600">New</span>
+    </div>
+
+    <div class="content">
+      <!-- Avatar row -->
+      <div class="card" style="display:flex;align-items:center;gap:14px">
+        <div class="wb-avatar" id="prof-avatar" style="width:52px;height:52px;font-size:20px">?</div>
+        <div style="flex:1">
+          <div style="font-size:16px;font-weight:600" id="prof-name">Set up your profile</div>
+          <div style="font-size:12px;color:#888" id="prof-since"></div>
+        </div>
+      </div>
+
+      <!-- Profile completion indicator -->
+      <div id="prof-completion-wrap" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-size:12px;font-weight:600;color:#5a5c57">Profile completion</span>
+          <span id="prof-completion-pct" style="font-size:12px;font-weight:700;color:#1a9968">0%</span>
+        </div>
+        <div style="height:6px;background:#f0f1ee;border-radius:3px;overflow:hidden">
+          <div id="prof-completion-bar" style="height:100%;background:#1a9968;border-radius:3px;transition:width .4s ease;width:0%"></div>
+        </div>
+        <div id="prof-completion-msg" style="font-size:11px;color:#9a9c97;margin-top:5px"></div>
+      </div>
+
+      <!-- Preferences summary -->
+      <div>
+        <div class="section-label" style="margin-bottom:8px">Preferences</div>
+        <div class="card" style="padding:0 16px">
+          <div class="pref-row">
+            <span class="pref-label">Experience</span>
+            <span class="pref-val empty" id="pf-experience">Not set</span>
+          </div>
+          <div class="pref-row" id="pf-strain-pref-row" style="display:none">
+            <span class="pref-label">Strain preference</span>
+            <span class="pref-val empty" id="pf-strain-pref">Not set</span>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">Best time</span>
+            <span class="pref-val empty" id="pf-time">Not set</span>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">THC comfort</span>
+            <span class="pref-val empty" id="pf-thc">Not set</span>
+          </div>
+          <div class="pref-row" style="flex-direction:column;align-items:flex-start;gap:6px">
+            <span class="pref-label">Product types</span>
+            <div id="pf-products"><span class="pref-val empty">Not set</span></div>
+          </div>
+          <div class="pref-row" style="flex-direction:column;align-items:flex-start;gap:6px">
+            <span class="pref-label">Goals</span>
+            <div id="pf-goals"><span class="pref-val empty">Not set</span></div>
+          </div>
+          <div class="pref-row">
+            <span class="pref-label">Gender</span>
+            <span class="pref-val empty" id="pf-gender">Not set</span>
+          </div>
+          <div class="pref-row" style="flex-direction:column;align-items:flex-start;gap:6px">
+            <span class="pref-label">Health conditions</span>
+            <div id="pf-conditions"><span class="pref-val empty">Not set</span></div>
+          </div>
+          <div class="pref-row" style="border-bottom:none">
+            <span class="pref-label">Medications</span>
+            <span class="pref-val empty" id="pf-medications">Not set</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Saved strains -->
+      <div>
+        <div class="section-label" style="margin-bottom:8px">Saved strains</div>
+        <div class="card" style="padding:0;overflow:hidden" id="prof-history-list"></div>
+      </div>
+
+      <button class="btn-secondary" onclick="openEdit()">Edit preferences</button>
+      <button class="btn-secondary" onclick="clearAllStrains()" style="margin-top:-8px;color:#A32D2D;border-color:rgba(163,45,45,0.2)">Clear saved strains</button>
+      <button class="btn-secondary" onclick="clearProfile()" style="margin-top:-8px;color:#A32D2D;border-color:rgba(163,45,45,0.2)">Reset entire profile</button>
+      <div id="prof-toast" class="toast"></div>
+    </div>
+
+    <div class="navbar-placeholder"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       EDIT PROFILE SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-edit" class="screen">
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('profile')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="topbar-title">Edit preferences</div>
+    </div>
+
+    <div class="content">
+
+      <!-- CANNABIS PREFERENCES -->
+      <div class="card" style="display:flex;flex-direction:column;gap:16px">
+
+        <div>
+          <div class="section-label" style="margin-bottom:8px">Your name</div>
+          <input type="text" id="edit-name" placeholder="First name" maxlength="30"
+            style="width:100%;padding:10px 13px;border:1px solid rgba(0,0,0,0.15);border-radius:8px;font-size:14px;background:#fff;color:#1a1a18">
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:8px">Experience level</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="experience" data-val="First time" onclick="pickExperience(this)">First time</button>
+            <button class="opt-btn" data-field="experience" data-val="Occasional" onclick="pickExperience(this)">Occasional</button>
+            <button class="opt-btn" data-field="experience" data-val="Regular" onclick="pickExperience(this)">Regular</button>
+            <button class="opt-btn" data-field="experience" data-val="Daily use" onclick="pickExperience(this)">Daily use</button>
+          </div>
+        </div>
+
+        <!-- Strain preference — shown for Regular and Daily use only -->
+        <div id="strain-pref-section" style="display:none">
+          <div class="section-label" style="margin-bottom:4px">Preferred strain type</div>
+          <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">Select all that apply — helps us skip the basics</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="strain_pref" data-val="Indica" onclick="pickMany(this)">Indica</button>
+            <button class="opt-btn" data-field="strain_pref" data-val="Sativa" onclick="pickMany(this)">Sativa</button>
+            <button class="opt-btn" data-field="strain_pref" data-val="Hybrid" onclick="pickMany(this)">Hybrid</button>
+            <button class="opt-btn" data-field="strain_pref" data-val="CBD-forward" onclick="pickMany(this)">CBD-forward</button>
+            <button class="opt-btn" data-field="strain_pref" data-val="Unsure" onclick="pickMany(this)">Unsure</button>
+            <button class="opt-btn" data-field="strain_pref" data-val="No preference" onclick="pickMany(this)">No preference</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:4px">Preferred time</div>
+          <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">Select all that apply</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="time" data-val="Morning" onclick="pickMany(this)">Morning</button>
+            <button class="opt-btn" data-field="time" data-val="Daytime" onclick="pickMany(this)">Daytime</button>
+            <button class="opt-btn" data-field="time" data-val="Evening" onclick="pickMany(this)">Evening</button>
+            <button class="opt-btn" data-field="time" data-val="Before bed" onclick="pickMany(this)">Before bed</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:8px">Product types (select all that apply)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="products" data-val="Flower" onclick="pickMany(this)">Flower</button>
+            <button class="opt-btn" data-field="products" data-val="Edibles" onclick="pickMany(this)">Edibles</button>
+            <button class="opt-btn" data-field="products" data-val="THC drinks" onclick="pickMany(this)">THC drinks</button>
+            <button class="opt-btn" data-field="products" data-val="Tinctures" onclick="pickMany(this)">Tinctures</button>
+            <button class="opt-btn" data-field="products" data-val="Concentrates" onclick="pickMany(this)">Concentrates</button>
+            <button class="opt-btn" data-field="products" data-val="Drinks" onclick="pickMany(this)">Drinks</button>
+            <button class="opt-btn" data-field="products" data-val="Vape" onclick="pickMany(this)">Vape</button>
+            <button class="opt-btn" data-field="products" data-val="Topicals" onclick="pickMany(this)">Topicals</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:8px">Goals (select all that apply)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="goals" data-val="Sleep" onclick="pickMany(this)">Sleep</button>
+            <button class="opt-btn" data-field="goals" data-val="Anxiety / stress" onclick="pickMany(this)">Anxiety / stress</button>
+            <button class="opt-btn" data-field="goals" data-val="Pain relief" onclick="pickMany(this)">Pain relief</button>
+            <button class="opt-btn" data-field="goals" data-val="Focus / creativity" onclick="pickMany(this)">Focus / creativity</button>
+            <button class="opt-btn" data-field="goals" data-val="Mood / depression" onclick="pickMany(this)">Mood / depression</button>
+            <button class="opt-btn" data-field="goals" data-val="Social / relaxation" onclick="pickMany(this)">Social / relaxation</button>
+            <button class="opt-btn" data-field="goals" data-val="Nausea / appetite" onclick="pickMany(this)">Nausea / appetite</button>
+            <button class="opt-btn" data-field="goals" data-val="General wellness" onclick="pickMany(this)">General wellness</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:4px">Gender</div>
+          <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">Helps personalize recommendations</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="gender" data-val="Male" onclick="pickGender(this)">Male</button>
+            <button class="opt-btn" data-field="gender" data-val="Female" onclick="pickGender(this)">Female</button>
+            <button class="opt-btn" data-field="gender" data-val="Other" onclick="pickGender(this)">Other</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- HORMONAL SECTION — shown for Female -->
+      <div id="hormonal-section" style="display:none">
+        <div class="card" style="background:#F7F8F6;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:12px;color:#5a5c57;line-height:1.5">These optional questions help us give you more relevant recommendations based on hormonal health.</div>
+
+          <div>
+            <div class="section-label" style="margin-bottom:8px">Menstrual cycle phase <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <button class="opt-btn" data-field="cycle" data-val="Menstrual" onclick="pickOne(this)">Menstrual</button>
+              <button class="opt-btn" data-field="cycle" data-val="Follicular" onclick="pickOne(this)">Follicular</button>
+              <button class="opt-btn" data-field="cycle" data-val="Ovulation" onclick="pickOne(this)">Ovulation</button>
+              <button class="opt-btn" data-field="cycle" data-val="Luteal / PMS" onclick="pickOne(this)">Luteal / PMS</button>
+              <button class="opt-btn" data-field="cycle" data-val="Menopause" onclick="pickOne(this)">Menopause</button>
+              <button class="opt-btn" data-field="cycle" data-val="Prefer not to say" onclick="pickOne(this)">Skip</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-label" style="margin-bottom:8px">Hormonal conditions <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <button class="opt-btn" data-field="hormonal" data-val="PCOS" onclick="pickMany(this)">PCOS</button>
+              <button class="opt-btn" data-field="hormonal" data-val="Endometriosis" onclick="pickMany(this)">Endometriosis</button>
+              <button class="opt-btn" data-field="hormonal" data-val="Fibroids" onclick="pickMany(this)">Fibroids</button>
+              <button class="opt-btn" data-field="hormonal" data-val="Thyroid disorder" onclick="pickMany(this)">Thyroid</button>
+            </div>
+            <input type="text" id="hormonal-other" placeholder="Other hormonal condition (optional)..." maxlength="80"
+              style="width:100%;margin-top:8px;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;background:#fff;color:#111;font-family:inherit;box-sizing:border-box">
+          </div>
+        </div>
+      </div>
+
+      <!-- OTHER GENDER HORMONAL TOGGLE -->
+      <div id="other-hormonal-toggle" style="display:none">
+        <div class="card" style="background:#F7F8F6">
+          <div style="font-size:13px;color:#5a5c57;margin-bottom:10px">Some wellness recommendations are tailored for hormonal health. Would you like to answer a few optional questions?</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="opt-btn" data-field="hormonal_opt" data-val="Yes" onclick="showHormonalFromOther(this)">Yes, show them</button>
+            <button class="opt-btn" data-field="hormonal_opt" data-val="No" onclick="hideHormonalFromOther(this)">No thanks</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- WELLNESS PROFILE SECTION -->
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:4px;letter-spacing:-0.2px">Wellness Profile</div>
+        <div style="font-size:12px;color:#9a9c97;margin-bottom:12px">Everything here is optional and stays private on your device.</div>
+        <div class="card" style="display:flex;flex-direction:column;gap:16px">
+
+          <div>
+            <div class="section-label" style="margin-bottom:8px">Health conditions <span style="font-weight:400;color:#9a9c97">(select all that apply)</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <button class="opt-btn" data-field="conditions" data-val="Anxiety" onclick="pickMany(this)">Anxiety</button>
+              <button class="opt-btn" data-field="conditions" data-val="Depression" onclick="pickMany(this)">Depression</button>
+              <button class="opt-btn" data-field="conditions" data-val="PTSD" onclick="pickMany(this)">PTSD</button>
+              <button class="opt-btn" data-field="conditions" data-val="Chronic pain" onclick="pickMany(this)">Chronic pain</button>
+              <button class="opt-btn" data-field="conditions" data-val="Insomnia" onclick="pickMany(this)">Insomnia</button>
+              <button class="opt-btn" data-field="conditions" data-val="Fibromyalgia" onclick="pickMany(this)">Fibromyalgia</button>
+              <button class="opt-btn" data-field="conditions" data-val="Arthritis" onclick="pickMany(this)">Arthritis</button>
+              <button class="opt-btn" data-field="conditions" data-val="Migraines" onclick="pickMany(this)">Migraines</button>
+              <button class="opt-btn" data-field="conditions" data-val="Nausea" onclick="pickMany(this)">Nausea</button>
+              <button class="opt-btn" data-field="conditions" data-val="ADHD" onclick="pickMany(this)">ADHD</button>
+              <button class="opt-btn" data-field="conditions" data-val="Epilepsy" onclick="pickMany(this)">Epilepsy</button>
+              <button class="opt-btn" data-field="conditions" data-val="IBS" onclick="pickMany(this)">IBS</button>
+            </div>
+            <input type="text" id="conditions-other" placeholder="Other condition (optional)..." maxlength="80"
+              style="width:100%;margin-top:8px;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;background:#fff;color:#111;font-family:inherit;box-sizing:border-box">
+          </div>
+
+          <div>
+            <div class="section-label" style="margin-bottom:4px">Medications <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
+            <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">We flag known interactions and suggest speaking with your doctor. We never claim safety.</div>
+
+            <!-- Medication list -->
+            <div id="med-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px"></div>
+
+            <!-- Add medication button -->
+            <button onclick="addMedication()" id="add-med-btn"
+              style="width:100%;padding:9px;border:1.5px dashed rgba(0,0,0,0.15);border-radius:9px;font-size:13px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#1a9968">
+              + Add a medication
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="saveProfile()">Save profile</button>
+      <div style="display:flex;align-items:center;justify-content:center;gap:5px;margin-top:8px">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4a9c78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span style="font-size:10.5px;color:#4a9c78">Your profile stays private on your device and is never shared.</span>
+      </div>
+      <div id="edit-toast" class="toast"></div>
+
+    </div>
+  </div>
+
+    <!-- ═══════════════════════════════════════════
+       DISPENSARY FINDER SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-dispensary" class="screen">
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('home')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div style="flex:1">
+        <div class="topbar-title">Find a dispensary</div>
+        <div class="topbar-sub">Powered by Google Places</div>
+      </div>
+    </div>
+    <div class="content">
+      <!-- Search bar -->
+      <div class="card" style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:13px;color:#5a5c57;line-height:1.6">Search your dispensary. Partner dispensaries show live inventory so Ivy only recommends what is actually in stock.</div>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="disp-search" placeholder="Dispensary name or city..." onkeydown="if(event.key==='Enter')searchDispensaries()"
+            style="flex:1;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111">
+          <button onclick="searchDispensaries()" style="padding:10px 14px;background:#1a9968;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">Search</button>
+        </div>
+        <button onclick="findNearMe()" style="width:100%;padding:11px;border:1.5px solid #1a9968;background:#E1F5EE;color:#085041;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">
+          Use my current location
+        </button>
+      </div>
+
+      <!-- Currently selected dispensary -->
+      <div id="current-disp-card" style="display:none">
+        <div class="section-label" style="margin-bottom:8px">Currently selected</div>
+        <div class="card" style="padding:14px 16px;background:#e8f7f1;border-color:#a8dfc9">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div id="current-disp-name" style="font-size:14px;font-weight:700;color:#0d6647"></div>
+              <div id="current-disp-count" style="font-size:12px;color:#3a7a5a;margin-top:2px"></div>
+            </div>
+            <button onclick="clearPartnerDispensary()" style="font-size:11px;color:#9a9c97;border:1px solid rgba(0,0,0,0.1);background:white;padding:5px 10px;border-radius:6px;cursor:pointer;font-family:inherit">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="disp-status" style="font-size:13px;color:#9a9c97;text-align:center;padding:8px 0"></div>
+      <div id="partner-status" style="font-size:12px;color:#1a9968;padding:4px 0;line-height:1.5"></div>
+      <div id="disp-results" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+    <div class="navbar-placeholder"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MY JOURNAL SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-journal" class="screen">
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('home')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div style="flex:1">
+        <div class="topbar-title">My Journal</div>
+        <div class="topbar-sub">Track how products make you feel</div>
+      </div>
+      <button onclick="openNewEntry()" style="border:1px solid #a8dfc9;background:#E1F5EE;color:#085041;font-size:12px;font-weight:600;padding:5px 11px;border-radius:8px;cursor:pointer">+ New entry</button>
+    </div>
+    <div class="content">
+      <div id="journal-empty" style="text-align:center;padding:40px 20px;display:block">
+        <div style="width:60px;height:60px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#085041" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <div style="font-size:15px;font-weight:600;color:#111;margin-bottom:8px">No entries yet</div>
+        <div style="font-size:13px;color:#9a9c97;line-height:1.6;margin-bottom:20px">Log how products make you feel after each session. Over time, your journal builds a personal profile that makes recommendations smarter.</div>
+        <button onclick="openNewEntry()" class="btn-primary">Log your first entry</button>
+      </div>
+      <div id="journal-list" style="display:none;flex-direction:column;gap:12px"></div>
+    </div>
+    <div class="navbar-placeholder"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       NEW JOURNAL ENTRY SCREEN
+  ═══════════════════════════════════════════ -->
+  <div id="screen-new-entry" class="screen">
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('journal')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="topbar-title">New entry</div>
+    </div>
+    <div class="content">
+
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+
+        <div>
+          <div class="section-label" style="margin-bottom:7px">Product name</div>
+          <input type="text" id="entry-product" placeholder="e.g. Blue Dream, Wyld Gummies..." maxlength="60"
+            style="width:100%;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:14px;background:#fff;color:#111">
+          <div id="entry-suggestions" style="display:flex;flex-wrap:wrap;gap:5px;margin-top:7px"></div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:7px">Product type</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+            <button class="opt-btn" data-field="etype" data-val="Flower" onclick="pickOne(this)">Flower</button>
+            <button class="opt-btn" data-field="etype" data-val="Edible" onclick="pickOne(this)">Edible</button>
+            <button class="opt-btn" data-field="etype" data-val="THC drink" onclick="pickOne(this)">THC drink</button>
+            <button class="opt-btn" data-field="etype" data-val="Tincture" onclick="pickOne(this)">Tincture</button>
+            <button class="opt-btn" data-field="etype" data-val="Vape" onclick="pickOne(this)">Vape</button>
+            <button class="opt-btn" data-field="etype" data-val="Topical" onclick="pickOne(this)">Topical</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:7px">Overall rating</div>
+          <div id="entry-stars" style="display:flex;gap:6px">
+            <span onclick="setEntryRating(1)" style="font-size:28px;cursor:pointer;color:#d3d1c7;transition:color .1s">★</span>
+            <span onclick="setEntryRating(2)" style="font-size:28px;cursor:pointer;color:#d3d1c7;transition:color .1s">★</span>
+            <span onclick="setEntryRating(3)" style="font-size:28px;cursor:pointer;color:#d3d1c7;transition:color .1s">★</span>
+            <span onclick="setEntryRating(4)" style="font-size:28px;cursor:pointer;color:#d3d1c7;transition:color .1s">★</span>
+            <span onclick="setEntryRating(5)" style="font-size:28px;cursor:pointer;color:#d3d1c7;transition:color .1s">★</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:10px">How did it affect you? (1 = not at all, 10 = very much)</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Sleep quality</span><span id="val-sleep" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-sleep').textContent=this.value" style="width:100%">
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Anxiety relief</span><span id="val-anxiety" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-anxiety').textContent=this.value" style="width:100%">
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Pain relief</span><span id="val-pain" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-pain').textContent=this.value" style="width:100%">
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Energy / focus</span><span id="val-energy" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-energy').textContent=this.value" style="width:100%">
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Mood lift</span><span id="val-mood" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-mood').textContent=this.value" style="width:100%">
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label" style="margin-bottom:7px">Notes (optional)</div>
+          <textarea id="entry-notes" placeholder="How did it feel? Any side effects? Would you use it again?" rows="3"
+            style="width:100%;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;resize:none;background:#fff;color:#111;font-family:inherit"></textarea>
+        </div>
+
+      </div>
+
+      <button class="btn-primary" onclick="saveJournalEntry()">Save entry</button>
+      <div id="entry-toast" class="toast"></div>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<script src="strains.js"></script>
+<script>
+
+
+// ─── Journal ──────────────────────────────────────────────────────────────────
+const JKEY = 'bc_journal_v1';
+let journal = [];
+let entryRating = 0;
+
+function loadJournal() {
+  try { const j = localStorage.getItem(JKEY); if (j) journal = JSON.parse(j); } catch(e) {}
+}
+function saveJournal() {
+  try { localStorage.setItem(JKEY, JSON.stringify(journal)); } catch(e) {}
+}
+
+function openNewEntry() {
+  // Reset form
+  document.getElementById('entry-product').value = '';
+  document.getElementById('entry-notes').value = '';
+  document.querySelectorAll('[data-field="etype"]').forEach(b => b.classList.remove('on'));
+  ['sleep','anxiety','pain','energy','mood'].forEach(k => {
+    const el = document.querySelector(`input[oninput*="val-${k}"]`);
+    if (el) { el.value = 5; document.getElementById('val-'+k).textContent = '5'; }
+  });
+  entryRating = 0;
+  editingIndex = -1;
+  setEntryRating(0);
+  // Reset save button text
+  const saveBtn = document.querySelector('#screen-new-entry .btn-primary');
+  if (saveBtn) saveBtn.textContent = 'Save entry';
+  // Populate suggestions from strain history
+  const sugg = document.getElementById('entry-suggestions');
+  sugg.innerHTML = strainHistory.slice(0,6).map(h =>
+    `<button onclick="document.getElementById('entry-product').value='${h.name}'" style="font-size:11px;padding:3px 9px;border-radius:12px;border:1px solid #a8dfc9;background:#E1F5EE;color:#085041;cursor:pointer">${h.name}</button>`
+  ).join('');
+  switchTab('new-entry');
+}
+
+function setEntryRating(n) {
+  entryRating = n;
+  document.querySelectorAll('#entry-stars span').forEach((s, i) => {
+    s.style.color = i < n ? '#EF9F27' : '#d3d1c7';
+  });
+}
+
+function saveJournalEntry() {
+  const product = document.getElementById('entry-product').value.trim();
+  if (!product) { document.getElementById('entry-product').focus(); return; }
+  const etype = document.querySelector('.opt-btn.on[data-field="etype"]');
+  const entry = {
+    id:      Date.now(),
+    product,
+    type:    etype ? etype.dataset.val : 'Unknown',
+    date:    new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }),
+    rating:  entryRating,
+    scores: {
+      sleep:   parseInt(document.querySelector('input[oninput*="val-sleep"]').value),
+      anxiety: parseInt(document.querySelector('input[oninput*="val-anxiety"]').value),
+      pain:    parseInt(document.querySelector('input[oninput*="val-pain"]').value),
+      energy:  parseInt(document.querySelector('input[oninput*="val-energy"]').value),
+      mood:    parseInt(document.querySelector('input[oninput*="val-mood"]').value),
+    },
+    notes: document.getElementById('entry-notes').value.trim(),
+  };
+  if (editingIndex >= 0) {
+    journal[editingIndex] = { ...journal[editingIndex], ...entry, date: journal[editingIndex].date };
+    editingIndex = -1;
+  } else {
+    journal.unshift(entry);
+  }
+  if (journal.length > 100) journal = journal.slice(0, 100);
+  saveJournal();
+  // Reset save button text
+  const saveBtn = document.querySelector('#screen-new-entry .btn-primary');
+  if (saveBtn) saveBtn.textContent = 'Save entry';
+  const t = document.getElementById('entry-toast');
+  t.textContent = editingIndex >= 0 ? 'Entry updated!' : 'Entry saved!'; t.classList.add('show');
+  setTimeout(() => { t.classList.remove('show'); switchTab('journal'); renderJournal(); }, 1000);
+}
+
+function getJournalInsights() {
+  if (journal.length < 3) return null;
+  // Best rated product type
+  const typeScores = {};
+  journal.forEach(e => {
+    if (!e.type) return;
+    if (!typeScores[e.type]) typeScores[e.type] = { total: 0, count: 0 };
+    typeScores[e.type].total += (e.rating || 3);
+    typeScores[e.type].count++;
+  });
+  let bestType = null, bestTypeAvg = 0;
+  Object.entries(typeScores).forEach(([t, v]) => {
+    const avg = v.total / v.count;
+    if (avg > bestTypeAvg) { bestTypeAvg = avg; bestType = t; }
+  });
+
+  // Best effect across all entries
+  const effectTotals = { sleep: 0, anxiety: 0, pain: 0, energy: 0, mood: 0 };
+  const effectLabels = { sleep: 'Sleep', anxiety: 'Anxiety relief', pain: 'Pain relief', energy: 'Energy / focus', mood: 'Mood lift' };
+  journal.forEach(e => {
+    Object.keys(effectTotals).forEach(k => { effectTotals[k] += (e.scores[k] || 5); });
+  });
+  let bestEffect = 'sleep';
+  Object.keys(effectTotals).forEach(k => {
+    if (effectTotals[k] > effectTotals[bestEffect]) bestEffect = k;
+  });
+  const bestEffectAvg = Math.round((effectTotals[bestEffect] / journal.length) * 10) / 10;
+
+  // Most used product
+  const products = {};
+  journal.forEach(e => { if (e.product) products[e.product] = (products[e.product]||0) + 1; });
+  const topProduct = Object.entries(products).sort((a,b)=>b[1]-a[1])[0];
+
+  return { bestType, bestTypeAvg: Math.round(bestTypeAvg*10)/10, bestEffect: effectLabels[bestEffect], bestEffectAvg, topProduct, count: journal.length };
+}
+
+function renderJournal() {
+  const empty = document.getElementById('journal-empty');
+  const list  = document.getElementById('journal-list');
+  if (!journal.length) {
+    empty.style.display = 'block'; list.style.display = 'none'; return;
+  }
+  empty.style.display = 'none'; list.style.display = 'flex';
+
+  const scoreBar = (label, val) =>
+    `<div style="margin-bottom:4px"><div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="font-size:11px;color:#9a9c97">${label}</span><span style="font-size:11px;font-weight:600;color:#1a9968">${val}/10</span></div><div style="height:4px;background:#f0f1ee;border-radius:2px"><div style="height:100%;width:${val*10}%;background:#1a9968;border-radius:2px"></div></div></div>`;
+
+  // Insights card
+  const ins = getJournalInsights();
+  const insightsHtml = ins ? `
+    <div style="background:linear-gradient(135deg,#1a9968,#0d6647);border-radius:14px;padding:16px 18px;margin-bottom:0">
+      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.75);letter-spacing:0.08em;margin-bottom:10px">YOUR PATTERNS (${ins.count} entries)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        ${ins.bestType ? `<div style="background:rgba(255,255,255,0.15);border-radius:9px;padding:10px 12px">
+          <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:2px">Best rated type</div>
+          <div style="font-size:14px;font-weight:700;color:white">${ins.bestType}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-top:1px">avg ${ins.bestTypeAvg}★ / 5</div>
+        </div>` : ''}
+        <div style="background:rgba(255,255,255,0.15);border-radius:9px;padding:10px 12px">
+          <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:2px">Top reported effect</div>
+          <div style="font-size:13px;font-weight:700;color:white">${ins.bestEffect}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-top:1px">avg ${ins.bestEffectAvg}/10</div>
+        </div>
+        ${ins.topProduct ? `<div style="background:rgba(255,255,255,0.15);border-radius:9px;padding:10px 12px;grid-column:1/-1">
+          <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:2px">Most logged product</div>
+          <div style="font-size:13px;font-weight:700;color:white">${ins.topProduct[0]}</div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-top:1px">${ins.topProduct[1]} ${ins.topProduct[1]===1?'entry':'entries'}</div>
+        </div>` : ''}
+      </div>
+      <button onclick="askIvyAboutPatterns()" style="width:100%;margin-top:10px;padding:9px;background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.3);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">
+        Ask Ivy about your patterns →
+      </button>
+    </div>` : '';
+
+  list.innerHTML = (insightsHtml ? insightsHtml : '') + journal.map((e, i) => `
+    <div style="background:#fff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;padding:14px 16px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+        <div>
+          <div style="font-size:14px;font-weight:600;color:#111">${e.product}</div>
+          <div style="font-size:11px;color:#9a9c97">${e.type} · ${e.date}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:13px;color:#EF9F27">${'★'.repeat(e.rating||0)}<span style="color:#d3d1c7">${'★'.repeat(5-(e.rating||0))}</span></span>
+          <button onclick="editJournalEntry(${i})" style="border:none;background:transparent;color:#1a9968;font-size:12px;font-weight:600;cursor:pointer;padding:2px 6px;line-height:1;border:1px solid #a8dfc9;border-radius:6px;background:#E1F5EE">Edit</button>
+          <button onclick="deleteJournalEntry(${i})" style="border:none;background:transparent;color:#9a9c97;font-size:16px;cursor:pointer;padding:2px 4px;line-height:1">×</button>
+        </div>
+      </div>
+      ${scoreBar('Sleep', e.scores.sleep)}
+      ${scoreBar('Anxiety relief', e.scores.anxiety)}
+      ${scoreBar('Pain relief', e.scores.pain)}
+      ${scoreBar('Energy / focus', e.scores.energy)}
+      ${scoreBar('Mood', e.scores.mood)}
+      ${e.notes ? `<div style="font-size:12px;color:#5a5c57;margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.06)">${e.notes}</div>` : ''}
+      <button onclick="askIvyAboutEntry(${i})" style="width:100%;margin-top:10px;padding:8px;border:1px solid #a8dfc9;background:#E1F5EE;color:#085041;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Ask Ivy about ${e.product} →</button>
+    </div>`).join('');
+}
+
+function askIvyAboutEntry(i) {
+  const e = journal[i];
+  if (!e) return;
+  const scores = e.scores;
+  const top = Object.entries(scores).sort((a,b)=>b[1]-a[1])[0];
+  const effectLabel = {sleep:'sleep',anxiety:'anxiety relief',pain:'pain relief',energy:'energy and focus',mood:'mood'}[top[0]] || top[0];
+  const msg = `I logged ${e.product} (${e.type}) in my journal. I rated it ${e.rating||'?'}/5 stars. The biggest effect I noticed was ${effectLabel} (${top[1]}/10). ${e.notes ? 'Notes: ' + e.notes + '.' : ''} Can you help me understand why it worked that way and what similar products I might try?`;
+  switchTab('chat');
+  setTimeout(() => {
+    const inp = document.getElementById('chat-input');
+    if (inp) { inp.value = msg; inp.focus(); }
+  }, 200);
+}
+
+function askIvyAboutPatterns() {
+  const ins = getJournalInsights();
+  if (!ins) return;
+  const msg = `Based on my journal (${ins.count} entries), my best-rated product type is ${ins.bestType||'various'} and the top effect I report is ${ins.bestEffect}. Can you help me understand my patterns and suggest what I should try next?`;
+  switchTab('chat');
+  setTimeout(() => {
+    const inp = document.getElementById('chat-input');
+    if (inp) { inp.value = msg; inp.focus(); }
+  }, 200);
+}
+
+function deleteJournalEntry(i) {
+  journal.splice(i, 1);
+  saveJournal();
+  renderJournal();
+}
+
+let editingIndex = -1;
+
+function editJournalEntry(i) {
+  const e = journal[i];
+  if (!e) return;
+  editingIndex = i;
+  // Pre-fill the form
+  document.getElementById('entry-product').value = e.product;
+  document.getElementById('entry-notes').value = e.notes || '';
+  // Set product type
+  document.querySelectorAll('[data-field="etype"]').forEach(b => {
+    b.classList.toggle('on', b.dataset.val === e.type);
+  });
+  // Set scores
+  ['sleep','anxiety','pain','energy','mood'].forEach(k => {
+    const el = document.querySelector(`input[oninput*="val-${k}"]`);
+    if (el) {
+      el.value = e.scores[k] || 5;
+      const lbl = document.getElementById('val-'+k);
+      if (lbl) lbl.textContent = e.scores[k] || 5;
+    }
+  });
+  // Set rating
+  entryRating = e.rating || 0;
+  setEntryRating(entryRating);
+  // Update button text
+  const saveBtn = document.querySelector('#screen-new-entry .btn-primary');
+  if (saveBtn) saveBtn.textContent = 'Update entry';
+  // Populate suggestions
+  const sugg = document.getElementById('entry-suggestions');
+  if (sugg) sugg.innerHTML = strainHistory.slice(0,6).map(h =>
+    `<button onclick="document.getElementById('entry-product').value='${h.name}'" style="font-size:11px;padding:3px 9px;border-radius:12px;border:1px solid #a8dfc9;background:#E1F5EE;color:#085041;cursor:pointer">${h.name}</button>`
+  ).join('');
+  switchTab('new-entry');
+}
+
+// ─── Dispensary Finder ────────────────────────────────────────────────────────
+async function searchDispensaries() {
+  const q = document.getElementById('disp-search').value.trim();
+  if (!q) return;
+  setDispStatus('Searching...');
+  document.getElementById('disp-results').innerHTML = '';
+  try {
+    const res = await fetch('/api/dispensaries?query=' + encodeURIComponent(q));
+    const data = await res.json();
+    if (data.error) { setDispStatus('Search failed: ' + data.error); return; }
+    renderDispensaries(data.dispensaries || []);
+  } catch(e) { setDispStatus('Connection error — try again'); }
+}
+
+function findNearMe() {
+  if (!navigator.geolocation) { setDispStatus('Location not available on this device'); return; }
+  setDispStatus('Getting your location...');
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const { latitude: lat, longitude: lng } = pos.coords;
+    try {
+      const res = await fetch(`/api/dispensaries?lat=${lat}&lng=${lng}`);
+      const data = await res.json();
+      if (data.error) { setDispStatus('Search failed: ' + data.error); return; }
+      renderDispensaries(data.dispensaries || []);
+    } catch(e) { setDispStatus('Connection error — try again'); }
+  }, () => setDispStatus('Could not get your location. Try searching by city instead.'));
+}
+
+function setDispStatus(msg) {
+  document.getElementById('disp-status').textContent = msg;
+}
+
+function findPartnerSlug(name, address) {
+  const nameLower = (name||'').toLowerCase();
+  const addrLower = (address||'').toLowerCase();
+
+  return Object.entries(DISPENSARIES).find(([slug, d]) => {
+    const dispName = d.name.toLowerCase().split('—')[0].trim();
+    const dispState = (d.state||'').toLowerCase();
+    const dispCity = (d.city||'').toLowerCase();
+    const altNames = (d.altNames||[]);
+
+    // Check name match — primary name, wm slug, or alt names
+    const nameMatches = nameLower.includes(dispName) ||
+      nameLower.includes((d.wmSlug||'').replace(/-/g,' ')) ||
+      altNames.some(alt => nameLower.includes(alt));
+    if (!nameMatches) return false;
+
+    // State check — address may not include state abbreviation, also check city
+    if (dispState && addrLower) {
+      const knownCities = { 'ar': ['fayetteville', 'rogers', 'bentonville', 'fort smith', 'little rock'],
+                            'mo': ['pineville', 'chesterfield', 'columbia', 'cape girardeau'],
+                            'az': ['phoenix', 'tempe', 'scottsdale', 'mesa', 'dunlap'],
+                            'md': ['mechanicsville', 'baltimore', 'rockville'],
+                            'oh': ['cleveland', 'columbus', 'cincinnati'] };
+      const citiesForState = knownCities[dispState] || [];
+      const stateMatch = addrLower.includes(dispState) ||
+                         addrLower.includes(getStateName(dispState)) ||
+                         citiesForState.some(c => addrLower.includes(c));
+      if (!stateMatch) return false;
+    }
+
+    // City check — only enforce if name is generic (appears in multiple states)
+    const genericBrands = ['the source', 'green leaf', 'rise'];
+    const isGeneric = genericBrands.some(g => dispName.includes(g));
+    if (isGeneric && dispCity && addrLower && !addrLower.includes(dispCity)) return false;
+
+    return true;
+  })?.[0] || null;
+}
+
+function getStateName(abbr) {
+  const states = { 'mo': 'missouri', 'ar': 'arkansas', 'az': 'arizona', 'md': 'maryland', 'oh': 'ohio' };
+  return states[abbr.toLowerCase()] || abbr;
+}
+
+function renderDispensaries(list) {
+  const el = document.getElementById('disp-results');
+  setDispStatus('');
+  if (!list.length) { setDispStatus('No dispensaries found. Try a different search.'); return; }
+  el.innerHTML = list.map(d => {
+    const partnerSlug = findPartnerSlug(d.name, d.address);
+    const isPartner = !!partnerSlug;
+    const borderColor = isPartner ? '#a8dfc9' : 'rgba(0,0,0,0.08)';
+    const bgColor = isPartner ? '#f5fcf9' : '#fff';
+    return `
+    <div style="background:${bgColor};border:1.5px solid ${borderColor};border-radius:14px;padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            ${d.website
+              ? `<a href="${d.website}" target="_blank" style="font-size:14px;font-weight:700;color:${isPartner?'#0d6647':'#1a9968'};text-decoration:none">${d.name} ↗</a>`
+              : `<div style="font-size:14px;font-weight:700;color:#111">${d.name}</div>`
+            }
+            ${isPartner ? `<span style="font-size:9px;font-weight:700;background:#1a9968;color:white;padding:2px 7px;border-radius:10px;letter-spacing:0.06em;flex-shrink:0">LIVE INVENTORY</span>` : ''}
+          </div>
+          <div style="font-size:12px;color:#9a9c97;margin-bottom:${d.phone?'2px':'0'}">${d.address}</div>
+          ${d.phone ? `<a href="tel:${d.phone}" style="font-size:12px;color:#1a9968;text-decoration:none">${d.phone}</a>` : ''}
+          ${isPartner ? `<div style="font-size:11px;color:#1a9968;margin-top:4px;font-weight:500">Ivy will recommend only products currently in stock here</div>` : ''}
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+          ${d.rating ? `<span style="font-size:12px;color:#EF9F27">★ ${d.rating}</span>` : ''}
+          ${d.open !== null ? `<span style="font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600;background:${d.open?'#E1F5EE':'#FCEBEB'};color:${d.open?'#085041':'#791F1F'}">${d.open?'Open':'Closed'}</span>` : ''}
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        ${d.website ? `<a href="${d.website}" target="_blank" style="flex:1;padding:9px;border:1px solid #a8dfc9;border-radius:8px;font-size:12px;font-weight:600;color:#085041;text-align:center;text-decoration:none;background:#E1F5EE">Visit website</a>` : ''}
+        <button onclick="${isPartner ? `usePartnerForChat('${partnerSlug}',this)` : `selectDispensary('${d.id}','${d.name.replace(/'/g,"\'")}','${d.website||''}')`}"
+          style="flex:1;padding:9px;background:${isPartner?'#1a9968':'#1a9968'};border:none;border-radius:8px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit">
+          ${isPartner ? '⚡ Use for Chat' : 'Use for Chat'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function usePartnerForChat(slug, btn) {
+  // Toggle — if already selected, deselect
+  const saved = localStorage.getItem('bc_selected_dispensary');
+  let savedSlug = null;
+  try { savedSlug = JSON.parse(saved)?.slug; } catch(e) {}
+  if (savedSlug === slug) {
+    clearPartnerDispensary();
+    btn.innerHTML = '⚡ Use for Chat';
+    btn.style.background = '#1a9968';
+    return;
+  }
+  const orig = btn.innerHTML;
+  btn.innerHTML = 'Loading inventory...';
+  btn.disabled = true;
+  const inv = await fetchInventory(slug);
+  btn.disabled = false;
+  if (inv !== null) {
+    localStorage.setItem('bc_selected_dispensary', JSON.stringify({ slug, name: DISPENSARIES[slug].name }));
+    chatInitialized = false;
+    updateCurrentDispCard();
+    btn.innerHTML = '✓ Selected';
+    btn.style.background = '#0d6647';
+    // Auto-navigate to chat with dispensary context
+    window._pendingDispensaryGreeting = DISPENSARIES[slug].name;
+    setTimeout(() => {
+      switchTab('chat');
+      setTimeout(() => {
+        if (!chatInitialized) {
+          startChat();
+        } else {
+          // Chat already open — inject greeting directly
+          const dispMsg = `I’ve loaded the live inventory from ${DISPENSARIES[slug].name} — I’ll only recommend products actually in stock there right now. What are you looking to help with today?`;
+          addMessage('bot', dispMsg, ['Sleep', 'Pain relief', 'Anxiety', 'Focus', 'Just browsing']);
+          chatHistory.push({ role: 'assistant', content: dispMsg });
+          window._pendingDispensaryGreeting = null;
+        }
+      }, 400);
+    }, 500);
+  } else {
+    btn.innerHTML = orig;
+    btn.style.background = '#e24b4a';
+    setTimeout(() => { btn.innerHTML = orig; btn.style.background = '#1a9968'; }, 2000);
+  }
+}
+
+function updateCurrentDispCard() {
+  const saved = localStorage.getItem('bc_selected_dispensary');
+  const card = document.getElementById('current-disp-card');
+  if (!card) return;
+  if (!saved) { card.style.display = 'none'; return; }
+  try {
+    const { slug, name, id } = JSON.parse(saved);
+    const dispName = slug && DISPENSARIES[slug] ? DISPENSARIES[slug].name : name;
+    const inv = selectedDispensary?.inventory;
+    document.getElementById('current-disp-name').textContent = dispName || name;
+    document.getElementById('current-disp-count').textContent = inv?.length
+      ? '⚡ ' + inv.length + ' products in stock'
+      : slug ? 'Live inventory partner' : 'Selected for chat';
+    card.style.display = 'block';
+  } catch(e) { card.style.display = 'none'; }
+}
+
+function selectDispensary(id, name, website) {
+  localStorage.setItem('bc_selected_dispensary', JSON.stringify({ id, name, website }));
+  chatInitialized = false;
+  const status = document.getElementById('disp-status');
+  status.textContent = name + ' selected. Head to Chat for personalized recommendations.';
+  status.style.color = '#1a9968';
+  status.style.fontWeight = '600';
+}
+
+// ─── Partner Dispensary Selector (Apify inventory) ────────────────────────────
+function renderPartnerSelector() {
+  const container = document.getElementById('partner-selector');
+  if (!container) return;
+  const savedDisp = localStorage.getItem('bc_selected_dispensary');
+  let savedSlug = null;
+  try { savedSlug = JSON.parse(savedDisp)?.slug; } catch(e) {}
+
+  const groups = {
+    'High Profile': Object.entries(DISPENSARIES).filter(([,d]) => d.brand === 'High Profile'),
+    'Story Cannabis': Object.entries(DISPENSARIES).filter(([,d]) => d.brand === 'Story Cannabis'),
+    'PurSpirit': Object.entries(DISPENSARIES).filter(([,d]) => d.brand === 'PurSpirit'),
+  };
+
+  container.innerHTML = Object.entries(groups).map(([brand, locs]) => `
+    <div style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:600;color:#1a9968;margin-bottom:6px;letter-spacing:0.04em">${brand}</div>
+      ${locs.map(([slug, d]) => `
+        <button onclick="selectPartnerDispensary('${slug}', this)" style="width:100%;text-align:left;padding:11px 14px;margin-bottom:5px;border:1.5px solid ${savedSlug===slug ? '#1a9968' : 'rgba(0,0,0,0.08)'};background:${savedSlug===slug ? '#e8f7f1' : 'white'};border-radius:10px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;transition:all 0.15s">
+          <div>
+            <div style="font-size:13px;font-weight:${savedSlug===slug ? '700' : '500'};color:${savedSlug===slug ? '#0d6647' : '#111310'}">${d.name}</div>
+            <div style="font-size:11px;color:#9a9c97;margin-top:2px">${selectedDispensary?.slug===slug && selectedDispensary?.inventory ? selectedDispensary.inventory.length + ' products in stock' : 'Tap to load live inventory'}</div>
+          </div>
+          ${savedSlug===slug ? '<span style="color:#1a9968;font-size:18px;font-weight:600">✓</span>' : '<span style="color:#ccc;font-size:18px">›</span>'}
+        </button>`).join('')}
+    </div>`).join('') + `
+    <button onclick="clearPartnerDispensary()" style="width:100%;text-align:center;padding:10px;border:1px solid rgba(0,0,0,0.06);background:#f7f8f6;border-radius:10px;cursor:pointer;font-family:inherit;font-size:12px;color:#9a9c97;margin-top:4px">
+      Clear selection
+    </button>`;
+}
+
+async function selectPartnerDispensary(slug, btn) {
+  const status = document.getElementById('partner-status');
+  btn.disabled = true;
+
+  const inv = await fetchInventory(slug);
+  btn.disabled = false;
+
+  if (inv && inv.length > 0) {
+    localStorage.setItem('bc_selected_dispensary', JSON.stringify({ slug, name: DISPENSARIES[slug].name }));
+    chatInitialized = false;
+    renderPartnerSelector();
+    if (status) {
+      status.textContent = inv.length + ' products loaded from ' + DISPENSARIES[slug].name + '. Head to Chat for personalized recommendations.';
+      status.style.color = '#1a9968';
+    }
+  } else if (inv !== null) {
+    renderPartnerSelector();
+    if (status) {
+      status.textContent = 'Inventory for this location is being prepared. Check back soon.';
+      status.style.color = '#9a9c97';
+    }
+  } else {
+    if (status) {
+      status.textContent = 'Could not load inventory. Try again in a moment.';
+      status.style.color = '#e24b4a';
+    }
+  }
+}
+
+function clearPartnerDispensary() {
+  selectedDispensary = null;
+  localStorage.removeItem('bc_selected_dispensary');
+  chatInitialized = false;
+  updateCurrentDispCard();
+  refreshUI();
+  const status = document.getElementById('partner-status');
+  if (status) { status.textContent = ''; }
+}
+
+function useDispensaryShortcut() {
+  // Set pending greeting so startChat uses dispensary context
+  const savedDisp = localStorage.getItem('bc_selected_dispensary');
+  if (savedDisp) {
+    try {
+      const { slug } = JSON.parse(savedDisp);
+      const dispName = slug && DISPENSARIES[slug] ? DISPENSARIES[slug].name : '';
+      if (dispName) window._pendingDispensaryGreeting = dispName;
+    } catch(e) {}
+  }
+  chatInitialized = false;
+  switchTab('chat');
+}
+
+// ─── Onboarding ──────────────────────────────────────────────────────────────
+const OKEY = 'bc_onboarded_v1';
+const AGEKEY = 'bc_age_verified_v1';
+let obSlide = 1;
+const OB_TOTAL = 4;
+
+// Onboarding data collected during setup
+const obData = { name: '', experience: '', goals: [] };
+
+function selectObExp(exp) {
+  obData.experience = exp;
+  // Highlight selected
+  document.querySelectorAll('.ob-exp-btn').forEach(btn => {
+    const selected = btn.textContent.trim() === exp;
+    btn.style.background = selected ? '#E1F5EE' : '#fff';
+    btn.style.borderColor = selected ? '#1a9968' : 'rgba(0,0,0,0.1)';
+    btn.style.color = selected ? '#085041' : '#111';
+    btn.style.fontWeight = selected ? '600' : '400';
+  });
+  setTimeout(() => nextSlide(), 350);
+}
+
+function toggleObGoal(goal, btn) {
+  const idx = obData.goals.indexOf(goal);
+  if (idx > -1) {
+    obData.goals.splice(idx, 1);
+    btn.style.background = '#fff';
+    btn.style.borderColor = 'rgba(0,0,0,0.1)';
+    btn.style.color = '#5a5c57';
+    btn.style.fontWeight = '400';
+  } else {
+    obData.goals.push(goal);
+    btn.style.background = '#E1F5EE';
+    btn.style.borderColor = '#1a9968';
+    btn.style.color = '#085041';
+    btn.style.fontWeight = '600';
+  }
+}
+
+function showAgeGateIfNeeded() {
+  const ageVerified = localStorage.getItem(AGEKEY);
+  if (!ageVerified) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-agegate').classList.add('active');
+    return true; // age gate shown
+  }
+  return false; // already verified
+}
+
+function confirmAge() {
+  localStorage.setItem(AGEKEY, '1');
+  // Now check if onboarding is needed
+  const done = localStorage.getItem(OKEY);
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  if (!done) {
+    document.getElementById('screen-onboard').classList.add('active');
+  } else {
+    document.getElementById('screen-home').classList.add('active');
+    refreshUI();
+  }
+}
+
+function denyAge() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-underage').classList.add('active');
+}
+
+function showOnboardIfNeeded() {
+  // Age gate takes priority over onboarding
+  if (showAgeGateIfNeeded()) return;
+  const done = localStorage.getItem(OKEY);
+  if (!done) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-onboard').classList.add('active');
+  }
+}
+
+function goToSlide(n) {
+  const prev = document.getElementById('ob-slide-' + obSlide);
+  const prevDot = document.getElementById('ob-dot-' + obSlide);
+  if (prev) prev.style.display = 'none';
+  if (prevDot) prevDot.classList.remove('active');
+  obSlide = n;
+  const curr = document.getElementById('ob-slide-' + obSlide);
+  const currDot = document.getElementById('ob-dot-' + obSlide);
+  if (curr) curr.style.display = 'block';
+  if (currDot) currDot.classList.add('active');
+  // Update next button label
+  const btn = document.getElementById('ob-btn');
+  if (btn) btn.textContent = obSlide === OB_TOTAL ? 'Start using Ivy →' : 'Next';
+  // Show/hide back button
+  const backBtn = document.getElementById('ob-back-btn');
+  if (backBtn) backBtn.style.display = obSlide > 1 ? 'block' : 'none';
+  // Focus name input on slide 2
+  if (obSlide === 2) setTimeout(() => { const inp = document.getElementById('ob-name-input'); if (inp) inp.focus(); }, 100);
+}
+
+function prevSlide() {
+  if (obSlide > 1) goToSlide(obSlide - 1);
+}
+
+function nextSlide() {
+  // Validate name on slide 2
+  if (obSlide === 2 && !obData.name) {
+    const inp = document.getElementById('ob-name-input');
+    if (inp) { inp.style.borderColor = '#e24b4a'; inp.focus(); }
+    setTimeout(() => { if (inp) inp.style.borderColor = 'rgba(0,0,0,0.12)'; }, 1500);
+    return;
+  }
+  if (obSlide < OB_TOTAL) {
+    goToSlide(obSlide + 1);
+  } else {
+    finishOnboard();
+  }
+}
+
+function finishOnboard() {
+  // Save whatever was collected during onboarding to profile
+  if (obData.name) profile.name = obData.name;
+  if (obData.experience) {
+    const expMap = {
+      'Never tried it': 'first_time',
+      'Tried it once or twice': 'beginner',
+      'Use occasionally': 'occasional',
+      'Use regularly': 'regular',
+      'Very experienced': 'experienced'
+    };
+    profile.experience = expMap[obData.experience] || obData.experience;
+  }
+  if (obData.goals.length) profile.goals = obData.goals;
+  if (!profile.joined) profile.joined = new Date().toISOString().split('T')[0];
+  saveData();
+
+  localStorage.setItem(OKEY, '1');
+
+  // Go straight to chat — Ivy greets them with context from onboarding
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-chat').classList.add('active');
+  refreshUI();
+  injectNavbars('chat');
+
+  // Build personalized opening message from onboarding data
+  const fullName = (profile.name || '').trim();
+  const firstName = fullName.split(' ')[0];
+  const greetName = fullName === 'Just call me friend' ? 'friend' :
+                    fullName === 'Anonymous' ? '' :
+                    firstName === 'Just' ? 'friend' : firstName;
+  const goals = obData.goals.length ? obData.goals : [];
+  const expLabel = {
+    'first_time': 'a first timer',
+    'beginner': 'fairly new to cannabis',
+    'occasional': 'an occasional user',
+    'regular': 'a regular user',
+    'experienced': 'very experienced'
+  }[obData.experience] || null;
+
+  // Format goals naturally — "sleep and anxiety" or "sleep, pain relief, and anxiety"
+  let goalsText = '';
+  if (goals.length === 1) {
+    goalsText = goals[0].toLowerCase();
+  } else if (goals.length === 2) {
+    goalsText = `${goals[0].toLowerCase()} and ${goals[1].toLowerCase()}`;
+  } else if (goals.length > 2) {
+    const last = goals[goals.length - 1].toLowerCase();
+    const rest = goals.slice(0, -1).map(g => g.toLowerCase()).join(', ');
+    goalsText = `${rest}, and ${last}`;
+  }
+
+  let greeting = greetName ? `Hey ${greetName} — ` : '';
+  greeting += `I’m Ivy, your personal cannabis guide.`;
+  if (goalsText && expLabel) {
+    greeting += ` Since you’re ${expLabel} and looking for help with ${goalsText}, I’ll tailor everything specifically to you.`;
+  } else if (goalsText) {
+    greeting += ` You mentioned ${goalsText} — let’s find what works best for you.`;
+  } else if (expLabel) {
+    greeting += ` As ${expLabel}, I’ll tailor everything to your comfort level.`;
+  }
+
+  const chips = goals.length ? [...goals.slice(0,3), 'Something else'] : ['Sleep', 'Pain relief', 'Anxiety', 'Just exploring'];
+
+  // Set initialized FIRST to prevent startChat being triggered by switchTab
+  chatHistory = [];
+  chatInitialized = true;
+
+  // Store greeting to deliver after navigation
+  window._onboardGreeting = { greeting, chips };
+
+  // Use switchTab so navbars etc update correctly
+  switchTab('chat');
+
+  // Deliver greeting after everything settles
+  setTimeout(() => {
+    if (!window._onboardGreeting) return;
+    const { greeting: g, chips: ch } = window._onboardGreeting;
+    window._onboardGreeting = null;
+    const messagesEl = document.getElementById('messages');
+    if (messagesEl) messagesEl.innerHTML = '';
+    addMessage('bot', g, ch);
+    chatHistory.push({ role: 'assistant', content: g });
+  }, 300);
+}
+
+// ─── Storage keys ───────────────────────────────────────────────────────────
+const PKEY = 'bc_profile_v1';
+const HKEY = 'bc_history_v1';
+
+// ─── State ───────────────────────────────────────────────────────────────────
+let profile = { name:'', experience:'', time:'', products:[], goals:[], joined:'', gender:'', conditions:[], medications:'', hormonal:'', cycle:'', hormonal_conditions:'', strain_pref:'' };
+let promotions = []; // [{dispensary, product, deal, expires}]
+const PROMOKEY = 'bc_promotions_v1';
+let strainHistory = [];
+let chatHistory = [];
+let isTyping = false;
+let chatInitialized = false;
+
+// ─── Persistence ─────────────────────────────────────────────────────────────
+function loadData() {
+  try { const p = localStorage.getItem(PKEY); if (p) profile = JSON.parse(p); } catch(e) {}
+  try { const h = localStorage.getItem(HKEY); if (h) strainHistory = JSON.parse(h); } catch(e) {}
+  try { const pr = localStorage.getItem(PROMOKEY); if (pr) promotions = JSON.parse(pr); } catch(e) {}
+  loadJournal();
+}
+function saveData() {
+  try { localStorage.setItem(PKEY, JSON.stringify(profile)); } catch(e) {}
+  try { localStorage.setItem(HKEY, JSON.stringify(strainHistory)); } catch(e) {}
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+function initials(n) { return n ? n.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) : '?'; }
+function thcLabel(exp) {
+  return { 'First time':'Low · 5–15% THC', 'Occasional':'Moderate · 15–20%', 'Regular':'Standard · 20–25%', 'Daily use':'High · 25%+' }[exp] || '—';
+}
+function timeNow() {
+  const d = new Date();
+  let h = d.getHours();
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return h + ':' + m + ' ' + ampm;
+}
+function toast(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2400);
+}
+function pills(arr, cls) {
+  return arr && arr.length ? arr.map(v=>`<span class="pill ${cls}">${v}</span>`).join(' ') : '<span class="pref-val empty">Not set</span>';
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+
+
+// ─── Promotions Admin ────────────────────────────────────────────────────────
+function addPromotion(dispensary, product, deal, expires) {
+  promotions.push({ dispensary, product, deal, expires, added: new Date().toLocaleDateString() });
+  try { localStorage.setItem(PROMOKEY, JSON.stringify(promotions)); } catch(e) {}
+  console.log('Promotion added:', product, deal);
+}
+
+function clearPromotions() {
+  promotions = [];
+  try { localStorage.removeItem(PROMOKEY); } catch(e) {}
+}
+
+// Usage: addPromotion('Green Leaf Dispensary', 'Blue Dream', '20% off this week', 'Apr 27')
+// Call from browser console to add weekly deals
+
+// ─── Dynamic Navbar ───────────────────────────────────────────────────────────
+function buildNavbar(activeTab) {
+  const tabs = [
+    { id: 'home',       label: 'Home',    icon: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>' },
+    { id: 'chat',       label: 'Chat',    icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
+    { id: 'dispensary', label: 'Find',    icon: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>' },
+    { id: 'journal',    label: 'Journal', icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>' },
+    { id: 'profile',    label: 'Profile', icon: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>' },
+  ];
+  return '<nav class="navbar">' + tabs.map(t =>
+    `<button class="nav-item${t.id === activeTab ? ' active' : ''}" onclick="switchTab('${t.id}')">` +
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${t.icon}</svg>` +
+    `${t.label}</button>`
+  ).join('') + '</nav>';
+}
+
+function injectNavbars(activeTab) {
+  document.querySelectorAll('.navbar-placeholder').forEach(el => {
+    el.outerHTML = buildNavbar(activeTab);
+  });
+  // Also update any existing navbars
+  document.querySelectorAll('.navbar').forEach(nav => {
+    nav.outerHTML = buildNavbar(activeTab);
+  });
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const screen = document.getElementById('screen-'+tab);
+  if (screen) screen.classList.add('active');
+  injectNavbars(tab);
+  const navTabs = ['home','chat','dispensary','journal','profile'];
+  if (navTabs.includes(tab)) {
+    document.querySelectorAll(`.nav-item`).forEach(b => {
+      if (b.getAttribute('onclick') === `switchTab('${tab}')`) b.classList.add('active');
+    });
+  }
+  if (tab === 'chat' && !chatInitialized) startChat();
+  if (tab === 'journal') renderJournal();
+  if (tab === 'find' || tab === 'dispensary') setTimeout(() => updateCurrentDispCard(), 50);
+  refreshUI();
+}
+
+// ─── UI refresh ───────────────────────────────────────────────────────────────
+function refreshUI() {
+  const has = !!profile.name;
+  const ini = initials(profile.name);
+
+  document.getElementById('home-avatar').textContent = ini;
+  document.getElementById('wb-avatar').textContent   = ini;
+  document.getElementById('prof-avatar').textContent = ini;
+
+  if (has) {
+    const hr = new Date().getHours();
+    const todGreet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+    const todTip = hr < 12
+      ? 'Morning tip: Sativa-leaning strains or CBD products are great for daytime focus and energy.'
+      : hr < 17
+      ? 'Afternoon tip: A balanced hybrid can ease afternoon stress without slowing you down.'
+      : 'Evening tip: Indica-dominant strains and CBD tinctures are ideal for wind-down and sleep.';
+    document.getElementById('home-title').textContent    = todGreet + ', ' + profile.name;
+    document.getElementById('wb-greeting').textContent  = todGreet + ', ' + profile.name + '!';
+    document.getElementById('wb-msg').textContent       = todTip;
+    document.getElementById('home-cta').textContent     = 'Start a new chat →';
+    // home-badge hidden
+    // Hide profile nudge in chat when profile exists
+    const nudge = document.getElementById('chat-profile-nudge');
+    if (nudge) nudge.style.display = 'none';
+    const profFields = [
+      !!profile.name,
+      !!profile.experience,
+      !!(Array.isArray(profile.time) ? (profile.time||[]).length > 0 : !!profile.time),
+      !!(profile.products && (profile.products||[]).length > 0),
+      !!(profile.goals && (profile.goals||[]).length > 0)
+    ];
+    const profDone = profFields.filter(Boolean).length;
+    const badgeText = profDone === 5 ? 'Complete' : profDone >= 3 ? 'In progress' : 'Getting started';
+    const badgeBg   = profDone === 5 ? '#E1F5EE'  : profDone >= 3 ? '#FAEEDA'     : '#E6F1FB';
+    const badgeColor= profDone === 5 ? '#085041'  : profDone >= 3 ? '#412402'     : '#0C447C';
+    const badge = document.getElementById('prof-badge');
+    if (badge) { badge.textContent = badgeText; badge.style.background = badgeBg; badge.style.color = badgeColor; }
+    document.getElementById('prof-name').textContent    = profile.name;
+    document.getElementById('prof-since').textContent   = profile.joined ? 'Member since ' + profile.joined : '';
+    document.getElementById('quick-actions').style.display = 'flex';
+    document.getElementById('quick-actions-label').textContent = 'Quick start';
+    const profileShortcut = document.getElementById('profile-shortcut');
+    if (profileShortcut) profileShortcut.style.display = 'block';
+    const goals = profile.goals && (profile.goals||[]).length ? 'Personalized for: ' + (profile.goals||[]).slice(0,2).join(', ') : 'Ask anything — no profile needed to start';
+    document.getElementById('chat-shortcut-sub').textContent = goals;
+
+  // Show dispensary shortcut if one is selected
+  const savedDisp = localStorage.getItem('bc_selected_dispensary');
+  const dispCard = document.getElementById('disp-shortcut-card');
+  if (dispCard) {
+    if (savedDisp) {
+      try {
+        const { slug, name } = JSON.parse(savedDisp);
+        const dispName = slug && DISPENSARIES[slug] ? DISPENSARIES[slug].name : name;
+        const shortName = dispName.split('—')[0].trim();
+        document.getElementById('disp-shortcut-name').textContent = `Chat with ${shortName}`;
+        const inv = selectedDispensary?.inventory;
+        document.getElementById('disp-shortcut-sub').textContent = inv?.length
+          ? `⚡ ${inv.length} products in stock right now`
+          : '⚡ Live inventory partner';
+        dispCard.style.display = 'block';
+      } catch(e) { dispCard.style.display = 'none'; }
+    } else {
+      dispCard.style.display = 'none';
+    }
+  }
+  } else {
+    document.getElementById('home-title').textContent   = 'Ivy';
+    document.getElementById('wb-greeting').textContent  = 'Welcome to Ivy';
+    document.getElementById('wb-msg').textContent       = 'Set up your profile for personalized, judgment-free cannabis guidance.';
+    document.getElementById('home-cta').textContent     = 'Set up my profile';
+    document.getElementById('quick-actions').style.display = 'flex';
+    document.getElementById('quick-actions-label').textContent = 'Explore Ivy';
+    const profileShortcut = document.getElementById('profile-shortcut');
+    if (profileShortcut) profileShortcut.style.display = 'none';
+    // Show profile nudge in chat when no profile
+    const chatNudge = document.getElementById('chat-profile-nudge');
+    if (chatNudge) chatNudge.style.display = 'block';
+  }
+
+  // Profile fields
+  setField('pf-experience', profile.experience);
+  const strainPrefEl = document.getElementById('pf-strain-pref');
+  const strainPrefRow = document.getElementById('pf-strain-pref-row');
+  if (strainPrefEl && strainPrefRow) {
+    const spArr = Array.isArray(profile.strain_pref) ? profile.strain_pref : (profile.strain_pref ? [profile.strain_pref] : []);
+    const spFiltered = spArr.filter(v => v !== 'No preference' && v !== 'Unsure');
+    if (spFiltered.length) {
+      strainPrefEl.textContent = spFiltered.join(', ');
+      strainPrefEl.className = 'pref-val';
+      strainPrefRow.style.display = 'flex';
+    } else {
+      strainPrefRow.style.display = 'none';
+    }
+  }
+  const timeVal = Array.isArray(profile.time)
+    ? (profile.time||[]).join(', ')
+    : (profile.time || '');
+  setField('pf-time', timeVal);
+  setField('pf-thc', profile.experience ? thcLabel(profile.experience) : '');
+  document.getElementById('pf-products').innerHTML = pills(profile.products, 'pill-green');
+  document.getElementById('pf-goals').innerHTML    = pills(profile.goals, 'pill-purple');
+  const condEl = document.getElementById('pf-conditions');
+  if (condEl) condEl.innerHTML = profile.conditions && (profile.conditions||[]).length ? pills(profile.conditions, 'pill-purple') : '<span class="pref-val empty">Not set</span>';
+  const medEl = document.getElementById('pf-medications');
+  if (medEl) { medEl.textContent = profile.medications || 'Not set'; medEl.className = profile.medications ? 'pref-val' : 'pref-val empty'; }
+  const genEl = document.getElementById('pf-gender');
+  if (genEl) { genEl.textContent = profile.gender || 'Not set'; genEl.className = profile.gender ? 'pref-val' : 'pref-val empty'; }
+
+  // Profile completion
+  updateCompletion();
+
+  // History
+  renderHistory('home-history-list');
+  renderHistory('prof-history-list');
+  document.getElementById('home-history-section').style.display = strainHistory.length ? 'block' : 'none';
+  const jsub = document.getElementById('journal-shortcut-sub');
+  if (jsub) jsub.textContent = journal.length ? journal.length + ' entries logged' : 'Track how products make you feel';
+
+  // Today's suggestion card
+  // Profile nudge — show when no profile, hide when profile exists
+  const nudge = document.getElementById('profile-nudge');
+  if (nudge) nudge.style.display = profile.name ? 'none' : 'block';
+
+  const suggWrap = document.getElementById('home-suggestion');
+  const suggCard = document.getElementById('home-suggestion-card');
+  if (suggWrap && suggCard && profile.name) {
+    const hr = new Date().getHours();
+    const goals = (profile.goals||[]);
+    const isMorning = hr < 12, isEvening = hr >= 17;
+    let icon, headline, body, prompt;
+    if (isEvening && (goals.includes('Sleep') || goals.includes('Anxiety'))) {
+      icon = '🌙';
+      headline = 'Wind-down time';
+      body = 'Indica-dominant strains and CBD tinctures can help you relax and prepare for sleep.';
+      prompt = 'What should I use tonight to help with sleep and relaxation?';
+    } else if (isMorning && (goals.includes('Focus') || goals.includes('Stress'))) {
+      icon = '☀️';
+      headline = 'Start your day right';
+      body = 'A low-dose sativa or CBD-dominant product can keep you energized and clear-headed.';
+      prompt = 'What\'s a good morning option for focus and energy without too much THC?';
+    } else if (goals.includes('Pain relief') || goals.includes('Anxiety')) {
+      icon = '💚';
+      headline = 'Relief when you need it';
+      body = 'Balanced hybrids and topicals offer targeted relief throughout the day without heavy sedation.';
+      prompt = 'What do you recommend for ' + (goals[0]||'wellness') + ' right now?';
+    } else {
+      icon = '✨';
+      headline = 'Ask Ivy anything';
+      body = 'What are you feeling today? Ivy can suggest the right product for your mood and goals.';
+      prompt = 'What\'s a good recommendation for me today?';
+    }
+    suggCard.innerHTML = `<div style="display:flex;align-items:flex-start;gap:12px">
+      <div style="font-size:24px;line-height:1;flex-shrink:0;margin-top:2px">${icon}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:3px">${headline}</div>
+        <div style="font-size:12px;color:#5a5c57;line-height:1.55;margin-bottom:8px">${body}</div>
+        <div style="font-size:12px;font-weight:600;color:#1a9968">Ask Ivy →</div>
+      </div>
+    </div>`;
+    suggCard.onclick = () => {
+      switchTab('chat');
+      setTimeout(() => {
+        const inp = document.getElementById('chat-input');
+        if (inp) { inp.value = prompt; inp.focus(); }
+      }, 200);
+    };
+    suggWrap.style.display = 'block';
+  } else if (suggWrap) {
+    suggWrap.style.display = 'none';
+  }
+}
+
+function updateCompletion() {
+  const wrap = document.getElementById('prof-completion-wrap');
+  if (!wrap) return;
+  if (!profile.name) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+
+  const steps = [
+    { done: !!profile.name,                           label: 'Name' },
+    { done: !!profile.experience,                     label: 'Experience level' },
+    { done: !!profile.time,                           label: 'Preferred time' },
+    { done: profile.products && (profile.products||[]).length > 0, label: 'Product types' },
+    { done: profile.goals && (profile.goals||[]).length > 0,       label: 'Goals' },
+    { done: strainHistory.length > 0,                 label: 'First strain saved' },
+  ];
+
+  const done = steps.filter(s => s.done).length;
+  const pct = Math.round((done / steps.length) * 100);
+
+  document.getElementById('prof-completion-bar').style.width = pct + '%';
+  document.getElementById('prof-completion-pct').textContent = pct + '%';
+
+  const missing = steps.filter(s => !s.done).map(s => s.label);
+  if (pct === 100) {
+    document.getElementById('prof-completion-msg').textContent = 'Your profile is complete — recommendations are fully personalized.';
+    document.getElementById('prof-completion-msg').style.color = '#1a9968';
+    document.getElementById('prof-completion-bar').style.background = '#1a9968';
+  } else if (missing.length === 1) {
+    document.getElementById('prof-completion-msg').textContent = 'Almost there — just add: ' + missing[0];
+    document.getElementById('prof-completion-msg').style.color = '#BA7517';
+    document.getElementById('prof-completion-bar').style.background = '#EF9F27';
+  } else {
+    document.getElementById('prof-completion-msg').textContent = 'To complete: ' + missing.slice(0,2).join(', ') + (missing.length > 2 ? ' +' + (missing.length-2) + ' more' : '');
+    document.getElementById('prof-completion-msg').style.color = '#9a9c97';
+  }
+}
+
+function setField(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = val || 'Not set';
+  el.className   = 'pref-val' + (val ? '' : ' empty');
+}
+
+function renderHistory(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!strainHistory.length) {
+    el.innerHTML = '<div class="no-history">No strains saved yet</div>';
+    return;
+  }
+  const showDelete = id === 'prof-history-list';
+  el.innerHTML = strainHistory.slice(0, 10).map((h, i) => {
+    const color = (window.TYPE_COLORS[h.type] || ['#E1F5EE','#085041'])[1];
+    let starsHtml;
+    if (showDelete) {
+      starsHtml = [1,2,3,4,5].map(n =>
+        '<span onclick="rateStrain(' + i + ',' + n + ')" style="cursor:pointer;font-size:15px;color:' + (n<=(h.rating||0)?'#EF9F27':'#d3d1c7') + '">★</span>'
+      ).join('');
+    } else {
+      starsHtml = '<span style="font-size:13px;color:#EF9F27">' + '★'.repeat(h.rating||0) + '</span><span style="font-size:13px;color:#d3d1c7">' + '★'.repeat(5-(h.rating||0)) + '</span>';
+    }
+    const rateLabel = (showDelete && !h.rating) ? '<div style="font-size:10px;color:#9a9c97;margin-top:1px;text-align:right">Tap to rate</div>' : '';
+    return '<div class="h-item" id="h-item-' + i + '">' +
+      '<div class="h-dot" style="background:' + color + '"></div>' +
+      '<div style="flex:1">' +
+        '<div class="h-name">' + h.name + '</div>' +
+        '<div class="h-meta">' + h.type + ' · ' + (h.date||'Recently') + '</div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;align-items:flex-end">' +
+        '<div>' + starsHtml + '</div>' +
+        rateLabel +
+      '</div>' +
+      (showDelete ? '<button onclick="deleteStrain(' + i + ')" style="margin-left:8px;border:none;background:transparent;color:#9a9c97;font-size:18px;cursor:pointer;padding:2px 4px;line-height:1" title="Remove">×</button>' : '') +
+    '</div>';
+  }).join('');
+}
+
+// ─── Home CTA ─────────────────────────────────────────────────────────────────
+function handleCTA() {
+  if (profile.name) { switchTab('chat'); setTimeout(() => newChat(), 100); }
+  else { openEdit(); }
+}
+
+// ─── Edit profile ─────────────────────────────────────────────────────────────
+function openEdit() {
+  // Reset all buttons
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('edit-name').value = profile.name || '';
+
+  // Re-select saved values
+  ['experience', 'time'].forEach(field => {
+    document.querySelectorAll(`.opt-btn[data-field="${field}"]`).forEach(b => {
+      if (b.dataset.val === profile[field]) b.classList.add('on');
+    });
+  });
+  ['products', 'goals'].forEach(field => {
+    const arr = profile[field] || [];
+    document.querySelectorAll(`.opt-btn[data-field="${field}"]`).forEach(b => {
+      if (arr.includes(b.dataset.val)) b.classList.add('on');
+    });
+  });
+  // Restore strain preference and show section if applicable
+  const strainPrefArr = Array.isArray(profile.strain_pref) ? profile.strain_pref : (profile.strain_pref ? [profile.strain_pref] : []);
+  document.querySelectorAll('.opt-btn[data-field="strain_pref"]').forEach(b => {
+    b.classList.toggle('on', strainPrefArr.includes(b.dataset.val));
+  });
+  const strainSect = document.getElementById('strain-pref-section');
+  if (strainSect) strainSect.style.display = (profile.experience === 'Occasional' || profile.experience === 'Regular' || profile.experience === 'Daily use') ? 'block' : 'none';
+  // Restore gender and hormonal section visibility
+  if (profile.gender) {
+    document.querySelectorAll('.opt-btn[data-field="gender"]').forEach(b => {
+      b.classList.toggle('on', b.dataset.val === profile.gender);
+    });
+    const hs = document.getElementById('hormonal-section');
+    const ot = document.getElementById('other-hormonal-toggle');
+    if (hs) hs.style.display = profile.gender === 'Female' ? 'block' : 'none';
+    if (ot) ot.style.display = profile.gender === 'Other' ? 'block' : 'none';
+  }
+  // Restore conditions
+  const condArr = profile.conditions || [];
+  document.querySelectorAll('.opt-btn[data-field="conditions"]').forEach(b => {
+    b.classList.toggle('on', condArr.includes(b.dataset.val));
+  });
+  // Restore hormonal buttons and other text
+  const presets = ['PCOS','Endometriosis','Fibroids','Thyroid disorder'];
+  const hormonalArr = profile.hormonal ? profile.hormonal.split(', ') : [];
+  document.querySelectorAll('.opt-btn[data-field="hormonal"]').forEach(b => {
+    b.classList.toggle('on', hormonalArr.includes(b.dataset.val));
+  });
+  const hormonalOtherEl = document.getElementById('hormonal-other');
+  if (hormonalOtherEl) {
+    const otherVal = hormonalArr.find(v => !presets.includes(v));
+    hormonalOtherEl.value = otherVal || '';
+  }
+  // Restore cycle
+  const cycleVal = profile.cycle || '';
+  document.querySelectorAll('.opt-btn[data-field="cycle"]').forEach(b => {
+    b.classList.toggle('on', b.dataset.val === cycleVal);
+  });
+  // Restore medications
+  // Restore medication detail cards from saved string
+  medications = [];
+  if (profile.medications) {
+    const medEntries = profile.medications.split('; ');
+    medEntries.forEach(entry => {
+      if (!entry.trim()) return;
+      const parts = entry.split(' ');
+      const id = Date.now() + Math.random();
+      const freq = ['once daily','twice daily','three times daily','as needed'].find(f => entry.includes(f)) || 'once daily';
+      const time = ['morning','afternoon','evening','bedtime'].find(t => entry.includes(t)) || 'morning';
+      const dose = parts.find(p => /\d+mg/i.test(p)) || '';
+      const name = parts[0] || '';
+      medications.push({ id, name, dose, frequency: freq, time });
+    });
+  }
+  renderMedications();
+  // Restore conditions other
+  const condOtherEl = document.getElementById('conditions-other');
+  if (condOtherEl) {
+    const presetConds = ['Anxiety','Depression','PTSD','Chronic pain','Insomnia','Fibromyalgia','Arthritis','Migraines','Nausea','ADHD','Epilepsy','IBS'];
+    const otherCond = condArr.find(v => !presetConds.includes(v));
+    condOtherEl.value = otherCond || '';
+  }
+  switchTab('edit');
+}
+
+
+function pickExperience(btn) {
+  // Standard single-select behavior
+  document.querySelectorAll('.opt-btn[data-field="experience"]').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  // Show strain preference only for experienced users
+  const exp = btn.dataset.val;
+  const strainSection = document.getElementById('strain-pref-section');
+  if (strainSection) {
+    if (exp === 'Occasional' || exp === 'Regular' || exp === 'Daily use') {
+      strainSection.style.display = 'block';
+    } else {
+      strainSection.style.display = 'none';
+      // Clear strain preference if experience downgraded
+      document.querySelectorAll('.opt-btn[data-field="strain_pref"]').forEach(b => b.classList.remove('on'));
+    }
+  }
+}
+
+function pickGender(btn) {
+  document.querySelectorAll('.opt-btn[data-field="gender"]').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  const val = btn.dataset.val;
+  const hormonalSection = document.getElementById('hormonal-section');
+  const otherToggle = document.getElementById('other-hormonal-toggle');
+  if (val === 'Female') {
+    hormonalSection.style.display = 'block';
+    otherToggle.style.display = 'none';
+  } else if (val === 'Other') {
+    otherToggle.style.display = 'block';
+    hormonalSection.style.display = 'none';
+  } else {
+    hormonalSection.style.display = 'none';
+    otherToggle.style.display = 'none';
+  }
+}
+
+function showHormonalFromOther(btn) {
+  document.querySelectorAll('.opt-btn[data-field="hormonal_opt"]').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('hormonal-section').style.display = 'block';
+}
+
+function hideHormonalFromOther(btn) {
+  document.querySelectorAll('.opt-btn[data-field="hormonal_opt"]').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('hormonal-section').style.display = 'none';
+}
+
+function pickOne(btn) {
+  document.querySelectorAll(`.opt-btn[data-field="${btn.dataset.field}"]`).forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function pickMany(btn) { btn.classList.toggle('on'); }
+
+function saveProfile() {
+  const name = document.getElementById('edit-name').value.trim();
+  if (!name) { document.getElementById('edit-name').focus(); return; }
+
+  const get1 = f => { const b = document.querySelector(`.opt-btn.on[data-field="${f}"]`); return b ? b.dataset.val : ''; };
+  const getM = f => [...document.querySelectorAll(`.opt-btn.on[data-field="${f}"]`)].map(b => b.dataset.val);
+
+  const exp = get1('experience');
+  const conditionsOther = document.getElementById('conditions-other')?.value.trim();
+  const conditionsList = getM('conditions');
+  if (conditionsOther) conditionsList.push(conditionsOther);
+  const hormonalList = getM('hormonal');
+  profile = {
+    name,
+    experience: exp,
+    time:       getM('time'),
+    products:   getM('products'),
+    goals:      getM('goals'),
+    thc:        thcLabel(exp),
+    joined:     profile.joined || new Date().toLocaleDateString('en-US', { month:'short', year:'numeric' }),
+    gender:     get1('gender'),
+    conditions: conditionsList,
+    medications: getMedicationsString(),
+    hormonal:   (() => {
+      const hormonalOther = document.getElementById('hormonal-other')?.value.trim();
+      const full = [...hormonalList];
+      if (hormonalOther) full.push(hormonalOther);
+      return full.join(', ');
+    })(),
+    cycle:      get1('cycle'),
+    hormonal_conditions: hormonalList.join(', '),
+    strain_pref: getM('strain_pref'),
+  };
+  saveData();
+  chatInitialized = false; // force new chat with updated profile
+
+  toast('edit-toast', 'Profile saved!');
+  setTimeout(() => switchTab('profile'), 1100);
+}
+
+// ─── Chat ─────────────────────────────────────────────────────────────────────
+function buildSystem() {
+  // Send compact database — name, type, THC/CBD, key conditions, experience level, time
+  // Full descriptions excluded to stay within token limits
+  const db = window.STRAINS.map(s =>
+    `${s.name}|${s.type}|THC:${s.thc_min}-${s.thc_max}%|CBD:${s.cbd_min}-${s.cbd_max}%|${(s.helps_with||[]).slice(0,5).join(',')}|${s.experience_level||'any'}|${s.best_time||'anytime'}|${(s.product_types||['flower'])[0]}|onset:${s.onset_minutes||15}min|duration:${s.duration_hours||3}hr${s.condition_notes ? '|notes:'+s.condition_notes.slice(0,80) : ''}`
+  ).join('\n');
+
+  // ── Strain history (saved products) ────────────────────────────────────────
+  const history = strainHistory.length
+    ? `\nPRODUCT HISTORY — use this to refine recommendations:
+${strainHistory.map(h => {
+  if (h.rating >= 4) return `- ${h.name}: rated ${h.rating}/5 stars — THIS WORKED. Recommend similar products or this again if relevant.`;
+  if (h.rating === 3) return `- ${h.name}: rated ${h.rating}/5 stars — mixed results. Only recommend if specifically relevant.`;
+  if (h.rating <= 2 && h.rating > 0) return `- ${h.name}: rated ${h.rating}/5 stars — DID NOT WORK WELL. Do not recommend this product again.`;
+  return `- ${h.name}: saved but not yet rated — avoid re-recommending until rated.`;
+}).join('\n')}
+Use these ratings to understand what works for this specific person. If a product worked well, recommend similar terpene profiles and effects.`
+    : '';
+
+  // ── Journal closed loop intelligence ─────────────────────────────────────
+  // Reads actual session data to surface patterns and personalize recommendations
+  let journalCtx = '';
+  if (journal && journal.length > 0) {
+    // Build per-product score summaries
+    const productScores = {};
+    journal.forEach(e => {
+      if (!e.product || !e.scores) return;
+      if (!productScores[e.product]) productScores[e.product] = { entries: 0, sleep:0, anxiety:0, pain:0, energy:0, mood:0, rating:0 };
+      const p = productScores[e.product];
+      p.entries++;
+      p.sleep   += e.scores.sleep   || 0;
+      p.anxiety += e.scores.anxiety || 0;
+      p.pain    += e.scores.pain    || 0;
+      p.energy  += e.scores.energy  || 0;
+      p.mood    += e.scores.mood    || 0;
+      p.rating  += e.rating         || 0;
+    });
+
+    // Build human-readable journal summary lines
+    const lines = [];
+
+    // Highly effective products (avg score >= 7 in any dimension)
+    const stars = [];
+    const avoid = [];
+    Object.entries(productScores).forEach(([name, p]) => {
+      const n = p.entries;
+      const avgSleep   = (p.sleep/n).toFixed(1);
+      const avgAnxiety = (p.anxiety/n).toFixed(1);
+      const avgPain    = (p.pain/n).toFixed(1);
+      const avgEnergy  = (p.energy/n).toFixed(1);
+      const avgMood    = (p.mood/n).toFixed(1);
+      const avgRating  = (p.rating/n).toFixed(1);
+
+      const highs = [];
+      const lows  = [];
+      if (avgSleep   >= 7) highs.push(`sleep(${avgSleep})`);
+      if (avgAnxiety >= 7) highs.push(`anxiety relief(${avgAnxiety})`);
+      if (avgPain    >= 7) highs.push(`pain relief(${avgPain})`);
+      if (avgEnergy  >= 7) highs.push(`energy(${avgEnergy})`);
+      if (avgMood    >= 7) highs.push(`mood(${avgMood})`);
+
+      if (avgSleep   <= 3) lows.push('sleep');
+      if (avgAnxiety <= 3) lows.push('anxiety');
+      if (avgPain    <= 3) lows.push('pain');
+      if (avgEnergy  <= 3) lows.push('energy');
+      if (avgMood    <= 3) lows.push('mood');
+
+      if (highs.length) stars.push(`${name}: works well for ${highs.join(', ')} (${n} session${n>1?'s':''})`);
+      if (lows.length)  avoid.push(`${name}: poor results for ${lows.join(', ')} — do not recommend for these`);
+    });
+
+    if (stars.length) lines.push('Products that work well for this user: ' + stars.join('; '));
+    if (avoid.length) lines.push('Products with poor results for this user: ' + avoid.join('; '));
+
+    // Overall wellness trends from all journal entries
+    if (journal.length >= 3) {
+      const totals = { sleep:0, anxiety:0, pain:0, energy:0, mood:0 };
+      journal.forEach(e => {
+        if (!e.scores) return;
+        totals.sleep   += e.scores.sleep   || 0;
+        totals.anxiety += e.scores.anxiety || 0;
+        totals.pain    += e.scores.pain    || 0;
+        totals.energy  += e.scores.energy  || 0;
+        totals.mood    += e.scores.mood    || 0;
+      });
+      const n = journal.length;
+      const strongest = Object.entries(totals)
+        .map(([k,v]) => ({ k, avg: v/n }))
+        .sort((a,b) => b.avg - a.avg)[0];
+      const weakest = Object.entries(totals)
+        .map(([k,v]) => ({ k, avg: v/n }))
+        .sort((a,b) => a.avg - b.avg)[0];
+      if (strongest.avg >= 7) lines.push(`Strongest consistent benefit across all sessions: ${strongest.k} (avg ${strongest.avg.toFixed(1)}/10)`);
+      if (weakest.avg <= 4)   lines.push(`Weakest area across all sessions: ${weakest.k} (avg ${weakest.avg.toFixed(1)}/10) — this user may need more targeted help here`);
+    }
+
+    // Recent session note
+    const latest = journal[0];
+    if (latest) {
+      lines.push(`Most recent session: ${latest.product} on ${latest.date} — rated ${latest.rating||0}/5 stars`);
+    }
+
+    if (lines.length) {
+      journalCtx = `\nJOURNAL INSIGHTS (${journal.length} logged session${journal.length>1?'s':''} — use this to personalize recommendations):\n` + lines.map(l => '- ' + l).join('\n');
+    }
+  }
+
+  const profCtx = profile.name
+    ? `USER PROFILE — Read every field carefully. Every recommendation must directly reference this person's specific situation.
+
+WHO THEY ARE:
+- Name: ${profile.name}
+- Experience level: ${profile.experience || 'unknown'} — ${
+    profile.experience === 'First time' ? 'this is their first time. Start conservative. Recommend low THC or CBD-dominant products only. Explain onset times carefully. Make them feel completely safe.' :
+    profile.experience === 'Occasional' ? 'they use occasionally. Do not assume tolerance. Keep THC moderate. Ask about past experiences before going strong.' :
+    profile.experience === 'Regular' ? 'they use regularly and have established tolerance. You can recommend mid-to-high THC products confidently.' :
+    profile.experience === 'Daily use' ? 'they are a daily user with high tolerance. Standard doses may not be effective. Consider potency carefully.' :
+    'experience unknown — start conservative and ask.'
+  }
+- Preferred time of use: ${Array.isArray(profile.time) ? (profile.time||[]).join(', ') : (profile.time || 'not specified')}
+- Product preferences: ${(profile.products||[]).join(', ') || 'open to any product type'}
+- Wellness goals: ${(profile.goals||[]).join(', ') || 'general wellness'}
+- THC comfort level: ${thcLabel(profile.experience)}
+${(() => { const sp = Array.isArray(profile.strain_pref) ? profile.strain_pref : (profile.strain_pref ? [profile.strain_pref] : []); const meaningful = sp.filter(v => v !== 'No preference' && v !== 'Unsure'); return meaningful.length ? '- Preferred strain types: ' + meaningful.join(', ') + ' — they already know what they like. Go straight to specific recommendations within these types.' : ''; })()}
+${profile.gender ? '- Gender: ' + profile.gender : ''}
+
+HEALTH CONTEXT — most important section. Shape every recommendation around this:
+${profile.conditions && (profile.conditions||[]).length ? `- Health conditions: ${(profile.conditions||[]).join(', ')}
+For each condition, actively shape your recommendation. Explain specifically why the product addresses their condition. Make the condition the reason for the recommendation, not an afterthought.` : '- No health conditions listed.'}
+${profile.medications ? `- Current medications: ${profile.medications}
+IMPORTANT: Flag any known cannabis interactions gently. Always suggest consulting their doctor. Specific interactions to know: SSRIs plus cannabis can amplify effects; blood thinners like warfarin have documented interactions; benzodiazepines combined with cannabis can increase sedation significantly.` : ''}
+${profile.hormonal ? '- Hormonal context: ' + profile.hormonal : ''}
+${profile.cycle ? `- Menstrual cycle phase: ${profile.cycle}
+Adjust for cycle phase: follicular benefits from energizing sativas; luteal and menstruation benefit from CBD-rich products and indica for cramps, mood, and sleep.` : ''}
+${profile.hormonal_conditions ? `- Hormonal conditions: ${profile.hormonal_conditions}
+PCOS benefits from CBD for inflammation and hormone regulation. Endometriosis benefits from CBD and low-THC indica for pain. Fibroids benefit from topicals and tinctures for localized relief.` : ''}
+
+${history}${journalCtx}
+
+RESPONDING TO ${(profile.name||'this user').toUpperCase()}:
+- First message only: greet by name in one sentence, then get straight to it.
+- You have their profile. Never ask what you already know.
+- One clarifying question max — only if genuinely needed. Then commit.
+- Let their condition or goal drive every recommendation. One phrase, not a paragraph.
+- Journal data: reference in one phrase if relevant. Do not over-explain.
+- Medications: one sentence flag, suggest doctor, move on.
+${!(profile.conditions||[]).length && !profile.medications ? `- They have not shared health conditions or medications. Ask once, naturally, before your first recommendation: "One quick thing — any medications or health conditions I should know about? Totally optional." If they skip it, move on.` : ''}`
+    : `No profile set up yet.
+
+Introduce yourself warmly as Ivy — one or two sentences maximum. Then ask for their name with this exact question: "First things first — what should I call you?"
+
+CRITICAL FOR NAME CHIPS: After asking for their name, end your message with chips in this EXACT format:
+CHIPS|||Enter my name|||Just call me friend|||Stay anonymous
+
+The "Just call me friend" option is important — some users want privacy and this honors that. If they choose "Just call me friend" or want to stay anonymous, warmly accept it, use "friend" throughout the conversation, and never push for their real name.
+
+Once you have their name or they have chosen a private option, ask one question at a time to learn about them: experience level first, then their main wellness goal, then any health conditions or medications. Keep every message warm, brief, and judgment-free. Never ask more than one question per message. Recommend confidently once you have enough context.`;
+
+
+
+  const inventoryCtx = buildInventoryContext();
+  return `You are Ivy — a warm, knowledgeable, non-judgmental cannabis wellness guide. You speak like a brilliant, caring friend — never a clinician, never a salesperson.
+
+Your belief: cannabis is a legitimate wellness tool. Every person deserves honest, personalized, stigma-free guidance. Treat a 68-year-old with arthritis and a daily user asking for something stronger with the same warmth and respect.
+
+RESPONSE LENGTH — read this before every reply:
+- Default: 2 to 3 sentences. Not paragraphs. Sentences.
+- Clarifying question: 1 sentence + chips. Nothing else.
+- Safety note: 1 sentence. Then move on.
+- Recommendation: skip straight to the REC card. One sentence of context only if it adds something the card cannot say.
+- If your draft exceeds 4 sentences — cut it. Every time.
+- Never recap what the user said. Never preview what you are about to do. Never summarize after the rec card.
+- Read your reply before sending. Delete the last sentence. It is almost always unnecessary.
+
+ONE QUESTION — no exceptions:
+- One question mark per message. Count them. Delete all but the most important.
+- Never combine two questions. If you need two answers, ask the most critical one first.
+
+FORMATTING:
+- Plain sentences only. No markdown, no asterisks, no bullet points, no bold, no headers.
+- Never start with "I". Never say "great question", "absolutely", "certainly", or any filler.
+- If someone seems distressed — be human first, guide second.
+
+GUIDING APPROACH:
+- First-timers: start conservative, low THC or CBD-dominant, explain onset times simply.
+- Experienced users: skip the basics, go straight to specifics.
+- Health conditions: let the condition drive the recommendation. Say why, in one phrase.
+- Medications: flag the interaction in one sentence, suggest their doctor, move on. Never refuse to help.
+- Edibles: always mention the 45-90 minute onset. This prevents the most common mistake.
+- Be confident. A specific recommendation delivered briefly beats a thorough one that goes unread.
+
+${profCtx}
+
+
+
+RECOMMENDATION FEEDBACK LOOP — use this to get smarter over time:
+When a user mentions they tried something and it did not work, or rates something poorly, explicitly acknowledge this and adjust. Say something like "Since [product] didn't work well for your [condition], let's try a different approach — " and then recommend something from a different category, different terpene profile, or different consumption method. Never re-recommend something the user flagged as ineffective.
+
+PRODUCT DATABASE (154 real products across 11 categories — flower, edibles, THC drinks, tinctures, topicals, vapes, concentrates, capsules, CBD strains, hybrids, and sativas):
+${db}
+
+RECOMMENDATION FORMAT — when you have enough info, output each recommendation on its own line in EXACTLY this format:
+REC|||Product Name|||One sentence explaining why it fits this specific person's situation
+
+CRITICAL: When you have enough information to make recommendations, you MUST use the REC||| format. Never mention product names in plain text — always use the structured format so users can save them.
+
+Give 2 to 3 recommendations using ONLY this format (one per line):
+REC|||Exact Product Name|||One sentence reason that names their specific condition or goal
+
+LIVE INVENTORY RULE: When a current dispensary inventory is provided above, you MUST only recommend products from that inventory list. Use the exact product name as it appears in the inventory. Do not recommend products from the general database when inventory is available. NEVER recommend the same product name twice in the same response — each REC line must be a different product.
+
+RECOMMENDATION QUALITY RULES — every recommendation must meet ALL of these:
+
+1. SPECIFICITY: The reason sentence must reference the person's actual situation. Not "good for sleep" but "helps with the insomnia you mentioned, with a gentle body high that eases into rest without morning grogginess." The more specific to their profile, the better.
+
+2. PRODUCT TYPE MATCHING: Match product type to their real life. Consider:
+- Can they smoke? If not, suggest edibles, tinctures, drinks, or topicals
+- Do they need discretion at work or around family? Suggest capsules or tinctures
+- Do they need fast onset? Flower or vape over edibles
+- Do they need long duration? Edibles over flower
+- Are they a first-timer? Never recommend anything above 15% THC without flagging it
+
+3. TIMING AND ONSET — always mention this naturally for first-timers and edible recommendations:
+- Flower and vape: effects in 5 to 15 minutes, lasting 1 to 3 hours
+- Edibles: effects in 45 to 90 minutes, lasting 4 to 8 hours — always mention this for edibles to prevent overconsumption
+- Tinctures: effects in 15 to 45 minutes depending on sublingual vs swallowed
+- Topicals: localized relief only, no psychoactive effects
+
+4. DOSING GUIDANCE for first-timers: always mention starting with a very small amount and waiting before taking more. For edibles specifically, emphasize waiting the full 90 minutes.
+
+5. WHEN HEALTH CONDITIONS ARE PRESENT: open your recommendation explanation with how the product addresses their specific condition, not generic effects.
+
+Do not add a disclaimer sentence after recommendations. The app footer already handles this. End on the recommendation itself.
+
+When recommending, think about timing, duration, discretion, and how the product fits into this person's actual life — not just their stated goals.
+
+PROMOTIONS — if any of the following deals are active, mention them naturally when recommending the matching product. Never force a promotion — only mention it if the product is genuinely a good fit:
+${promotions.length ? promotions.map(p => `${p.dispensary ? '['+p.dispensary+'] ' : ''}${p.product}: ${p.deal}${p.expires ? ' (until '+p.expires+')' : ''}`).join('\n') : 'No active promotions.'}
+
+CONDITION-SPECIFIC KNOWLEDGE — when a user has these conditions, apply this clinical knowledge:
+
+CHRONIC PAIN: Prioritize high-myrcene indicas and 1:1 CBD:THC products. Topicals for localized pain. Transdermal patches for all-day management. RSO for severe cases under doctor supervision. CBN at night for sleep-disrupted pain patients. Avoid high-sativa products that can increase pain sensitivity.
+
+ANXIETY: CBD-dominant products first for new users. Linalool and myrcene terpenes are anxiolytic. Avoid high-THC sativas which can trigger anxiety. 1:1 ratios provide therapeutic effect with CBD moderating THC anxiety. Microdosing 2.5-5mg THC is safer than full doses for anxiety patients. CBD vapes for acute anxiety attacks — fast onset.
+
+INSOMNIA: CBN is the sleep cannabinoid — prioritize CBN products. High-myrcene indicas for sedation. Linalool for nervous system calming. Edibles and capsules for longer sleep duration despite slow onset. Transdermal patches for all-night delivery. Avoid sativas and high-limonene products before bed.
+
+DEPRESSION: Limonene and pinene terpenes have antidepressant properties. Sativa and sativa-hybrid strains for daytime. THCV for appetite and mood. CBC has emerging antidepressant research. Avoid heavy sedating indicas during day. Evening use of balanced hybrids for mood stabilization.
+
+PTSD: 1:1 CBD:THC ratios particularly effective per research. Pennywise and similar balanced strains well-studied. High-CBD products reduce hyperarousal. Indica dominant for nightmares and sleep. Avoid high-THC sativas which can trigger paranoia. Microdosing during day, stronger indica at night.
+
+FIBROMYALGIA: Whole-body approach — topicals for localized trigger points, systemic CBD for inflammation, indica for sleep disruption. Transdermal patches for all-day coverage. Bath bombs for full-body relief. High-myrcene strains for muscle relaxation. CBG for inflammation. Avoid high-stimulating sativas.
+
+ADHD: CBG and sativa terpene profiles for focus. THCV for appetite management in stimulant users. CBD for anxiety component of ADHD. Microdosing THC can paradoxically improve focus in some patients. Timing is critical — morning sativa microdose, CBD during day, indica at night.
+
+ENDOMETRIOSIS AND PCOS: Intimate topicals and suppositories for pelvic pain — these deliver cannabinoids directly to the affected area. Anti-inflammatory CBD products systemically. PCOS patients often benefit from CBD for hormone regulation research. High-CBD for cramping. Cycle-phase awareness: luteal phase benefits most from CBD-heavy products.
+
+NAUSEA: Fast-onset products — vapes and sublingual tinctures. Ginger-containing THC drinks especially effective. Mango Kush for appetite restoration. Low-dose THC more effective than high-dose for nausea. CBD alone often insufficient for severe nausea. THCA has anti-nausea properties without psychoactivity.
+
+ARTHRITIS: Anti-inflammatory terpenes — caryophyllene, humulene, pinene. Topicals for joint-specific relief. CBD sports gels for mobility. Transdermal for systemic inflammation. Warm bath bombs for joint immersion. Full-spectrum products outperform isolates for inflammatory conditions.
+
+MIGRAINES: Timing matters — take at first sign of aura or onset. Fast-onset vape or sublingual tincture. Limonene and pinene for head pressure. Avoid THC during peak migraine as it can worsen nausea. CBD for preventive daily maintenance. Some patients find sativas worsen migraines — recommend trial and tracking in journal.
+
+IBS AND CROHNS: Suppositories and rectal administration for gut-localized relief. High-CBD systemically for inflammation. CBG has specific gut receptor activity. Avoid high-THC edibles which can worsen IBS cramping in some patients. Tinctures absorb faster and are easier on digestion than capsules.
+
+CHIP FORMAT — whenever you ask a question, you must end your message with a line in EXACTLY this format:
+CHIPS|||option1|||option2|||option3|||option4
+The chips must be short (2 to 4 words max) and directly answer the specific question you just asked. Never show generic chips. If you ask about pain type, show chips like: Muscle soreness|||Joint pain|||Headaches|||Back pain. If you ask about product, show: Flower|||Edibles|||Vape|||Concentrates|||Tincture|||Drinks. If you ask about experience: First time|||Occasional|||Regular|||Daily. If you are making recommendations and not asking a question, do not include a CHIPS line.
+${inventoryCtx}`;
+}
+
+async function getBotReply(userMsg) {
+  chatHistory.push({ role: 'user', content: userMsg });
+  showTyping(); isTyping = true;
+
+  try {
+    // Calls OUR backend proxy at /api/chat — the API key never touches the browser
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chatHistory, system: buildSystem() })
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      const errMsg = data.error || ('API error ' + res.status);
+      throw new Error(errMsg);
+    }
+    const reply = data.content.map(b => b.text || '').join('');
+
+    chatHistory.push({ role: 'assistant', content: reply });
+    removeTyping(); isTyping = false;
+
+    // Extract AI-generated chips from response
+    let chips = [];
+    let cleanReply = reply;
+    const chipMatch = reply.match(/CHIPS\|\|\|(.+)$/m);
+    if (chipMatch) {
+      chips = chipMatch[1].split('|||').map(c => c.trim()).filter(Boolean).slice(0, 5);
+      cleanReply = reply.replace(/CHIPS\|\|\|.+$/m, '').trim();
+    }
+
+    addMessage('bot', cleanReply, chips);
+  } catch (err) {
+    removeTyping(); isTyping = false;
+    addMessage('bot', 'Connection error: ' + err.message + '. If this persists, check that your ANTHROPIC_API_KEY is set correctly in Vercel.');
+  }
+}
+
+function addMessage(role, content, chips) {
+  const msgsEl = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+
+  let textLines = [], recHtml = '';
+  const shownRecs = new Set();
+
+  if (role === 'bot') {
+    content.split(/\r?\n|\\n/).forEach(line => {
+      if (line.startsWith('REC|||')) {
+        const [, name, reason] = line.split('|||');
+        // Skip duplicate product names in same response
+        const trimmedName = (name||'').trim().toLowerCase();
+        // Strip category words before dedup check
+        const cleanName = trimmedName.replace(/\s*(flower|edible|vape|extract|tincture|topical|gummy|gummies|cartridge|disposable|pre-roll)\s*/gi, '').trim();
+        if (shownRecs.has(cleanName)) return;
+        shownRecs.add(cleanName);
+        // First try to find in static strains database
+        let strain = window.STRAINS.find(s => s.name.toLowerCase() === trimmedName);
+        // If not found, check live inventory
+        if (!strain && selectedDispensary?.inventory?.length) {
+          const searchName = (name||'').trim().toLowerCase();
+          // Strip common category words Ivy might append
+          const cleanSearch = searchName.replace(/\s*(flower|edible|vape|extract|tincture|topical|gummy|gummies|cartridge|disposable|pre-roll)\s*/gi, '').trim();
+          // Try exact match first, then partial — avoids wrong product matching
+          const invProduct = selectedDispensary.inventory.find(p =>
+            p.name?.toLowerCase() === searchName ||
+            p.name?.toLowerCase() === cleanSearch
+          ) || selectedDispensary.inventory.find(p => {
+            const pName = p.name?.toLowerCase() || '';
+            const pClean = pName.replace(/\s*(flower|edible|vape|extract|tincture|topical|gummy|gummies|cartridge|disposable|pre-roll)\s*/gi, '').trim();
+            return pName.includes(cleanSearch) || cleanSearch.includes(pName) ||
+                   pClean.includes(cleanSearch) || cleanSearch.includes(pClean);
+          });
+          if (invProduct) {
+            const invId = 'inv-' + (invProduct.name||'').toLowerCase().replace(/[^a-z0-9]/g,'').substr(0,8);
+            strain = {
+              id: invId,
+              name: invProduct.name || name,
+              type: invProduct.type || 'Hybrid',
+              description: `${invProduct.brand ? invProduct.brand + ' · ' : ''}${invProduct.category || 'Cannabis product'} available at ${selectedDispensary.name}.`,
+              thc_min: 0, thc_max: 0, cbd_min: 0, cbd_max: 0,
+              thc: invProduct.thc || '',
+              cbd: invProduct.cbd || '',
+              price: invProduct.price || '',
+              category: invProduct.category || '',
+              menuUrl: selectedDispensary?.menuUrl || (DISPENSARIES[selectedDispensary?.slug]?.menuUrl) || '',
+              best_time: '', experience_level: '',
+              terpenes: [], effects: [],
+              isLiveInventory: true,
+            };
+          }
+        }
+        if (strain) recHtml += buildRecCard(strain, (reason||'').trim());
+      } else if (line.trim()) {
+        textLines.push(line.trim());
+      }
+    });
+  }
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  if (role === 'bot') {
+    if (textLines.length) {
+      bubble.innerHTML = textLines.map(l => `<p>${l}</p>`).join('');
+    } else {
+      bubble.innerHTML = recHtml ? '<p>Here are my top picks for you:</p>' : `<p>${content}</p>`;
+    }
+  } else {
+    bubble.textContent = content;
+  }
+  div.appendChild(bubble);
+
+  if (recHtml) {
+    const rc = document.createElement('div');
+    rc.innerHTML = recHtml;
+    div.appendChild(rc);
+  }
+
+  if (chips && chips.length) {
+    const cd = document.createElement('div');
+    cd.className = 'chips';
+    // Declare isMultiSelect BEFORE using it
+    const userGoals = (profile.goals || []).map(g => g.toLowerCase());
+    const chipGoals = chips.filter(c => c !== 'Something else' && c !== 'select:multiple').map(c => c.toLowerCase());
+    const hasMultipleGoals = userGoals.length > 1 && chipGoals.every(c => userGoals.includes(c));
+    const isMultiSelect = chips.includes('Something else') && chipGoals.length > 0 &&
+                          (hasMultipleGoals || chips.includes('select:multiple'));
+    // Clean chips — remove internal marker
+    const displayChips = chips.filter(c => c !== 'select:multiple');
+    // Add hint text for multi-select
+    if (isMultiSelect) {
+      const hint = document.createElement('div');
+      hint.style.cssText = 'width:100%;font-size:11px;color:#9a9c97;margin-bottom:2px;font-style:italic';
+      hint.textContent = 'Tap all that apply, then confirm';
+      cd.appendChild(hint);
+    }
+    const selectedGoals = new Set();
+
+    displayChips.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = 'chip';
+      btn.textContent = c;
+
+      if (isMultiSelect && c !== 'Something else') {
+        // Multi-select mode for goal chips
+        btn.onclick = () => {
+          if (selectedGoals.has(c)) {
+            selectedGoals.delete(c);
+            btn.style.background = '';
+            btn.style.borderColor = '';
+            btn.style.color = '';
+            btn.style.fontWeight = '';
+          } else {
+            selectedGoals.add(c);
+            btn.style.background = 'var(--green-mid)';
+            btn.style.borderColor = 'var(--green)';
+            btn.style.color = 'var(--green-dark)';
+            btn.style.fontWeight = '600';
+          }
+          // Show/update confirm button
+          let confirmBtn = cd.querySelector('.chip-confirm');
+          if (!confirmBtn) {
+            confirmBtn = document.createElement('button');
+            confirmBtn.className = 'chip chip-confirm';
+            confirmBtn.style.background = 'var(--green)';
+            confirmBtn.style.color = 'white';
+            confirmBtn.style.borderColor = 'var(--green)';
+            confirmBtn.style.fontWeight = '700';
+            confirmBtn.onclick = () => {
+              if (selectedGoals.size === 0) return;
+              cd.querySelectorAll('.chip').forEach(x => { x.classList.add('used'); x.style.pointerEvents = 'none'; });
+              const msg = selectedGoals.size === 1
+                ? [...selectedGoals][0]
+                : [...selectedGoals].join(' and ');
+              document.getElementById('chat-input').value = msg;
+              sendMessage();
+            };
+            cd.appendChild(confirmBtn);
+          }
+          confirmBtn.textContent = selectedGoals.size > 0 ? `Start with ${[...selectedGoals].join(' & ')} →` : 'Select what to focus on';
+          confirmBtn.style.opacity = selectedGoals.size > 0 ? '1' : '0.5';
+        };
+      } else if (c === 'Something else' || c === 'Enter my name') {
+        // Focus input immediately instead of sending chip text
+        btn.onclick = () => {
+          cd.querySelectorAll('.chip').forEach(x => { x.classList.add('used'); x.style.pointerEvents = 'none'; });
+          const input = document.getElementById('chat-input');
+          input.placeholder = c === 'Enter my name' ? 'Type your name...' : 'Tell me what you need help with...';
+          input.focus();
+        };
+      } else if (c === 'Stay anonymous') {
+        btn.onclick = () => {
+          cd.querySelectorAll('.chip').forEach(x => { x.classList.add('used'); x.style.pointerEvents = 'none'; });
+          btn.style.opacity = '1';
+          btn.style.background = 'var(--green-mid)';
+          btn.style.borderColor = 'var(--green)';
+          btn.style.fontWeight = '600';
+          document.getElementById('chat-input').value = "I'd rather stay anonymous";
+          sendMessage();
+        };
+      } else {
+        // Normal single-select chip
+        btn.onclick = () => {
+          document.querySelectorAll('.chips').forEach(chipSet => {
+            if (!chipSet.contains(btn)) {
+              chipSet.querySelectorAll('.chip').forEach(x => x.classList.add('used'));
+            }
+          });
+          btn.parentElement.querySelectorAll('.chip').forEach(x => {
+            x.classList.add('used');
+            x.style.opacity = '0.4';
+          });
+          btn.classList.remove('used');
+          btn.style.opacity = '1';
+          btn.style.background = 'var(--green-mid)';
+          btn.style.borderColor = 'var(--green)';
+          btn.style.fontWeight = '600';
+          btn.style.pointerEvents = 'none';
+          document.getElementById('chat-input').value = c;
+          sendMessage();
+        };
+      }
+      cd.appendChild(btn);
+    });
+    div.appendChild(cd);
+  }
+
+  const t = document.createElement('div');
+  t.className = 'msg-time';
+  t.textContent = timeNow();
+  div.appendChild(t);
+
+  msgsEl.appendChild(div);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+
+function inferBestTime(product) {
+  const cat = (product.category || '').toLowerCase();
+  const type = (product.type || '').toLowerCase();
+  if (cat.includes('topical') || cat.includes('patch')) return 'Anytime';
+  if (cat.includes('tincture')) return 'Sublingual';
+  if (cat.includes('edible') || cat.includes('drink')) return 'Plan ahead';
+  if (cat.includes('vape') || cat.includes('flower')) return 'Fast onset';
+  if (type.includes('indica')) return 'Evening';
+  if (type.includes('sativa')) return 'Daytime';
+  return 'Anytime';
+}
+
+function buildRecCard(s, reason) {
+  const [bg, tx] = window.TYPE_COLORS[s.type] || ['#E1F5EE','#085041'];
+  const saved = strainHistory.find(h => h.name === s.name);
+
+  // Live inventory products — parse THC% string if available
+  const isLive = s.isLiveInventory;
+  let thcStr, cbdStr, potencyPct;
+
+  if (isLive) {
+    // Try to parse THC from string like "23.69%" or "100mg"
+    const thcRaw = s.thc || '';
+    const thcNum = parseFloat(thcRaw);
+    if (thcRaw.includes('%') && !isNaN(thcNum)) {
+      thcStr = thcRaw;
+      potencyPct = Math.min(100, Math.round((thcNum / 35) * 100));
+    } else if (thcRaw.includes('mg') && !isNaN(thcNum)) {
+      thcStr = thcRaw;
+      // Scale: 10mg=mild(20%), 40mg=moderate(40%), 100mg=strong(70%), 500mg+=max
+      potencyPct = thcNum <= 10 ? 15 : thcNum <= 40 ? 35 : thcNum <= 100 ? 60 : thcNum <= 300 ? 80 : 95;
+    } else {
+      thcStr = 'Ask budtender';
+      potencyPct = 0;
+    }
+    cbdStr = s.cbd || '';
+  } else {
+    thcStr = s.thc_max <= 2 ? `${s.thc_min}–${s.thc_max}mg` : `${s.thc_min}–${s.thc_max}%`;
+    cbdStr = s.cbd_max >= 100 ? `${Math.round(s.cbd_min)}mg` : `${s.cbd_min}–${s.cbd_max}%`;
+    potencyPct = s.thc_max <= 2 ? 5 : Math.min(100, Math.round((s.thc_max / 35) * 100));
+  }
+
+  const potencyColor = potencyPct < 30 ? '#1a9968' : potencyPct < 60 ? '#EF9F27' : '#e24b4a';
+  const potencyLabel = potencyPct === 0 ? 'Unknown' : potencyPct < 30 ? 'Mild' : potencyPct < 60 ? 'Moderate' : 'Strong';
+
+  return `<div class="rec-card">
+    <div class="rec-header">
+      <span class="rec-name">${s.name}</span>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        ${isLive && s.price ? `<span style="font-size:12px;font-weight:700;color:#1a9968">${s.price}</span>` : ''}
+        <span class="rec-badge" style="background:${bg};color:${tx}">${s.type}</span>
+      </div>
+    </div>
+    <div class="rec-stats">
+      ${(s.thc_max > 0 || (isLive && thcStr && thcStr !== 'Ask budtender')) ? `<span class="rec-stat"><strong>THC</strong> ${thcStr}</span>` : thcStr === 'Ask budtender' ? `<span class="rec-stat" style="color:#9a9c97"><strong>THC</strong> Ask budtender</span>` : ''}
+      ${(s.cbd_max > 0.5 || (isLive && cbdStr)) ? `<span class="rec-stat"><strong>CBD</strong> ${cbdStr}</span>` : ''}
+      ${(!isLive && s.best_time && s.best_time !== 'Ask budtender') ? `<span class="rec-stat">${s.best_time}</span>` : isLive ? `<span class="rec-stat">${inferBestTime(s)}</span>` : ''}
+      ${(!isLive && s.experience_level) ? `<span class="rec-stat">${s.experience_level}</span>` : ''}
+    </div>
+    ${potencyPct > 0 ? `<div style="margin:6px 0 8px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+        <span style="font-size:10px;color:#9a9c97">Potency</span>
+        <span style="font-size:10px;font-weight:600;color:${potencyColor}">${potencyLabel}</span>
+      </div>
+      <div style="height:4px;background:#f0f1ee;border-radius:2px">
+        <div style="height:100%;width:${potencyPct}%;background:${potencyColor};border-radius:2px;transition:width .3s"></div>
+      </div>
+    </div>` : ''}
+    <div class="rec-desc">${s.description}</div>
+    ${reason ? `<div class="rec-why"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> ${reason}</div>` : ''}
+    ${s.terpenes.length ? `<div class="rec-terps">${s.terpenes.map(t=>`<span class="terp" title="${t}">${t}</span>`).join('')}</div>` : ''}
+    ${isLive && s.menuUrl ? `<a href="${s.menuUrl}" target="_blank" rel="noopener" style="display:block;width:100%;text-align:center;padding:9px;border:1px solid #a8dfc9;border-radius:10px;font-size:12px;font-weight:600;color:#085041;text-decoration:none;background:#E1F5EE;margin-bottom:6px;box-sizing:border-box">↗ View dispensary menu</a>` : ''}
+    <button class="save-btn ${saved?'saved':''}" onclick="saveStrain('${s.id}',this)">
+      ${saved ? '✓ Saved to profile' : '+ Save to profile'}
+    </button>
+  </div>`;
+}
+
+
+
+function rateStrain(index, rating) {
+  if (strainHistory[index]) {
+    strainHistory[index].rating = rating;
+    saveData();
+    renderHistory('home-history-list');
+    renderHistory('prof-history-list');
+    toast('prof-toast', 'Rating saved!');
+  }
+}
+
+function deleteStrain(index) {
+  const name = strainHistory[index] && strainHistory[index].name;
+  strainHistory.splice(index, 1);
+  saveData();
+  refreshUI();
+  if (name) toast("prof-toast", name + " removed from your profile");
+}
+
+function clearAllStrains() {
+  if (!strainHistory.length) return;
+  if (!confirm("Remove all saved strains?")) return;
+  strainHistory = [];
+  saveData();
+  refreshUI();
+  toast("prof-toast", "All saved strains cleared");
+}
+
+function clearProfile() {
+  if (!confirm("Reset your entire profile? This cannot be undone.")) return;
+
+  // Reset ALL in-memory state to clean defaults
+  profile = { name:"", experience:"", time:"", products:[], goals:[], conditions:[], medications:"", hormonal:"", hormonal_conditions:"", cycle:"", gender:"", strain_pref:[], joined:"" };
+  strainHistory = [];
+  journal = [];
+  promotions = [];
+  chatHistory = [];
+  chatInitialized = false;
+
+  // Clear storage but keep age verification so user doesn't hit age gate again
+  try {
+    localStorage.removeItem('bc_profile_v1');
+    localStorage.removeItem('bc_history_v1');
+    localStorage.removeItem('bc_journal_v1');
+    localStorage.removeItem('bc_promotions_v1');
+    localStorage.removeItem('bc_selected_dispensary');
+    // bc_age_verified_v1 and bc_onboarded_v1 intentionally NOT removed
+  } catch(e) {}
+
+  // Reset UI elements
+  document.getElementById('prof-name').textContent = 'Set up your profile';
+  document.getElementById('prof-since').textContent = '';
+  document.getElementById('prof-avatar').textContent = '?';
+  document.getElementById('home-avatar').textContent = '?';
+  document.getElementById('wb-avatar').textContent = '?';
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('chat-shortcut-sub').textContent = 'Ask anything — no profile needed to start';
+  document.getElementById('journal-shortcut-sub').textContent = 'Track how products make you feel';
+
+  // Navigate directly to home — no reload needed
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-home').classList.add('active');
+  refreshUI();
+  toast("prof-toast", "Profile reset — fresh start!");
+}
+
+function hoverStars(el, n) {
+  const stars = el.parentElement.querySelectorAll('span');
+  stars.forEach((s, i) => s.style.color = i < n ? '#EF9F27' : '#d3d1c7');
+}
+function resetStars(container) {
+  container.querySelectorAll('span').forEach(s => s.style.color = '#d3d1c7');
+}
+function saveStrainRated(id, rating, container) {
+  const s = window.STRAINS.find(x => x.id === id);
+  if (!s) return;
+  if (strainHistory.find(h => h.name === s.name)) { toast('prof-toast', 'Already saved'); return; }
+  strainHistory.unshift({ name: s.name, type: s.type, rating: rating, date: 'Today' });
+  if (strainHistory.length > 20) strainHistory = strainHistory.slice(0, 20);
+  saveData();
+  container.innerHTML = '<button class="save-btn saved">Saved to profile</button>';
+  refreshUI();
+  toast('prof-toast', s.name + ' saved with ' + rating + ' stars!');
+}
+
+function saveStrain(id, btn) {
+  let s = window.STRAINS.find(x => x.id === id);
+
+  // Handle live inventory products — id starts with 'inv-'
+  if (!s && id.startsWith('inv-') && selectedDispensary?.inventory?.length) {
+    const invProduct = selectedDispensary.inventory.find(p =>
+      'inv-' + p.name?.toLowerCase().replace(/[^a-z0-9]/g,'').substr(0,8) === id ||
+      btn?.closest('.rec-card')?.querySelector('.rec-name')?.textContent === p.name
+    );
+    if (invProduct) {
+      s = { name: invProduct.name, type: invProduct.type || 'Hybrid' };
+    } else {
+      const cardName = btn?.closest('.rec-card')?.querySelector('.rec-name')?.textContent;
+      if (cardName) s = { name: cardName, type: 'Hybrid' };
+    }
+  }
+
+  if (!s) return;
+
+  // Toggle — if already saved, remove it
+  const existingIndex = strainHistory.findIndex(h => h.name === s.name);
+  if (existingIndex > -1) {
+    strainHistory.splice(existingIndex, 1);
+    saveData();
+    btn.textContent = '+ Save to profile';
+    btn.classList.remove('saved');
+    refreshUI();
+    toast('prof-toast', s.name + ' removed from your profile');
+    return;
+  }
+
+  // Save it
+  strainHistory.unshift({ name: s.name, type: s.type, rating: 0, date: 'Today' });
+  if (strainHistory.length > 20) strainHistory = strainHistory.slice(0, 20);
+  saveData();
+  btn.textContent = '✓ Saved to profile';
+  btn.classList.add('saved');
+  refreshUI();
+  toast('prof-toast', s.name + ' saved to your profile!');
+}
+
+function showTyping() {
+  const msgsEl = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg bot'; d.id = 'typing-ind';
+  d.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  msgsEl.appendChild(d); msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+function removeTyping() { const t = document.getElementById('typing-ind'); if (t) t.remove(); }
+
+
+function newChat() {
+  chatInitialized = false;
+  chatHistory = [];
+  document.getElementById('messages').innerHTML = '';
+  startChat();
+}
+
+function startChat() {
+  chatInitialized = true;
+  chatHistory = [];
+  document.getElementById('messages').innerHTML = '';
+
+  // No profile yet — Ivy will introduce herself and ask for name naturally
+  // through conversation (system prompt handles this)
+  if (!profile.name) {
+    const welcomeMsg = "Hi, I'm Ivy — your personal cannabis guide. I give personalized recommendations based on your needs, completely private and judgment-free. What can I help you with today?";
+    const welcomeChips = ['Sleep', 'Pain relief', 'Anxiety', 'Focus', 'Just exploring'];
+    addMessage('bot', welcomeMsg, welcomeChips);
+    chatHistory.push({ role: 'assistant', content: welcomeMsg });
+    return;
+  }
+
+  // Returning user with profile — greet with awareness of their personalizations
+  const hr = new Date().getHours();
+  const tod = hr < 12 ? 'morning' : hr < 17 ? 'afternoon' : 'evening';
+  const fullName = (profile.name||'').trim();
+  const firstName = fullName.split(' ')[0];
+  const greetName = fullName === 'Just call me friend' ? 'friend' :
+                    fullName === 'Anonymous' ? '' :
+                    firstName === 'Just' ? 'friend' : firstName;
+
+  const goals = profile.goals || [];
+  const expLabel = {
+    'first_time': 'a first timer',
+    'beginner': 'fairly new to cannabis',
+    'occasional': 'an occasional user',
+    'regular': 'a regular user',
+    'experienced': 'very experienced'
+  }[profile.experience] || null;
+
+  let greeting = greetName ? `Hey ${greetName} — ` : '';
+  greeting += `good ${tod}.`;
+
+  // Acknowledge their goals if set
+  if (goals.length > 0) {
+    let goalsText = '';
+    if (goals.length === 1) goalsText = goals[0].toLowerCase();
+    else if (goals.length === 2) goalsText = `${goals[0].toLowerCase()} and ${goals[1].toLowerCase()}`;
+    else goalsText = goals.slice(0,-1).map(g=>g.toLowerCase()).join(', ') + ', and ' + goals[goals.length-1].toLowerCase();
+    greeting += ` What can I help you with today? I know you’ve been working on ${goalsText}.`;
+  } else {
+    greeting += ` What can I help you with today?`;
+  }
+
+  // Build chips from their goals or defaults
+  const greetChips = goals.length > 0
+    ? [...goals.slice(0,3), 'Something else']
+    : ['Sleep', 'Pain relief', 'Anxiety', 'Something else'];
+
+  // Only send generic greeting if no dispensary greeting is pending
+  if (!window._pendingDispensaryGreeting) {
+    addMessage('bot', greeting, greetChips);
+    chatHistory.push({ role: 'assistant', content: greeting });
+  }
+
+  // If dispensary was just selected, send acknowledgment after greeting
+  if (window._pendingDispensaryGreeting) {
+    const dispName = window._pendingDispensaryGreeting;
+    window._pendingDispensaryGreeting = null;
+    setTimeout(() => {
+      const dispMsg = `I’ve loaded the live inventory from ${dispName} — I’ll only recommend products that are actually in stock there right now. What are you looking to help with today?`;
+      addMessage('bot', dispMsg, ['Sleep', 'Pain relief', 'Anxiety', 'Focus', 'Just browsing']);
+      chatHistory.push({ role: 'assistant', content: dispMsg });
+    }, 700);
+  }
+}
+
+// ── Quick Setup Card — shown inline in chat for new users ────────────────────
+let quickSetupData = { name: '', experience: '', goals: [], conditions: [], otherCondition: '', medications: '' };
+
+function showQuickSetup() {
+  const msgsEl = document.getElementById('messages');
+  msgsEl.innerHTML = '';
+
+  const card = document.createElement('div');
+  card.id = 'quick-setup-card';
+  card.style.cssText = 'margin:16px;background:#fff;border-radius:16px;border:1px solid rgba(0,0,0,0.08);overflow:hidden';
+
+  card.innerHTML = `
+    <div style="background:linear-gradient(135deg,#1a9968,#0d6647);padding:18px 20px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+        <svg width="20" height="20" viewBox="0 0 56 56"><circle cx="28" cy="28" r="28" fill="rgba(255,255,255,0.2)"/><line x1="28" y1="42" x2="28" y2="14" stroke="white" stroke-width="2.5" stroke-linecap="round"/><path d="M28,34 C21,29 11,27 9,19 C15,19 23,25 28,34 Z" fill="white"/><path d="M28,34 C35,29 45,27 47,19 C41,19 33,25 28,34 Z" fill="white"/><path d="M28,24 C22,19 13,16 11,9 C17,11 24,17 28,24 Z" fill="white"/><path d="M28,24 C34,19 43,16 45,9 C39,11 32,17 28,24 Z" fill="white"/></svg>
+        <span style="font-size:16px;font-weight:700;color:white">Hi, I'm Ivy</span>
+      </div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.9);line-height:1.5">Your private cannabis guide. Answer 3 quick questions and I'll give you personalized recommendations right away.</div>
+    </div>
+
+    <div style="padding:18px 20px">
+
+      <!-- Step 1: Name -->
+      <div id="qs-step-1">
+        <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:12px">What should I call you?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <input id="qs-name-input" type="text" placeholder="Your name..." maxlength="30"
+            style="grid-column:1/-1;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;font-family:inherit;outline:none"
+            oninput="quickSetupData.name=this.value"
+            onkeydown="if(event.key==='Enter')qsNextStep(1)">
+          <button onclick="quickSetupData.name=this.dataset.val;qsNextStep(1)" data-val="Just call me friend"
+            style="padding:9px 8px;border:1.5px solid rgba(0,0,0,0.1);border-radius:9px;font-size:12px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#5a5c57">
+            Just call me friend
+          </button>
+          <button onclick="quickSetupData.name=this.dataset.val;qsNextStep(1)" data-val="Anonymous"
+            style="padding:9px 8px;border:1.5px solid rgba(0,0,0,0.1);border-radius:9px;font-size:12px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#5a5c57">
+            Stay anonymous
+          </button>
+        </div>
+        <button onclick="if(document.getElementById('qs-name-input').value.trim()){quickSetupData.name=document.getElementById('qs-name-input').value.trim();}qsNextStep(1)"
+          style="width:100%;padding:11px;background:#1a9968;color:white;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+          Continue →
+        </button>
+      </div>
+
+      <!-- Step 2: Experience (hidden initially) -->
+      <div id="qs-step-2" style="display:none">
+        <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:12px">What's your experience with cannabis?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          ${['First time','Occasional','Regular','Daily use'].map(exp => `
+          <button onclick="quickSetupData.experience='${exp}';qsNextStep(2)"
+            style="padding:11px 8px;border:1.5px solid rgba(0,0,0,0.1);border-radius:9px;font-size:13px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#333;text-align:center">
+            ${exp}
+          </button>`).join('')}
+        </div>
+      </div>
+
+      <!-- Step 3: Goals (hidden initially) -->
+      <div id="qs-step-3" style="display:none">
+        <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:4px">What are you hoping cannabis helps with?</div>
+        <div style="font-size:11px;color:#9a9c97;margin-bottom:12px">Select all that apply</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px" id="qs-goals-grid">
+          ${['Sleep','Anxiety','Pain relief','Stress','Focus','Mood','Nausea','General wellness'].map(g => `
+          <button onclick="qsToggleGoal(this,'${g}')"
+            style="padding:10px 8px;border:1.5px solid rgba(0,0,0,0.1);border-radius:9px;font-size:13px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#333;text-align:center">
+            ${g}
+          </button>`).join('')}
+        </div>
+        <button onclick="qsNextStep(3)"
+          style="width:100%;padding:11px;background:#1a9968;color:white;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+          Continue →
+        </button>
+      </div>
+
+      <!-- Step 4: Health context — conditions + medications combined -->
+      <div id="qs-step-4" style="display:none">
+
+        <div style="display:flex;align-items:flex-start;gap:8px;background:#FFF8E7;border-radius:10px;padding:10px 12px;margin-bottom:14px;border:1px solid #FAC775">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#BA7517" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span style="font-size:11px;color:#BA7517;line-height:1.5">This helps Ivy give you safer, more accurate recommendations. Both fields are completely optional.</span>
+        </div>
+
+        <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:4px">Is there anything about your health we should know?</div>
+        <div style="font-size:11px;color:#9a9c97;margin-bottom:12px">Conditions and medications help Ivy personalize safely</div>
+
+        <!-- Conditions grid -->
+        <div style="font-size:11px;font-weight:600;color:#0d6647;letter-spacing:0.04em;margin-bottom:8px">HEALTH CONDITIONS (select any that apply)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px" id="qs-conditions-grid">
+          ${['Chronic pain','Anxiety','Depression','Insomnia','PTSD','Fibromyalgia','Arthritis','Migraines','Nausea','ADHD','IBS'].map(c => `
+          <button onclick="qsToggleCondition(this,'${c}')"
+            style="padding:8px 6px;border:1.5px solid rgba(0,0,0,0.1);border-radius:8px;font-size:12px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#333;text-align:center">
+            ${c}
+          </button>`).join('')}
+          <button id="qs-other-btn" onclick="qsToggleOtherCondition(this)"
+            style="padding:8px 6px;border:1.5px solid rgba(0,0,0,0.1);border-radius:8px;font-size:12px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#333;text-align:center">
+            Other
+          </button>
+        </div>
+        <div id="qs-other-input-wrap" style="display:none;margin-bottom:10px">
+          <input id="qs-other-condition-input" type="text" placeholder="Please describe your condition..."
+            maxlength="60"
+            style="width:100%;padding:9px 12px;border:1.5px solid #1a9968;border-radius:9px;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box"
+            oninput="quickSetupData.otherCondition=this.value">
+        </div>
+
+        <!-- Medications -->
+        <div style="font-size:11px;font-weight:600;color:#0d6647;letter-spacing:0.04em;margin-bottom:8px;margin-top:4px">MEDICATIONS (optional)</div>
+        <input id="qs-med-input" type="text" placeholder="e.g. Sertraline, Metformin, Lisinopril..."
+          style="width:100%;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box;margin-bottom:12px"
+          oninput="quickSetupData.medications=this.value">
+
+        <button onclick="qsFinish()"
+          style="width:100%;padding:11px;background:#1a9968;color:white;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+          Start chatting with Ivy →
+        </button>
+
+        <button onclick="qsSkipHealth()"
+          style="width:100%;margin-top:6px;padding:8px;border:none;border-radius:9px;font-size:12px;font-weight:400;background:transparent;cursor:pointer;font-family:inherit;color:#9a9c97">
+          Skip — I'd rather not share this
+        </button>
+
+        <div style="display:flex;align-items:center;justify-content:center;gap:5px;margin-top:8px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#4a9c78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span style="font-size:10.5px;color:#4a9c78;line-height:1.4">Private. Stays on your device. Never sold or shared.</span>
+        </div>
+      </div>
+
+      <!-- Progress dots -->
+      <div style="display:flex;justify-content:center;gap:6px;margin-top:16px" id="qs-dots">
+        <div id="qs-dot-1" style="width:8px;height:8px;border-radius:50%;background:#1a9968"></div>
+        <div id="qs-dot-2" style="width:8px;height:8px;border-radius:50%;background:#e0e0e0"></div>
+        <div id="qs-dot-3" style="width:8px;height:8px;border-radius:50%;background:#e0e0e0"></div>
+        <div id="qs-dot-4" style="width:8px;height:8px;border-radius:50%;background:#e0e0e0"></div>
+      </div>
+    </div>
+  `;
+
+  msgsEl.appendChild(card);
+}
+
+function qsNextStep(current) {
+  // Validate step 1
+  if (current === 1 && !quickSetupData.name) {
+    const inp = document.getElementById('qs-name-input');
+    if (inp) inp.style.border = '1.5px solid #e24b4a';
+    return;
+  }
+
+  document.getElementById('qs-step-' + current).style.display = 'none';
+  document.getElementById('qs-step-' + (current + 1)).style.display = 'block';
+
+  // Update progress dots
+  for (let i = 1; i <= 3; i++) {
+    const dot = document.getElementById('qs-dot-' + i);
+    if (dot) dot.style.background = i <= current + 1 ? '#1a9968' : '#e0e0e0';
+  }
+}
+
+// ── Medication detail system ─────────────────────────────────────────────────
+let medications = []; // array of {name, dose, frequency, time}
+
+function addMedication() {
+  const id = Date.now();
+  medications.push({ id, name: '', dose: '', frequency: '', time: '' });
+  renderMedications();
+}
+
+function removeMedication(id) {
+  medications = medications.filter(m => m.id !== id);
+  renderMedications();
+}
+
+function updateMed(id, field, value) {
+  const med = medications.find(m => m.id === id);
+  if (med) med[field] = value;
+}
+
+function renderMedications() {
+  const list = document.getElementById('med-list');
+  if (!list) return;
+  list.innerHTML = medications.map(m => `
+    <div style="background:#f7f8f6;border-radius:10px;padding:12px;border:1px solid rgba(0,0,0,0.08)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:12px;font-weight:600;color:#0d6647">Medication</span>
+        <button onclick="removeMedication(${m.id})" style="border:none;background:transparent;color:#9a9c97;font-size:18px;cursor:pointer;padding:0;line-height:1">&times;</button>
+      </div>
+      <input type="text" placeholder="Medication name (e.g. Sertraline)" value="${m.name}"
+        oninput="updateMed(${m.id},'name',this.value)"
+        style="width:100%;padding:8px 10px;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box;margin-bottom:8px;background:#fff">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+        <div>
+          <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-weight:500">DOSAGE <span style="font-weight:400;font-size:9px">(optional)</span></div>
+          <input type="text" placeholder="e.g. 50mg" value="${m.dose}"
+            oninput="updateMed(${m.id},'dose',this.value)"
+            style="width:100%;padding:8px 10px;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box;background:#fff">
+        </div>
+        <div>
+          <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-weight:500">FREQUENCY <span style="font-weight:400;font-size:9px">(optional)</span></div>
+          <select onchange="updateMed(${m.id},'frequency',this.value)"
+            style="width:100%;padding:8px 10px;border:1.5px solid rgba(0,0,0,0.12);border-radius:8px;font-size:13px;font-family:inherit;box-sizing:border-box;background:#fff;color:${m.frequency?'#111':'#9a9c97'}">
+            <option value="" ${!m.frequency?'selected':''} style="color:#9a9c97">Select frequency...</option>
+            <option value="once daily" ${m.frequency==='once daily'?'selected':''}>Once daily</option>
+            <option value="twice daily" ${m.frequency==='twice daily'?'selected':''}>Twice daily</option>
+            <option value="three times daily" ${m.frequency==='three times daily'?'selected':''}>3x daily</option>
+            <option value="as needed" ${m.frequency==='as needed'?'selected':''}>As needed</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-weight:500">TIME OF DAY <span style="font-weight:400;font-size:9px">(optional)</span></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+          ${['Morning','Afternoon','Evening','Bedtime'].map(t => `
+          <button onclick="updateMed(${m.id},'time','${t.toLowerCase()}');this.parentElement.querySelectorAll('button').forEach(b=>{b.style.background='#f7f8f6';b.style.border='1.5px solid rgba(0,0,0,0.1)';b.style.color='#333';});this.style.background='#E1F5EE';this.style.border='1.5px solid #1a9968';this.style.color='#0d6647'"
+            style="padding:7px 4px;border:1.5px solid rgba(0,0,0,0.1);border-radius:7px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;background:${m.time===t.toLowerCase()?'#E1F5EE':'#f7f8f6'};color:${m.time===t.toLowerCase()?'#0d6647':'#333'}">
+            ${t}
+          </button>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getMedicationsString() {
+  if (!medications.length) return '';
+  return medications
+    .filter(m => m.name && m.name.trim())
+    .map(m => {
+      const parts = [m.name.trim()];
+      if (m.dose && m.dose.trim()) parts.push(m.dose.trim());
+      if (m.frequency && m.frequency !== 'once daily') parts.push(m.frequency);
+      if (m.time && m.time !== 'morning') parts.push('taken in the ' + m.time);
+      return parts.join(' ');
+    }).join('; ');
+}
+
+function qsSkipHealth() {
+  // Explicitly clear any health data they may have partially selected
+  quickSetupData.conditions = [];
+  quickSetupData.otherCondition = '';
+  quickSetupData.medications = '';
+  qsFinish();
+}
+
+function qsToggleOtherCondition(btn) {
+  const wrap = document.getElementById('qs-other-input-wrap');
+  const isActive = btn.style.background === 'rgb(225, 245, 238)';
+  if (isActive) {
+    btn.style.background = '#f7f8f6';
+    btn.style.border = '1.5px solid rgba(0,0,0,0.1)';
+    btn.style.color = '#333';
+    wrap.style.display = 'none';
+    quickSetupData.otherCondition = '';
+  } else {
+    btn.style.background = '#E1F5EE';
+    btn.style.border = '1.5px solid #1a9968';
+    btn.style.color = '#0d6647';
+    wrap.style.display = 'block';
+    document.getElementById('qs-other-condition-input').focus();
+  }
+}
+
+function qsToggleCondition(btn, condition) {
+  const idx = quickSetupData.conditions.indexOf(condition);
+  if (idx > -1) {
+    quickSetupData.conditions.splice(idx, 1);
+    btn.style.background = '#f7f8f6';
+    btn.style.border = '1.5px solid rgba(0,0,0,0.1)';
+    btn.style.color = '#333';
+  } else {
+    quickSetupData.conditions.push(condition);
+    btn.style.background = '#E1F5EE';
+    btn.style.border = '1.5px solid #1a9968';
+    btn.style.color = '#0d6647';
+  }
+}
+
+function qsSetMeds(val) {
+  quickSetupData.medications = val === 'none' ? '' : val;
+  qsFinish();
+}
+
+function qsToggleGoal(btn, goal) {
+  const idx = quickSetupData.goals.indexOf(goal);
+  if (idx > -1) {
+    quickSetupData.goals.splice(idx, 1);
+    btn.style.background = '#f7f8f6';
+    btn.style.border = '1.5px solid rgba(0,0,0,0.1)';
+    btn.style.color = '#333';
+  } else {
+    quickSetupData.goals.push(goal);
+    btn.style.background = '#E1F5EE';
+    btn.style.border = '1.5px solid #1a9968';
+    btn.style.color = '#0d6647';
+  }
+}
+
+function qsFinish() {
+  if (quickSetupData.goals.length === 0) {
+    quickSetupData.goals = ['General wellness'];
+  }
+
+  // Save to profile
+  profile.name = quickSetupData.name;
+  profile.experience = quickSetupData.experience;
+  profile.goals = quickSetupData.goals;
+  if (quickSetupData.conditions && quickSetupData.conditions.length) {
+    const allConditions = [...quickSetupData.conditions];
+    if (quickSetupData.otherCondition && quickSetupData.otherCondition.trim()) {
+      allConditions.push(quickSetupData.otherCondition.trim());
+    }
+    profile.conditions = allConditions;
+  } else if (quickSetupData.otherCondition && quickSetupData.otherCondition.trim()) {
+    profile.conditions = [quickSetupData.otherCondition.trim()];
+  }
+  if (quickSetupData.medications && quickSetupData.medications.trim()) {
+    profile.medications = quickSetupData.medications.trim();
+  }
+  // Also merge any medications added via the full profile medication cards
+  const medString = getMedicationsString();
+  if (medString) profile.medications = medString;
+  if (!profile.joined) profile.joined = new Date().toLocaleDateString('en-US', { month:'short', year:'numeric' });
+  saveData();
+  refreshUI();
+
+  // Hide nudge banner since profile now exists
+  const nudge = document.getElementById('chat-profile-nudge');
+  if (nudge) nudge.style.display = 'none';
+
+  // Remove quick setup card and start real chat
+  const card = document.getElementById('quick-setup-card');
+  if (card) card.remove();
+
+  // Start personalized chat with the new profile data
+  const savedDisp = localStorage.getItem('bc_selected_dispensary');
+  const dispCtx = savedDisp ? ` I am shopping at ${JSON.parse(savedDisp).name}.` : '';
+  const nameGreet = quickSetupData.name === 'Just call me friend' ? 'friend' :
+                    quickSetupData.name === 'Anonymous' ? 'there' :
+                    quickSetupData.name;
+  const opener = `Hi! I'm ${nameGreet}. I'm ${quickSetupData.experience || 'new to cannabis'} and I'm looking for help with ${quickSetupData.goals.join(' and ')}. What do you recommend for me?${dispCtx}`;
+  getBotReply(opener);
+}
+
+async function sendMessage() {
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if (!text || isTyping) return;
+  inp.value = ''; inp.style.height = 'auto';
+  addMessage('user', text);
+  await getBotReply(text);
+}
+
+// Auto-grow textarea
+const inp = document.getElementById('chat-input');
+inp.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+inp.addEventListener('input', () => { inp.style.height = 'auto'; inp.style.height = Math.min(inp.scrollHeight, 90) + 'px'; });
+
+// ─── Dispensary Registry ──────────────────────────────────────────────────────
+const DISPENSARIES = {
+  'high-profile-pineville':      { name: 'High Profile — Pineville, MO',        brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-pineville' , menuUrl: 'https://highprofilecannabis.com/shop/pineville-dispensary' },
+  'mo-chesterfield-hp':          { name: 'High Profile — Chesterfield, MO',     brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-chesterfield' , menuUrl: 'https://highprofilecannabis.com/shop/chesterfield-dispensary' },
+  'mo-columbia-hp':              { name: 'High Profile — Columbia, MO',         brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-columbia' , menuUrl: 'https://highprofilecannabis.com/shop/columbia-dispensary' },
+  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO',   brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-cape-girardeau' , menuUrl: 'https://highprofilecannabis.com/shop/cape-girardeau-dispensary' },
+  'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis', state: 'AZ', wmSlug: 'story-dunlap' , menuUrl: 'https://storycannabis.com/shop/arizona/shop-dunlap/rec-menu' },
+  'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', state: 'MD', wmSlug: 'story-mechanicsville' , menuUrl: 'https://storycannabis.com/shop/maryland/shop-mechanicsville/med-menu' },
+  'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', state: 'OH', wmSlug: 'story-cleveland' , menuUrl: 'https://storycannabis.com/shop/ohio/shop-cleveland/rec-menu' },
+  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      state: 'AR', wmSlug: 'purspirit-cannabis-co' , menuUrl: 'https://menu.purspirit.com/shop/menu' },
+  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', wmSlug: 'the-source-rogers', city: 'rogers', altNames: ['the source rogers', 'source rogers', 'the source craft'] , menuUrl: 'https://www.thesource-mj.com/stores/the-source-rogers' },
+  'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       state: 'AR', wmSlug: 'the-hill-fayetteville' , menuUrl: 'https://thehillnwa.com/our-menu' },
+};
+
+let selectedDispensary = null; // { slug, name, brand, inventory[] }
+
+async function fetchInventory(slug) {
+  try {
+    const res = await fetch(`/api/inventory?slug=${slug}`);
+    if (!res.ok) throw new Error('Inventory fetch failed');
+    const data = await res.json();
+
+    if (data.status === 'NO_DATA') {
+      console.log(`No inventory data yet for ${slug}`);
+      return [];
+    }
+
+    selectedDispensary = { slug, ...DISPENSARIES[slug], inventory: data.inventory, summary: data.summary, menuUrl: DISPENSARIES[slug]?.menuUrl || '' };
+    localStorage.setItem('bc_selected_dispensary', JSON.stringify({ slug, name: DISPENSARIES[slug].name }));
+    console.log(`Loaded ${data.inventory.length} products for ${data.dispensary}`);
+    return data.inventory;
+  } catch(e) {
+    console.warn('Could not load inventory:', e.message);
+    return null;
+  }
+}
+
+function buildInventoryContext() {
+  if (!selectedDispensary) return '';
+  const name = selectedDispensary.name;
+  const summary = selectedDispensary.summary;
+  const inv = selectedDispensary.inventory || [];
+
+  // Jane facets data — use catalog summary
+  if (summary?.isFacetsData) {
+    const kinds = summary.kinds || {};
+    const brands = summary.topBrands || [];
+    const feelings = summary.feelings || [];
+    let ctx = `
+CURRENT ${name.toUpperCase()} CATALOG (${summary.totalProducts} products in stock):
+`;
+    ctx += `IMPORTANT: This dispensary carries these product types. Recommend products that fit this catalog.
+
+`;
+    ctx += `PRODUCT TYPES IN STOCK:
+`;
+    Object.entries(kinds).forEach(([kind, count]) => {
+      ctx += `- ${kind}: ${count} products
+`;
+    });
+    ctx += `
+TOP BRANDS CARRIED:
+`;
+    brands.forEach(b => { ctx += `- ${b.name} (${b.count} products)
+`; });
+    if (feelings.length) {
+      ctx += `
+CUSTOMER-REPORTED EFFECTS:
+`;
+      ctx += feelings.join(', ') + '\n';
+    }
+    ctx += `
+When recommending, refer to specific brands this dispensary carries (listed above). Do not recommend generic strain names — recommend products from these brands in the correct category.
+`;
+    return ctx;
+  }
+
+  // Static inventory — individual products
+  if (!inv.length) return '';
+  const byCategory = {};
+  inv.forEach(p => {
+    const cat = p.category || 'Other';
+    if (!byCategory[cat]) byCategory[cat] = [];
+    byCategory[cat].push(p);
+  });
+  let ctx = `
+CURRENT ${name.toUpperCase()} INVENTORY (${inv.length} products in stock right now):
+`;
+  ctx += `IMPORTANT: Only recommend products from this inventory.
+
+`;
+  Object.entries(byCategory).forEach(([cat, products]) => {
+    ctx += `${cat.toUpperCase()}:
+`;
+    products.slice(0, 20).forEach(p => {
+      ctx += `- ${p.name}${p.brand ? ` by ${p.brand}` : ''}`;
+      if (p.type) ctx += ` [${p.type}]`;
+      if (p.thc) ctx += ` THC:${p.thc}`;
+      if (p.cbd) ctx += ` CBD:${p.cbd}`;
+      if (p.price) ctx += ` $${p.price}`;
+      ctx += '\n';
+    });
+  });
+  return ctx;
+}
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+loadData();
+loadJournal();
+refreshUI();
+renderJournal();
+showOnboardIfNeeded();
+injectNavbars('home');
+
+// Restore selected dispensary from storage
+const savedDisp = localStorage.getItem('bc_selected_dispensary');
+if (savedDisp) {
+  try {
+    const { slug } = JSON.parse(savedDisp);
+    if (slug && DISPENSARIES[slug]) fetchInventory(slug);
+  } catch(e) {}
+}
+</script>
+</body>
+</html>
