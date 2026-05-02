@@ -2428,16 +2428,7 @@ function addMessage(role, content, chips) {
   if (chips && chips.length) {
     const cd = document.createElement('div');
     cd.className = 'chips';
-    // Add hint text for multi-select
-    if (isMultiSelect) {
-      const hint = document.createElement('div');
-      hint.style.cssText = 'width:100%;font-size:11px;color:#9a9c97;margin-bottom:2px;font-style:italic';
-      hint.textContent = 'Tap all that apply, then confirm';
-      cd.appendChild(hint);
-    }
-    // Multi-select when:
-    // 1. Chips match user's profile goals (opening greeting)
-    // 2. Chips include a special marker "select:multiple" from Ivy
+    // Declare isMultiSelect BEFORE using it
     const userGoals = (profile.goals || []).map(g => g.toLowerCase());
     const chipGoals = chips.filter(c => c !== 'Something else' && c !== 'select:multiple').map(c => c.toLowerCase());
     const hasMultipleGoals = userGoals.length > 1 && chipGoals.every(c => userGoals.includes(c));
@@ -2445,6 +2436,13 @@ function addMessage(role, content, chips) {
                           (hasMultipleGoals || chips.includes('select:multiple'));
     // Clean chips — remove internal marker
     const displayChips = chips.filter(c => c !== 'select:multiple');
+    // Add hint text for multi-select
+    if (isMultiSelect) {
+      const hint = document.createElement('div');
+      hint.style.cssText = 'width:100%;font-size:11px;color:#9a9c97;margin-bottom:2px;font-style:italic';
+      hint.textContent = 'Tap all that apply, then confirm';
+      cd.appendChild(hint);
+    }
     const selectedGoals = new Set();
 
     displayChips.forEach(c => {
