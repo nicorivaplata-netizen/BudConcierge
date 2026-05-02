@@ -2415,8 +2415,14 @@ function addMessage(role, content, chips) {
   if (chips && chips.length) {
     const cd = document.createElement('div');
     cd.className = 'chips';
-    // Detect if this is a multi-select context (contains "Something else" with goals)
-    const isMultiSelect = chips.includes('Something else') && chips.length > 2;
+    // Multi-select only for the opening greeting — detect by checking if chips
+    // match the user's onboarding goals exactly (set in finishOnboard)
+    const userGoals = (profile.goals || []).map(g => g.toLowerCase());
+    const chipGoals = chips.filter(c => c !== 'Something else').map(c => c.toLowerCase());
+    const isMultiSelect = chips.includes('Something else') && 
+                          chipGoals.length > 0 &&
+                          chipGoals.every(c => userGoals.includes(c)) &&
+                          userGoals.length > 1;
     const selectedGoals = new Set();
 
     chips.forEach(c => {
