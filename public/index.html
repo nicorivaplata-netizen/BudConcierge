@@ -1895,10 +1895,60 @@ function refreshUI() {
   const jsub = document.getElementById('journal-shortcut-sub');
   if (jsub) jsub.textContent = journal.length ? journal.length + ' entries logged' : 'Track how products make you feel';
 
-  // Today's suggestion card
-  // Profile nudge — show when no profile, hide when profile exists
+  // Profile nudge / wellness snapshot
   const nudge = document.getElementById('profile-nudge');
-  if (nudge) nudge.style.display = profile.name ? 'none' : 'block';
+  if (nudge) {
+    if (!profile.name) {
+      // No profile — show nudge
+      nudge.style.display = 'block';
+      nudge.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:36px;height:36px;border-radius:10px;background:#1a9968;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700;color:#0a5c3a;margin-bottom:2px">Get more from Ivy</div>
+            <div style="font-size:12px;color:#3a7a5a;line-height:1.5">A 2 minute profile means every recommendation is built around you specifically.</div>
+          </div>
+          <span style="color:#1a9968;font-size:18px;font-weight:300">›</span>
+        </div>`;
+    } else {
+      // Has profile — show wellness snapshot
+      nudge.style.display = 'block';
+      const expLabels = {
+        'first_time': 'First timer', 'beginner': 'Beginner',
+        'occasional': 'Occasional user', 'regular': 'Regular user', 'experienced': 'Experienced'
+      };
+      const expLabel = expLabels[profile.experience] || profile.experience || 'Not set';
+      const topGoal = (profile.goals||[])[0] || 'Not set';
+      const savedCount = strainHistory.length;
+      const journalCount = journal.length;
+
+      nudge.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-size:11px;font-weight:700;color:#0d6647;letter-spacing:0.07em">YOUR WELLNESS SNAPSHOT</div>
+          <span style="color:#1a9968;font-size:12px;font-weight:600">Edit ›</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="background:white;border-radius:10px;padding:10px 12px">
+            <div style="font-size:10px;color:#9a9c97;margin-bottom:3px">Top goal</div>
+            <div style="font-size:13px;font-weight:700;color:#111">${topGoal}</div>
+          </div>
+          <div style="background:white;border-radius:10px;padding:10px 12px">
+            <div style="font-size:10px;color:#9a9c97;margin-bottom:3px">Experience</div>
+            <div style="font-size:13px;font-weight:700;color:#111">${expLabel}</div>
+          </div>
+          <div style="background:white;border-radius:10px;padding:10px 12px">
+            <div style="font-size:10px;color:#9a9c97;margin-bottom:3px">Saved products</div>
+            <div style="font-size:13px;font-weight:700;color:#111">${savedCount}</div>
+          </div>
+          <div style="background:white;border-radius:10px;padding:10px 12px">
+            <div style="font-size:10px;color:#9a9c97;margin-bottom:3px">Journal entries</div>
+            <div style="font-size:13px;font-weight:700;color:#111">${journalCount}</div>
+          </div>
+        </div>`;
+    }
+  }
 
   const suggWrap = document.getElementById('home-suggestion');
   const suggCard = document.getElementById('home-suggestion-card');
