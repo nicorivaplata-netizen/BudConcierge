@@ -944,6 +944,46 @@ function getJournalInsights() {
   return { bestType, bestTypeAvg: Math.round(bestTypeAvg*10)/10, bestEffect: effectLabels[bestEffect], bestEffectAvg, topProduct, count: journal.length };
 }
 
+function dismissJournalNudge(productName) {
+  // Temporarily dismiss this nudge by marking it in session storage
+  try {
+    const dismissed = JSON.parse(sessionStorage.getItem('bc_nudge_dismissed') || '[]');
+    dismissed.push(productName.toLowerCase().trim());
+    sessionStorage.setItem('bc_nudge_dismissed', JSON.stringify(dismissed));
+  } catch(e) {}
+  // Re-render journal to show next untried product or hide nudge
+  const nudgeEl = document.getElementById('journal-nudge');
+
+  // Find next untried saved product that hasn't been dismissed
+  const dismissed = JSON.parse(sessionStorage.getItem('bc_nudge_dismissed') || '[]');
+  const journaledNames = new Set(journal.map(e => e.product?.toLowerCase().trim()));
+  const next = strainHistory.find(h =>
+    h.name &&
+    !journaledNames.has(h.name.toLowerCase().trim()) &&
+    !dismissed.includes(h.name.toLowerCase().trim())
+  );
+
+  if (nudgeEl) nudgeEl.innerHTML = '';
+  if (next && nudgeEl) {
+    nudgeEl.innerHTML = `
+      <div style="background:#E1F5EE;border:1.5px solid #a8dfc9;border-radius:14px;padding:14px 16px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:#0d6647;letter-spacing:0.06em;margin-bottom:6px">HAVE YOU TRIED IT YET?</div>
+        <div style="font-size:13px;color:#111;font-weight:600;margin-bottom:4px">${next.name}</div>
+        <div style="font-size:12px;color:#5a5c57;margin-bottom:12px">You saved this recently. If you've tried it, log how it felt — it takes 30 seconds.</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="startJournalEntry('${next.name.replace(/'/g,"\'")}','${next.type||''}')"
+            style="flex:1;padding:9px;background:#1a9968;border:none;border-radius:10px;font-size:13px;font-weight:700;color:white;cursor:pointer;font-family:inherit">
+            Log how it felt
+          </button>
+          <button onclick="dismissJournalNudge('${next.name.replace(/'/g,"\'")}' )"
+            style="padding:9px 12px;background:transparent;border:1.5px solid #a8dfc9;border-radius:10px;font-size:12px;color:#9a9c97;cursor:pointer;font-family:inherit">
+            Not yet
+          </button>
+        </div>
+      </div>`;
+  }
+}
+
 function startJournalEntry(productName, productType) {
   // Pre-fill journal entry with product from recommendation
   editingIndex = -1;
@@ -985,6 +1025,45 @@ function startJournalEntry(productName, productType) {
 function renderJournal() {
   const empty = document.getElementById('journal-empty');
   const list  = document.getElementById('journal-list');
+
+  // Find saved products that haven't been journaled yet — nudge to log them
+  const journaledNames = new Set(journal.map(e => e.product?.toLowerCase().trim()));
+  const untriedSaved = strainHistory.filter(h =>
+    h.name && !journaledNames.has(h.name.toLowerCase().trim())
+  ).slice(0, 3);
+
+  // Inject or update nudge card above journal list
+  let nudgeEl = document.getElementById('journal-nudge');
+  if (!nudgeEl) {
+    nudgeEl = document.createElement('div');
+    nudgeEl.id = 'journal-nudge';
+    const screen = document.getElementById('screen-journal');
+    const header = screen?.querySelector('[id="journal-list"]') || list;
+    if (header && header.parentNode) header.parentNode.insertBefore(nudgeEl, header);
+  }
+
+  if (untriedSaved.length > 0) {
+    const product = untriedSaved[0];
+    nudgeEl.innerHTML = `
+      <div style="background:#E1F5EE;border:1.5px solid #a8dfc9;border-radius:14px;padding:14px 16px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:#0d6647;letter-spacing:0.06em;margin-bottom:6px">HAVE YOU TRIED IT YET?</div>
+        <div style="font-size:13px;color:#111;font-weight:600;margin-bottom:4px">${product.name}</div>
+        <div style="font-size:12px;color:#5a5c57;margin-bottom:12px">You saved this recently. If you've tried it, log how it felt — it takes 30 seconds.</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="startJournalEntry('${product.name.replace(/'/g,"\\'")}','${product.type||''}')"
+            style="flex:1;padding:9px;background:#1a9968;border:none;border-radius:10px;font-size:13px;font-weight:700;color:white;cursor:pointer;font-family:inherit">
+            Log how it felt
+          </button>
+          <button onclick="dismissJournalNudge('${product.name.replace(/'/g,"\\'")}' )"
+            style="padding:9px 12px;background:transparent;border:1.5px solid #a8dfc9;border-radius:10px;font-size:12px;color:#9a9c97;cursor:pointer;font-family:inherit">
+            Not yet
+          </button>
+        </div>
+      </div>`;
+  } else {
+    nudgeEl.innerHTML = '';
+  }
+
   if (!journal.length) {
     empty.style.display = 'block'; list.style.display = 'none'; return;
   }
