@@ -2888,6 +2888,21 @@ function clearProfile() {
   const dispCard = document.getElementById('disp-shortcut-card');
   if (dispCard) dispCard.style.display = 'none';
 
+  // Reset Find tab — clear search results and deselect dispensary
+  const findEl = document.getElementById('find-results') || document.getElementById('dispensary-list');
+  if (findEl) findEl.innerHTML = '';
+  const searchInput = document.getElementById('find-search') || document.getElementById('disp-search');
+  if (searchInput) searchInput.value = '';
+  const partnerStatus = document.getElementById('partner-status');
+  if (partnerStatus) partnerStatus.textContent = '';
+  const currentDispCard = document.getElementById('current-disp-card');
+  if (currentDispCard) currentDispCard.style.display = 'none';
+  document.querySelectorAll('.use-for-chat-btn').forEach(btn => {
+    btn.innerHTML = '\u26a1 Use for Chat';
+    btn.style.background = '#1a9968';
+    btn.disabled = false;
+  });
+
   // Navigate directly to home — no reload needed
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-home').classList.add('active');
@@ -2953,23 +2968,7 @@ function saveStrain(id, btn) {
   btn.classList.add('saved');
   refreshUI();
 
-  // Show "Add to journal" button next to save button
-  const existing = btn.parentElement.querySelector('.journal-btn');
-  if (!existing) {
-    const journalBtn = document.createElement('button');
-    journalBtn.className = 'journal-btn';
-    journalBtn.style.cssText = 'padding:9px 14px;border:1.5px solid #a8dfc9;border-radius:10px;font-size:13px;font-weight:600;color:#085041;background:#E1F5EE;cursor:pointer;font-family:inherit;margin-top:6px;width:100%';
-    journalBtn.textContent = '+ Add to journal';
-    journalBtn.onclick = function() {
-      startJournalEntry(s.name, s.type);
-      journalBtn.textContent = '✓ Journal entry started';
-      journalBtn.style.background = '#1a9968';
-      journalBtn.style.color = 'white';
-      journalBtn.style.borderColor = '#1a9968';
-      journalBtn.disabled = true;
-    };
-    btn.parentElement.appendChild(journalBtn);
-  }
+  // Journal nudge will appear when user opens Journal tab
 }
 
 function showTyping() {
