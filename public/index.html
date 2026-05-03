@@ -1212,9 +1212,10 @@ async function usePartnerForChat(slug, btn) {
     btn.style.background = '#0d6647';
     // Auto-navigate to chat with dispensary context
     window._pendingDispensaryGreeting = DISPENSARIES[slug].name;
+    chatInitialized = false;
+    refreshUI();
     setTimeout(() => {
       switchTab('chat');
-      if (!chatInitialized) startChat();
     }, 500);
   } else {
     btn.innerHTML = orig;
@@ -1313,10 +1314,13 @@ function clearPartnerDispensary() {
   selectedDispensary = null;
   localStorage.removeItem('bc_selected_dispensary');
   chatInitialized = false;
+  window._pendingDispensaryGreeting = null;
   updateCurrentDispCard();
-  refreshUI();
+  const dispCard = document.getElementById('disp-shortcut-card');
+  if (dispCard) dispCard.style.display = 'none';
   const status = document.getElementById('partner-status');
-  if (status) { status.textContent = ''; }
+  if (status) status.textContent = '';
+  refreshUI();
 }
 
 function useDispensaryShortcut() {
@@ -2756,6 +2760,8 @@ function clearProfile() {
   document.getElementById('messages').innerHTML = '';
   document.getElementById('chat-shortcut-sub').textContent = 'Ask anything — no profile needed to start';
   document.getElementById('journal-shortcut-sub').textContent = 'Track how products make you feel';
+  const dispCard = document.getElementById('disp-shortcut-card');
+  if (dispCard) dispCard.style.display = 'none';
 
   // Navigate directly to home — no reload needed
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
