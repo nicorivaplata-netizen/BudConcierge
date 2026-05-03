@@ -944,6 +944,44 @@ function getJournalInsights() {
   return { bestType, bestTypeAvg: Math.round(bestTypeAvg*10)/10, bestEffect: effectLabels[bestEffect], bestEffectAvg, topProduct, count: journal.length };
 }
 
+function startJournalEntry(productName, productType) {
+  // Pre-fill journal entry with product from recommendation
+  editingIndex = -1;
+  entryRating = 0;
+
+  // Reset form
+  document.getElementById('entry-product').value = productName || '';
+  document.getElementById('entry-notes').value = '';
+  document.querySelectorAll('.opt-btn[data-field="etype"]').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('input[type="range"]').forEach(r => { r.value = 5; r.dispatchEvent(new Event('input')); });
+  setEntryRating(0);
+
+  // Pre-select product type if we know it
+  if (productType) {
+    const typeMap = {
+      'Indica': 'Flower', 'Indica Dominant': 'Flower',
+      'Sativa': 'Flower', 'Sativa Dominant': 'Flower',
+      'Hybrid': 'Flower', 'CBD': 'Tincture'
+    };
+    const etype = typeMap[productType] || 'Flower';
+    const typeBtn = document.querySelector(`.opt-btn[data-field="etype"][data-val="${etype}"]`);
+    if (typeBtn) typeBtn.classList.add('on');
+  }
+
+  const saveBtn = document.querySelector('#screen-new-entry .btn-primary');
+  if (saveBtn) saveBtn.textContent = 'Save entry';
+
+  // Populate suggestions
+  const sugg = document.getElementById('entry-suggestions');
+  if (sugg) {
+    sugg.innerHTML = strainHistory.slice(0,6).map(h =>
+      `<button onclick="document.getElementById('entry-product').value='${h.name}'" style="font-size:11px;padding:3px 9px;border-radius:12px;border:1px solid #a8dfc9;background:#E1F5EE;color:#085041;cursor:pointer">${h.name}</button>`
+    ).join('');
+  }
+
+  switchTab('new-entry');
+}
+
 function renderJournal() {
   const empty = document.getElementById('journal-empty');
   const list  = document.getElementById('journal-list');
@@ -1152,6 +1190,7 @@ function renderDispensaries(list) {
   const el = document.getElementById('disp-results');
   setDispStatus('');
   if (!list.length) { setDispStatus('No dispensaries found. Try a different search.'); return; }
+  const currentSlug = (() => { try { return JSON.parse(localStorage.getItem('bc_selected_dispensary'))?.slug || ''; } catch(e) { return ''; } })();
   el.innerHTML = list.map(d => {
     const partnerSlug = findPartnerSlug(d.name, d.address);
     const isPartner = !!partnerSlug;
@@ -1180,8 +1219,9 @@ function renderDispensaries(list) {
       <div style="display:flex;gap:8px">
         ${d.website ? `<a href="${d.website}" target="_blank" style="flex:1;padding:9px;border:1px solid #a8dfc9;border-radius:8px;font-size:12px;font-weight:600;color:#085041;text-align:center;text-decoration:none;background:#E1F5EE">Visit website</a>` : ''}
         <button onclick="${isPartner ? `usePartnerForChat('${partnerSlug}',this)` : `selectDispensary('${d.id}','${d.name.replace(/'/g,"\'")}','${d.website||''}')`}"
-          style="flex:1;padding:9px;background:${isPartner?'#1a9968':'#1a9968'};border:none;border-radius:8px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit">
-          ${isPartner ? '⚡ Use for Chat' : 'Use for Chat'}
+          class="${isPartner ? 'use-for-chat-btn' : ''}"
+          style="flex:1;padding:9px;background:${isPartner && currentSlug===partnerSlug ? '#0d6647' : '#1a9968'};border:none;border-radius:8px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit">
+          ${isPartner && currentSlug===partnerSlug ? '\u2713 Selected' : isPartner ? '\u26a1 Use for Chat' : 'Use for Chat'}
         </button>
       </div>
     </div>`;
@@ -1316,6 +1356,12 @@ function clearPartnerDispensary() {
   chatInitialized = false;
   window._pendingDispensaryGreeting = null;
   updateCurrentDispCard();
+  // Reset all Use for Chat buttons back to unselected state
+  document.querySelectorAll('.use-for-chat-btn').forEach(btn => {
+    btn.innerHTML = '⚡ Use for Chat';
+    btn.style.background = '#1a9968';
+    btn.disabled = false;
+  });
   const dispCard = document.getElementById('disp-shortcut-card');
   if (dispCard) dispCard.style.display = 'none';
   const status = document.getElementById('partner-status');
@@ -2824,10 +2870,27 @@ function saveStrain(id, btn) {
   strainHistory.unshift({ name: s.name, type: s.type, rating: 0, date: 'Today' });
   if (strainHistory.length > 20) strainHistory = strainHistory.slice(0, 20);
   saveData();
-  btn.textContent = '✓ Saved to profile';
+  btn.textContent = '✓ Saved';
   btn.classList.add('saved');
   refreshUI();
-  toast('prof-toast', s.name + ' saved to your profile!');
+
+  // Show "Add to journal" button next to save button
+  const existing = btn.parentElement.querySelector('.journal-btn');
+  if (!existing) {
+    const journalBtn = document.createElement('button');
+    journalBtn.className = 'journal-btn';
+    journalBtn.style.cssText = 'padding:9px 14px;border:1.5px solid #a8dfc9;border-radius:10px;font-size:13px;font-weight:600;color:#085041;background:#E1F5EE;cursor:pointer;font-family:inherit;margin-top:6px;width:100%';
+    journalBtn.textContent = '+ Add to journal';
+    journalBtn.onclick = function() {
+      startJournalEntry(s.name, s.type);
+      journalBtn.textContent = '✓ Journal entry started';
+      journalBtn.style.background = '#1a9968';
+      journalBtn.style.color = 'white';
+      journalBtn.style.borderColor = '#1a9968';
+      journalBtn.disabled = true;
+    };
+    btn.parentElement.appendChild(journalBtn);
+  }
 }
 
 function showTyping() {
