@@ -1818,8 +1818,9 @@ function refreshUI() {
     if (profileShortcut) profileShortcut.style.display = 'block';
     const goals = profile.goals && (profile.goals||[]).length ? 'Personalized for: ' + (profile.goals||[]).slice(0,2).join(', ') : 'Ask anything — no profile needed to start';
     document.getElementById('chat-shortcut-sub').textContent = goals;
+  }
 
-  // Show dispensary shortcut if one is selected
+  // Show dispensary shortcut if one is selected — regardless of profile state
   const savedDisp = localStorage.getItem('bc_selected_dispensary');
   const dispCard = document.getElementById('disp-shortcut-card');
   if (dispCard) {
@@ -1827,19 +1828,21 @@ function refreshUI() {
       try {
         const { slug, name } = JSON.parse(savedDisp);
         const dispName = slug && DISPENSARIES[slug] ? DISPENSARIES[slug].name : name;
-        const shortName = dispName.split('—')[0].trim();
+        const shortName = dispName.split('\u2014')[0].trim();
         document.getElementById('disp-shortcut-name').textContent = `Chat with ${shortName}`;
         const inv = selectedDispensary?.inventory;
         document.getElementById('disp-shortcut-sub').textContent = inv?.length
-          ? `⚡ ${inv.length} products in stock right now`
-          : '⚡ Live inventory partner';
+          ? `\u26a1 ${inv.length} products in stock right now`
+          : '\u26a1 Live inventory partner';
         dispCard.style.display = 'block';
       } catch(e) { dispCard.style.display = 'none'; }
     } else {
       dispCard.style.display = 'none';
     }
-  }
   } else {
+    // No dispensary selected — hide shortcut card
+    const noDispCard = document.getElementById('disp-shortcut-card');
+    if (noDispCard) noDispCard.style.display = 'none';
     document.getElementById('home-title').textContent   = 'Ivy';
     document.getElementById('wb-greeting').textContent  = 'Welcome to Ivy';
     document.getElementById('wb-msg').textContent       = 'Set up your profile for personalized, judgment-free cannabis guidance.';
@@ -2889,12 +2892,14 @@ function clearProfile() {
   if (dispCard) dispCard.style.display = 'none';
 
   // Reset Find tab — clear search results and deselect dispensary
-  const findEl = document.getElementById('find-results') || document.getElementById('dispensary-list');
+  const findEl = document.getElementById('disp-results');
   if (findEl) findEl.innerHTML = '';
-  const searchInput = document.getElementById('find-search') || document.getElementById('disp-search');
+  const searchInput = document.getElementById('disp-search');
   if (searchInput) searchInput.value = '';
   const partnerStatus = document.getElementById('partner-status');
   if (partnerStatus) partnerStatus.textContent = '';
+  const dispStatus = document.getElementById('disp-status');
+  if (dispStatus) dispStatus.textContent = '';
   const currentDispCard = document.getElementById('current-disp-card');
   if (currentDispCard) currentDispCard.style.display = 'none';
   document.querySelectorAll('.use-for-chat-btn').forEach(btn => {
