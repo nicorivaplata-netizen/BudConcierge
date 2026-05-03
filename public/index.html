@@ -2528,7 +2528,22 @@ IBS AND CROHNS: Suppositories and rectal administration for gut-localized relief
 
 CHIP FORMAT — whenever you ask a question, you must end your message with a line in EXACTLY this format:
 CHIPS|||option1|||option2|||option3|||option4
-The chips must be short (2 to 4 words max) and directly answer the specific question you just asked. Never show generic chips. If you ask about pain type, show chips like: Muscle soreness|||Joint pain|||Headaches|||Back pain. If you ask about product, show: Flower|||Edibles|||Vape|||Concentrates|||Tincture|||Drinks. If you ask about experience: First time|||Occasional|||Regular|||Daily. If you are making recommendations and not asking a question, do not include a CHIPS line.
+The chips must be short (2 to 4 words max) and directly answer the specific question you just asked. Never show generic chips.
+
+MULTI-SELECT vs SINGLE-SELECT rules:
+- MOST questions should allow multi-select. Add select:multiple as the FIRST option when the user could reasonably pick more than one answer. Examples: goals, conditions, pain types, product formats, effects wanted, time of day.
+- ONLY use single-select (no select:multiple) for experience level questions where only one answer is correct per person.
+- When in doubt, use multi-select. Our users are often new to cannabis and may want to explore multiple options.
+
+Examples:
+- Pain type: CHIPS|||select:multiple|||Muscle soreness|||Joint pain|||Headaches|||Back pain
+- Product format: CHIPS|||select:multiple|||Flower|||Edibles|||Vape|||Concentrates|||Tincture|||Drinks
+- Goals: CHIPS|||select:multiple|||Sleep|||Pain relief|||Anxiety|||Focus|||Mood
+- Time of day: CHIPS|||select:multiple|||Morning|||Afternoon|||Evening|||Before bed
+- Experience level: CHIPS|||First time|||Occasional|||Regular|||Daily (no select:multiple)
+- Name chips: Enter my name|||Just call me friend|||Stay anonymous (no select:multiple)
+
+If you are making recommendations and not asking a question, do not include a CHIPS line.
 ${inventoryCtx}`;
 }
 
@@ -2687,10 +2702,12 @@ function addMessage(role, content, chips) {
     const userGoals = (profile.goals || []).map(g => g.toLowerCase());
     const chipGoals = chips.filter(c => c !== 'Something else' && c !== 'select:multiple').map(c => c.toLowerCase());
     const hasMultipleGoals = userGoals.length > 1 && chipGoals.every(c => userGoals.includes(c));
-    const isMultiSelect = chips.includes('Something else') && chipGoals.length > 0 &&
-                          (hasMultipleGoals || chips.includes('select:multiple'));
-    // Clean chips — remove internal marker
+    // Multi-select when Ivy signals it OR when chips match user's multiple profile goals
+    const isMultiSelect = chips.includes('select:multiple') ||
+                          (chips.includes('Something else') && chipGoals.length > 0 && hasMultipleGoals);
+    // Clean chips — remove internal marker, add Something else for multi-select if not present
     const displayChips = chips.filter(c => c !== 'select:multiple');
+    if (isMultiSelect && !displayChips.includes('Something else')) displayChips.push('Something else');
     // Add hint text for multi-select
     if (isMultiSelect) {
       const hint = document.createElement('div');
@@ -2765,22 +2782,50 @@ function addMessage(role, content, chips) {
       } else {
         // Normal single-select chip
         btn.onclick = () => {
+          const alreadySelected = btn.style.background === 'var(--green-mid)' || btn.classList.contains('chip-selected');
+          if (alreadySelected) return; // Already selected, do nothing
+
+          // Check if this chip group already has a selection
+          const hasSelection = [...btn.parentElement.querySelectorAll('.chip')]
+            .some(x => x.classList.contains('chip-selected'));
+
+          // Mark all previous messages' chips as used
           document.querySelectorAll('.chips').forEach(chipSet => {
             if (!chipSet.contains(btn)) {
               chipSet.querySelectorAll('.chip').forEach(x => x.classList.add('used'));
             }
           });
+
+          // Update this chip group — mark selected, fade others but keep them tappable
           btn.parentElement.querySelectorAll('.chip').forEach(x => {
+            x.classList.remove('chip-selected');
             x.classList.add('used');
-            x.style.opacity = '0.4';
+            x.style.opacity = '0.35';
+            x.style.pointerEvents = hasSelection ? 'auto' : 'none'; // keep tappable if changing answer
+            x.style.cursor = hasSelection ? 'pointer' : 'default';
           });
+          btn.classList.add('chip-selected');
           btn.classList.remove('used');
           btn.style.opacity = '1';
           btn.style.background = 'var(--green-mid)';
           btn.style.borderColor = 'var(--green)';
           btn.style.fontWeight = '600';
           btn.style.pointerEvents = 'none';
-          document.getElementById('chat-input').value = c;
+          btn.style.cursor = 'default';
+
+          // Add subtle "change" hint to unselected chips in this group
+          if (!hasSelection) {
+            btn.parentElement.querySelectorAll('.chip.used').forEach(x => {
+              x.title = 'Tap to change your answer';
+              x.style.pointerEvents = 'auto';
+              x.style.cursor = 'pointer';
+              x.style.opacity = '0.3';
+            });
+          }
+
+          // Send message — if changing answer, add context
+          const msg = hasSelection ? `Actually, let me change that — ${c}` : c;
+          document.getElementById('chat-input').value = msg;
           sendMessage();
         };
       }
