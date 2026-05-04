@@ -2698,16 +2698,24 @@ function addMessage(role, content, chips) {
   if (chips && chips.length) {
     const cd = document.createElement('div');
     cd.className = 'chips';
-    // Declare isMultiSelect BEFORE using it
-    const userGoals = (profile.goals || []).map(g => g.toLowerCase());
-    const chipGoals = chips.filter(c => c !== 'Something else' && c !== 'select:multiple').map(c => c.toLowerCase());
-    const hasMultipleGoals = userGoals.length > 1 && chipGoals.every(c => userGoals.includes(c));
-    // Multi-select when Ivy signals it OR when chips match user's multiple profile goals
-    const isMultiSelect = chips.includes('select:multiple') ||
-                          (chips.includes('Something else') && chipGoals.length > 0 && hasMultipleGoals);
-    // Clean chips — remove internal marker, add Something else for multi-select if not present
+    // Clean chips — remove internal marker
     const displayChips = chips.filter(c => c !== 'select:multiple');
-    if (isMultiSelect && !displayChips.includes('Something else')) displayChips.push('Something else');
+
+    // Single-select only for experience level or name chips
+    const singleSelectPatterns = [
+      'first time', 'occasional', 'regular', 'daily', 'very experienced',
+      'enter my name', 'just call me friend', 'stay anonymous'
+    ];
+    const isSingleSelect = displayChips.some(c =>
+      singleSelectPatterns.includes(c.toLowerCase())
+    );
+    // Everything else is multi-select by default
+    const isMultiSelect = !isSingleSelect && displayChips.length > 1;
+
+    // Add Something else option for multi-select sets that don't have it
+    if (isMultiSelect && !displayChips.includes('Something else')) {
+      displayChips.push('Something else');
+    }
     // Add hint text for multi-select
     if (isMultiSelect) {
       const hint = document.createElement('div');
@@ -2823,8 +2831,8 @@ function addMessage(role, content, chips) {
             });
           }
 
-          // Send message — if changing answer, add context
-          const msg = hasSelection ? `Actually, let me change that — ${c}` : c;
+          // Send message directly — multi-select handles changing answers
+          const msg = c;
           document.getElementById('chat-input').value = msg;
           sendMessage();
         };
