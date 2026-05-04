@@ -1603,7 +1603,7 @@ function finishOnboard() {
   refreshUI();
   injectNavbars('chat');
 
-  // Build personalized opening message from onboarding data
+  // Build warm, personal opening that goes straight to the deeper question
   const fullName = (profile.name || '').trim();
   const firstName = fullName.split(' ')[0];
   const greetName = fullName === 'Just call me friend' ? 'friend' :
@@ -1618,29 +1618,42 @@ function finishOnboard() {
     'experienced': 'very experienced'
   }[obData.experience] || null;
 
-  // Format goals naturally — "sleep and anxiety" or "sleep, pain relief, and anxiety"
-  let goalsText = '';
-  if (goals.length === 1) {
-    goalsText = goals[0].toLowerCase();
-  } else if (goals.length === 2) {
-    goalsText = `${goals[0].toLowerCase()} and ${goals[1].toLowerCase()}`;
-  } else if (goals.length > 2) {
-    const last = goals[goals.length - 1].toLowerCase();
-    const rest = goals.slice(0, -1).map(g => g.toLowerCase()).join(', ');
-    goalsText = `${rest}, and ${last}`;
+  const nameIntro = greetName ? `Hey ${greetName}! ` : 'Hey! ';
+  let greeting = nameIntro;
+  greeting += `I'm Ivy — really glad you're here. `;
+
+  const topGoal = (goals[0] || '').toLowerCase();
+  const deepQuestions = {
+    'sleep': `Since you're ${expLabel || 'here'} and sleep is on your mind — what's actually making it hard? Racing thoughts, waking up in the night, or just can't wind down?`,
+    'pain relief': `Since you're ${expLabel || 'here'} and dealing with pain — where's it hitting you most? Muscle soreness, joints, chronic pain, or something else?`,
+    'anxiety': `Since you're ${expLabel || 'here'} and working on anxiety — is it more of an everyday background hum, or does it hit harder in specific situations?`,
+    'stress': `Since you're ${expLabel || 'here'} and managing stress — is it more about unwinding at the end of the day, or taking the edge off throughout?`,
+    'focus': `Since you're ${expLabel || 'here'} and looking for focus — is it for creative work, staying sharp for structured tasks, or general clarity?`,
+    'mood': `Since you're ${expLabel || 'here'} and working on mood — are you looking for a lift, more balance, or just to feel a little lighter?`,
+    'nausea': `Since you're ${expLabel || 'here'} and dealing with nausea — is it chronic, situational, or related to a specific condition or treatment?`,
+    'appetite': `Since you're ${expLabel || 'here'} and working on appetite — is this about stimulating it, managing it, or something related to a health condition?`,
+  };
+
+  if (topGoal && deepQuestions[topGoal]) {
+    greeting += deepQuestions[topGoal];
+  } else if (topGoal) {
+    greeting += `You mentioned ${topGoal} — tell me a bit more about what that looks like for you so I can give you something really specific.`;
+  } else {
+    greeting += `What's bringing you here today?`;
   }
 
-  let greeting = greetName ? `Hey ${greetName} — ` : '';
-  greeting += `I’m Ivy, your personal cannabis guide.`;
-  if (goalsText && expLabel) {
-    greeting += ` Since you’re ${expLabel} and looking for help with ${goalsText}, I’ll tailor everything specifically to you.`;
-  } else if (goalsText) {
-    greeting += ` You mentioned ${goalsText} — let’s find what works best for you.`;
-  } else if (expLabel) {
-    greeting += ` As ${expLabel}, I’ll tailor everything to your comfort level.`;
-  }
+  const deepChips = {
+    'sleep': ['Racing thoughts', 'Waking up often', "Can't wind down", 'Something else'],
+    'pain relief': ['Muscle soreness', 'Joint pain', 'Chronic pain', 'Something else'],
+    'anxiety': ['Everyday anxiety', 'Social situations', 'Work stress', 'Something else'],
+    'stress': ['End of day', 'Throughout the day', 'Something else'],
+    'focus': ['Creative work', 'Structured tasks', 'Something else'],
+    'mood': ['Need a lift', 'More balance', 'Something else'],
+    'nausea': ['Chronic', 'Situational', 'Something else'],
+    'appetite': ['Stimulate it', 'Manage it', 'Something else'],
+  };
+  const chips = deepChips[topGoal] || ['Something else'];
 
-  const chips = goals.length ? [...goals.slice(0,3), 'Something else'] : ['Sleep', 'Pain relief', 'Anxiety', 'Just exploring'];
 
   // Set initialized FIRST to prevent startChat being triggered by switchTab
   chatHistory = [];
