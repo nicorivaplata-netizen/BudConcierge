@@ -2431,8 +2431,9 @@ ${history}${journalCtx}
 
 RESPONDING TO ${(profile.name||'this user').toUpperCase()}:
 - First message only: greet by name in one sentence, then get straight to it.
-- You have their profile. NEVER ask about experience level, goals, or product preferences — you already know these from their profile above. Asking again is a failure.
+- You have their profile. NEVER ask about experience level, goals, or product preferences — you already know these from their profile above. Asking again is a failure. This applies to ALL messages in the conversation, not just the first one. If you feel the urge to ask 'have you tried cannabis before' or 'how experienced are you' or 'are you new to cannabis' — stop immediately. You already know. Use it silently in your recommendation.
 - Go DEEPER than the profile. If they said sleep is their goal, ask what specifically is disrupting their sleep — racing thoughts, pain, waking up early. If they said anxiety, ask what triggers it — social situations, general, work stress. Use the profile as a foundation, not a starting point to re-explore.
+- MULTIPLE GOALS: If the user has multiple goals (e.g. sleep, anxiety, and pain relief), address ALL of them. After giving recommendations for the first goal, naturally transition: "Now for your anxiety..." or "That same product can also help with your pain because..." or "Want me to address your anxiety and pain relief too?" Never drop a goal the user mentioned. Every goal they shared deserves a recommendation.
 - One clarifying question max — only if genuinely needed and not already answered by profile. Then commit.
 - Let their condition or goal drive every recommendation. One phrase, not a paragraph.
 - Journal data: reference in one phrase if relevant. Do not over-explain.
@@ -2747,7 +2748,13 @@ function addMessage(role, content, chips) {
     // Single-select only for experience level or name chips
     const singleSelectPatterns = [
       'first time', 'occasional', 'regular', 'daily', 'very experienced',
-      'enter my name', 'just call me friend', 'stay anonymous'
+      'enter my name', 'just call me friend', 'stay anonymous',
+      // Medication and health condition chips — single answer only
+      "i'm on medications", 'i have health conditions', 'both', 'nope, all clear',
+      'no medications', 'no conditions', 'yes', 'no', 'skip this',
+      // Experience level alternatives Ivy might use
+      'never tried it', 'tried it once or twice', 'use occasionally',
+      'use regularly', 'beginner', 'experienced', 'first timer'
     ];
     const isSingleSelect = displayChips.some(c =>
       singleSelectPatterns.includes(c.toLowerCase())
@@ -2759,13 +2766,8 @@ function addMessage(role, content, chips) {
     if (isMultiSelect && !displayChips.includes('Something else')) {
       displayChips.push('Something else');
     }
-    // Add hint text for multi-select
-    if (isMultiSelect) {
-      const hint = document.createElement('div');
-      hint.style.cssText = 'width:100%;font-size:11px;color:#9a9c97;margin-bottom:2px;font-style:italic';
-      hint.textContent = 'Tap all that apply, then confirm';
-      cd.appendChild(hint);
-    }
+    // Add hint text for multi-select — shown after first tap, not immediately
+    // (hint is added dynamically when first chip is selected)
     const selectedGoals = new Set();
 
     displayChips.forEach(c => {
@@ -2789,9 +2791,17 @@ function addMessage(role, content, chips) {
             btn.style.color = 'var(--green-dark)';
             btn.style.fontWeight = '600';
           }
-          // Show/update confirm button
+          // Show hint on first selection only
+          if (selectedGoals.size === 1 && !cd.querySelector('.multi-hint')) {
+            const hint = document.createElement('div');
+            hint.className = 'multi-hint';
+            hint.style.cssText = 'width:100%;font-size:11px;color:#9a9c97;margin-top:4px;font-style:italic';
+            hint.textContent = 'Tap more to add, then confirm';
+            cd.appendChild(hint);
+          }
+          // Show/update confirm button only when something is selected
           let confirmBtn = cd.querySelector('.chip-confirm');
-          if (!confirmBtn) {
+          if (!confirmBtn && selectedGoals.size > 0) {
             confirmBtn = document.createElement('button');
             confirmBtn.className = 'chip chip-confirm';
             confirmBtn.style.background = 'var(--green)';
@@ -2809,8 +2819,10 @@ function addMessage(role, content, chips) {
             };
             cd.appendChild(confirmBtn);
           }
-          confirmBtn.textContent = selectedGoals.size > 0 ? `Start with ${[...selectedGoals].join(' & ')} →` : 'Select what to focus on';
-          confirmBtn.style.opacity = selectedGoals.size > 0 ? '1' : '0.5';
+          if (confirmBtn) {
+            confirmBtn.textContent = `${[...selectedGoals].join(' & ')} \u2192`;
+            confirmBtn.style.opacity = selectedGoals.size > 0 ? '1' : '0.5';
+          }
         };
       } else if (c === 'Something else' || c === 'Enter my name') {
         btn.onclick = () => {
