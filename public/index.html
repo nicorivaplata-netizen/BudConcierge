@@ -2688,7 +2688,17 @@ function addMessage(role, content, chips) {
         const findBtn = document.createElement('button');
         findBtn.style.cssText = 'padding:8px 14px;border:1.5px solid #a8dfc9;border-radius:20px;font-size:12px;font-weight:600;color:#085041;background:#E1F5EE;cursor:pointer;font-family:inherit';
         findBtn.textContent = 'Find a dispensary near me';
-        findBtn.onclick = function() { switchTab('find'); };
+        findBtn.onclick = function() {
+          switchTab('find');
+          // Focus the search bar so user can type their city or zip
+          setTimeout(() => {
+            const searchInput = document.getElementById('disp-search');
+            if (searchInput) {
+              searchInput.focus();
+              searchInput.placeholder = 'City, zip code, or dispensary name...';
+            }
+          }, 300);
+        };
         findRow.appendChild(findBtn);
       }
     } catch(e) {}
