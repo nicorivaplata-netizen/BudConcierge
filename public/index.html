@@ -2772,10 +2772,22 @@ function addMessage(role, content, chips) {
       } else if (c === 'Something else' || c === 'Enter my name') {
         // Focus input immediately instead of sending chip text
         btn.onclick = () => {
-          cd.querySelectorAll('.chip').forEach(x => { x.classList.add('used'); x.style.pointerEvents = 'none'; });
-          const input = document.getElementById('chat-input');
-          input.placeholder = c === 'Enter my name' ? 'Type your name...' : 'Tell me what you need help with...';
-          input.focus();
+          if (isMultiSelect && c === 'Something else') {
+            // In multi-select — just focus input, don't lock other chips
+            const input = document.getElementById('chat-input');
+            input.placeholder = 'Add anything else...';
+            input.focus();
+            btn.style.background = 'var(--green-mid)';
+            btn.style.borderColor = 'var(--green)';
+            btn.style.color = 'var(--green-dark)';
+            btn.style.fontWeight = '600';
+          } else {
+            // Single-select context — lock chips and focus input
+            cd.querySelectorAll('.chip').forEach(x => { x.classList.add('used'); x.style.pointerEvents = 'none'; });
+            const input = document.getElementById('chat-input');
+            input.placeholder = c === 'Enter my name' ? 'Type your name...' : 'Tell me what you need help with...';
+            input.focus();
+          }
         };
       } else if (c === 'Stay anonymous') {
         btn.onclick = () => {
