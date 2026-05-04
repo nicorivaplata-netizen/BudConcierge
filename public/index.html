@@ -2770,19 +2770,67 @@ function addMessage(role, content, chips) {
           confirmBtn.style.opacity = selectedGoals.size > 0 ? '1' : '0.5';
         };
       } else if (c === 'Something else' || c === 'Enter my name') {
-        // Focus input immediately instead of sending chip text
         btn.onclick = () => {
           if (isMultiSelect && c === 'Something else') {
-            // In multi-select — just focus input, don't lock other chips
-            const input = document.getElementById('chat-input');
-            input.placeholder = 'Add anything else...';
-            input.focus();
+            // Highlight the button
             btn.style.background = 'var(--green-mid)';
             btn.style.borderColor = 'var(--green)';
             btn.style.color = 'var(--green-dark)';
             btn.style.fontWeight = '600';
+
+            // Show inline text input inside the chip group
+            const existing = cd.querySelector('.something-else-input');
+            if (existing) { existing.focus(); return; }
+
+            const inputRow = document.createElement('div');
+            inputRow.style.cssText = 'width:100%;display:flex;gap:6px;margin-top:4px';
+            inputRow.className = 'something-else-input';
+
+            const txt = document.createElement('input');
+            txt.type = 'text';
+            txt.placeholder = 'Type what else...';
+            txt.style.cssText = 'flex:1;padding:8px 12px;border:1.5px solid var(--green);border-radius:20px;font-size:13px;font-family:inherit;outline:none';
+
+            const addBtn = document.createElement('button');
+            addBtn.textContent = 'Add';
+            addBtn.style.cssText = 'padding:8px 14px;background:var(--green);border:none;border-radius:20px;font-size:13px;font-weight:700;color:white;cursor:pointer;font-family:inherit';
+
+            const addToSelection = () => {
+              const val = txt.value.trim();
+              if (!val) return;
+              selectedGoals.add(val);
+              inputRow.remove();
+              btn.style.background = 'var(--green-mid)';
+
+              // Update confirm button
+              let confirmBtn = cd.querySelector('.chip-confirm');
+              if (!confirmBtn) {
+                confirmBtn = document.createElement('button');
+                confirmBtn.className = 'chip chip-confirm';
+                confirmBtn.style.cssText = 'background:var(--green);color:white;border-color:var(--green);font-weight:700';
+                confirmBtn.onclick = () => {
+                  if (selectedGoals.size === 0) return;
+                  cd.querySelectorAll('.chip').forEach(x => { x.classList.add('used'); x.style.pointerEvents = 'none'; });
+                  inputRow.remove();
+                  const msg = [...selectedGoals].join(' and ');
+                  document.getElementById('chat-input').value = msg;
+                  sendMessage();
+                };
+                cd.appendChild(confirmBtn);
+              }
+              confirmBtn.textContent = `Start with ${[...selectedGoals].join(' & ')} \u2192`;
+              confirmBtn.style.opacity = '1';
+            };
+
+            addBtn.onclick = addToSelection;
+            txt.onkeydown = e => { if (e.key === 'Enter') addToSelection(); };
+
+            inputRow.appendChild(txt);
+            inputRow.appendChild(addBtn);
+            cd.appendChild(inputRow);
+            setTimeout(() => txt.focus(), 50);
           } else {
-            // Single-select context — lock chips and focus input
+            // Single-select context — lock chips and focus main input
             cd.querySelectorAll('.chip').forEach(x => { x.classList.add('used'); x.style.pointerEvents = 'none'; });
             const input = document.getElementById('chat-input');
             input.placeholder = c === 'Enter my name' ? 'Type your name...' : 'Tell me what you need help with...';
