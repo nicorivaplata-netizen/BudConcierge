@@ -1634,7 +1634,23 @@ function finishOnboard() {
     'appetite': `Since you're ${expLabel || 'here'} and working on appetite — is this about stimulating it, managing it, or something related to a health condition?`,
   };
 
-  if (topGoal && deepQuestions[topGoal]) {
+  if (goals.length > 1) {
+    // Multiple goals — acknowledge all, then ask deeper about the first
+    const allGoals = goals.length === 2
+      ? `${goals[0].toLowerCase()} and ${goals[1].toLowerCase()}`
+      : goals.slice(0,-1).map(g => g.toLowerCase()).join(', ') + ', and ' + goals[goals.length-1].toLowerCase();
+    greeting += `You've got a lot going on — ${allGoals}. I want to help with all of it. Let's start with ${goals[0].toLowerCase()} since that's often the thread that ties the others together. `;
+    if (deepQuestions[topGoal]) {
+      greeting += deepQuestions[topGoal].replace(`Since you're ${expLabel || 'here'} and ${
+        topGoal === 'sleep' ? 'sleep is on your mind' :
+        topGoal === 'pain relief' ? 'dealing with pain' :
+        topGoal === 'anxiety' ? 'working on anxiety' :
+        topGoal === 'stress' ? 'managing stress' :
+        topGoal === 'focus' ? 'looking for focus' :
+        topGoal === 'mood' ? 'working on mood' : topGoal + ' is on your mind'
+      } — `, '');
+    }
+  } else if (topGoal && deepQuestions[topGoal]) {
     greeting += deepQuestions[topGoal];
   } else if (topGoal) {
     greeting += `You mentioned ${topGoal} — tell me a bit more about what that looks like for you so I can give you something really specific.`;
