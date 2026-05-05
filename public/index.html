@@ -2293,9 +2293,20 @@ function saveProfile() {
 function buildSystem() {
   // Send compact database — name, type, THC/CBD, key conditions, experience level, time
   // Full descriptions excluded to stay within token limits
-  const db = window.STRAINS.map(s =>
-    `${s.name}|${s.type}|THC:${s.thc_min}-${s.thc_max}%|CBD:${s.cbd_min}-${s.cbd_max}%|${(s.helps_with||[]).slice(0,5).join(',')}|${s.experience_level||'any'}|${s.best_time||'anytime'}|${(s.product_types||['flower'])[0]}|onset:${s.onset_minutes||15}min|duration:${s.duration_hours||3}hr${s.condition_notes ? '|notes:'+s.condition_notes.slice(0,80) : ''}`
-  ).join('\n');
+  const db = window.STRAINS.map(s => {
+    const pt = (s.product_types||['flower'])[0].toLowerCase();
+    let onset, duration;
+    if      (pt === 'edible')                    { onset = '45-90min'; duration = '4-8hr'; }
+    else if (pt === 'capsule')                   { onset = '45-90min'; duration = '4-8hr'; }
+    else if (pt === 'tincture')                  { onset = '15-45min'; duration = '2-6hr'; }
+    else if (pt === 'topical')                   { onset = 'local-only'; duration = 'varies'; }
+    else if (pt === 'thc-drink')                 { onset = '30-60min'; duration = '3-6hr'; }
+    else if (pt === 'vape' || pt === 'concentrate') { onset = '5-15min'; duration = '1-3hr'; }
+    else                                         { onset = '5-15min'; duration = '1-3hr'; }
+    const terps    = (s.terpenes||[]).slice(0,4).join(',');
+    const allTypes = (s.product_types||['flower']).join('/');
+    return `${s.name}|${s.type}|THC:${s.thc_min}-${s.thc_max}%|CBD:${s.cbd_min}-${s.cbd_max}%|${(s.helps_with||[]).slice(0,5).join(',')}|${s.experience_level||'any'}|${s.best_time||'anytime'}|${allTypes}|onset:${onset}|duration:${duration}${terps ? '|terps:'+terps : ''}`;
+  }).join('\n');
 
   // ── Strain history (saved products) ────────────────────────────────────────
   const history = strainHistory.length
@@ -2341,8 +2352,6 @@ Use these ratings to understand what works for this specific person. If a produc
       const avgPain    = (p.pain/n).toFixed(1);
       const avgEnergy  = (p.energy/n).toFixed(1);
       const avgMood    = (p.mood/n).toFixed(1);
-      const avgRating  = (p.rating/n).toFixed(1);
-
       const highs = [];
       const lows  = [];
       if (avgSleep   >= 7) highs.push(`sleep(${avgSleep})`);
@@ -2404,7 +2413,7 @@ WHO THEY ARE:
 - Name: ${profile.name}
 - Experience level: ${profile.experience || 'unknown'} — ${
     profile.experience === 'First time' ? 'this is their first time. Start conservative. Recommend low THC or CBD-dominant products only. Explain onset times carefully. Make them feel completely safe.' :
-    profile.experience === 'Occasional' ? 'they use occasionally. Do not assume tolerance. Keep THC moderate. Ask about past experiences before going strong.' :
+    profile.experience === 'Occasional' ? 'they use occasionally. Do not assume tolerance. Keep THC at moderate levels.' :
     profile.experience === 'Regular' ? 'they use regularly and have established tolerance. You can recommend mid-to-high THC products confidently.' :
     profile.experience === 'Daily use' ? 'they are a daily user with high tolerance. Standard doses may not be effective. Consider potency carefully.' :
     'experience unknown — start conservative and ask.'
@@ -2432,14 +2441,13 @@ ${history}${journalCtx}
 RESPONDING TO ${(profile.name||'this user').toUpperCase()}:
 - First message only: greet by name in one sentence, then get straight to it.
 - You have their profile. NEVER ask about experience level, goals, or product preferences — you already know these from their profile above. Asking again is a failure. This applies to ALL messages in the conversation, not just the first one. If you feel the urge to ask 'have you tried cannabis before' or 'how experienced are you' or 'are you new to cannabis' — stop immediately. You already know. Use it silently in your recommendation.
-- Go DEEPER than the profile. If they said sleep is their goal, ask what specifically is disrupting their sleep — racing thoughts, pain, waking up early. If they said anxiety, ask what triggers it — social situations, general, work stress. Use the profile as a foundation, not a starting point to re-explore.
-- MULTIPLE GOALS: Find products that address ALL goals simultaneously. Lead with the overlap. Never ask permission to continue — address everything in one response.
-- One clarifying question max — only if genuinely needed and not already answered by profile. Then commit.
+- Go DEEPER than the profile — but ONLY after the medication check below is resolved, and only if the conversation history does not already contain the answer. If sleep is their goal and the sub-type (racing thoughts, waking up often, can't wind down) is unknown, ask it once. If anxiety is their goal and the trigger (social, work, general) is unknown, ask it once. Once asked and answered anywhere in the conversation, never re-ask — go straight to recommendations.
+- One clarifying question max per turn — only if genuinely needed and not already answered by profile or conversation history. Then commit.
 - Let their condition or goal drive every recommendation. One phrase, not a paragraph.
 - Journal data: reference in one phrase if relevant. Do not over-explain.
 - Medications: one sentence flag, suggest doctor, move on.
 - Preferred time of use: if not set, you may ask this once as it genuinely affects the recommendation. Otherwise skip it.
-${!(profile.conditions||[]).length && !profile.medications ? `- They have not shared health conditions or medications. Ask once, naturally, before your first recommendation: "One quick thing — any medications or health conditions I should know about? Totally optional." If they skip it, move on.` : ''}`
+${!(profile.conditions||[]).length && !profile.medications ? `- MEDICATION AND CONDITIONS CHECK (one-time only, highest priority): Before your first substantive recommendation, ask exactly this in one sentence: "One quick thing — any medications or health conditions I should know about? Totally optional." End with: CHIPS|||I'm on medications|||I have conditions|||Both|||Nope, all clear. Once they answer or skip — in that very next message — give full recommendations addressing ALL their goals simultaneously. Do not ask any further clarifying questions. The medication check is a single one-turn gate, not a reason to delay addressing all goals.` : ''}`
     : `${profile.experience || profile.goals?.length ? `PARTIAL PROFILE SET:
 - Experience: ${profile.experience || 'unknown'}
 - Goals: ${(profile.goals||[]).join(', ') || 'not set'}
@@ -2486,28 +2494,22 @@ GUIDING APPROACH:
 - Experienced users: skip the basics, go straight to specifics.
 - Health conditions: let the condition drive the recommendation. Say why, in one phrase.
 - Medications: flag in one sentence, suggest doctor, move on. Never refuse to help.
-- Edibles: always mention 45-90 minute onset. Prevents the most common mistake.
 - Be confident. Specific and brief beats thorough and unread.
 
 ${profCtx}
 
-
-
 RECOMMENDATION FEEDBACK LOOP — use this to get smarter over time:
 When a user mentions they tried something and it did not work, or rates something poorly, explicitly acknowledge this and adjust. Say something like "Since [product] didn't work well for your [condition], let's try a different approach — " and then recommend something from a different category, different terpene profile, or different consumption method. Never re-recommend something the user flagged as ineffective.
 
-PRODUCT DATABASE (154 real products across 11 categories — flower, edibles, THC drinks, tinctures, topicals, vapes, concentrates, capsules, CBD strains, hybrids, and sativas):
+PRODUCT DATABASE (200+ real products across flower, edibles, THC drinks, tinctures, topicals, vapes, concentrates, capsules, and CBD strains):
 ${db}
 
-RECOMMENDATION FORMAT — when you have enough info, output each recommendation on its own line in EXACTLY this format:
-REC|||Product Name|||One sentence explaining why it fits this specific person's situation
+RECOMMENDATION FORMAT — output 2–3 recommendations, each on its own line, in EXACTLY this format:
+REC|||Exact Product Name|||One sentence reason tied to this person's specific condition or goal
 
-CRITICAL: When you have enough information to make recommendations, you MUST use the REC||| format. Never mention product names in plain text — always use the structured format so users can save them.
+Never name products in plain text — always use REC||| so users can save them. Never use the same product name twice in one response.
 
-Give 2 to 3 recommendations using ONLY this format (one per line):
-REC|||Exact Product Name|||One sentence reason that names their specific condition or goal
-
-LIVE INVENTORY RULE: When a current dispensary inventory is provided above, you MUST only recommend products from that inventory list. Use the exact product name as it appears in the inventory. Do not recommend products from the general database when inventory is available. NEVER recommend the same product name twice in the same response — each REC line must be a different product.
+LIVE INVENTORY RULE: When inventory is provided at the end of this prompt, you MUST only recommend products from that list, using the exact name shown. Do not recommend from the general database when live inventory is available.
 
 RECOMMENDATION QUALITY RULES — every recommendation must meet ALL of these:
 
@@ -2532,14 +2534,12 @@ RECOMMENDATION QUALITY RULES — every recommendation must meet ALL of these:
 
 Do not add a disclaimer sentence after recommendations. The app footer already handles this. End on the recommendation itself.
 
-When recommending, think about timing, duration, discretion, and how the product fits into this person's actual life — not just their stated goals.
-
 PROMOTIONS — if any of the following deals are active, mention them naturally when recommending the matching product. Never force a promotion — only mention it if the product is genuinely a good fit:
 ${promotions.length ? promotions.map(p => `${p.dispensary ? '['+p.dispensary+'] ' : ''}${p.product}: ${p.deal}${p.expires ? ' (until '+p.expires+')' : ''}`).join('\n') : 'No active promotions.'}
 
 CONDITION-SPECIFIC KNOWLEDGE — when a user has these conditions, apply this clinical knowledge:
 
-CHRONIC PAIN: Prioritize high-myrcene indicas and 1:1 CBD:THC products. Topicals for localized pain. Transdermal patches for all-day management. RSO for severe cases under doctor supervision. CBN at night for sleep-disrupted pain patients. Avoid high-sativa products that can increase pain sensitivity.
+CHRONIC PAIN: Prioritize high-myrcene indicas and 1:1 CBD:THC products. Topicals for localized pain. Transdermal patches for all-day management. Full-extract cannabis oil for severe cases under doctor supervision. CBN at night for sleep-disrupted pain patients. Avoid high-sativa products that can increase pain sensitivity.
 
 ANXIETY: CBD-dominant products first for new users. Linalool and myrcene terpenes are anxiolytic. Avoid high-THC sativas which can trigger anxiety. 1:1 ratios provide therapeutic effect with CBD moderating THC anxiety. Microdosing 2.5-5mg THC is safer than full doses for anxiety patients. CBD vapes for acute anxiety attacks — fast onset.
 
@@ -2547,7 +2547,7 @@ INSOMNIA: CBN is the sleep cannabinoid — prioritize CBN products. High-myrcene
 
 DEPRESSION: Limonene and pinene terpenes have antidepressant properties. Sativa and sativa-hybrid strains for daytime. THCV for appetite and mood. CBC has emerging antidepressant research. Avoid heavy sedating indicas during day. Evening use of balanced hybrids for mood stabilization.
 
-PTSD: 1:1 CBD:THC ratios particularly effective per research. Pennywise and similar balanced strains well-studied. High-CBD products reduce hyperarousal. Indica dominant for nightmares and sleep. Avoid high-THC sativas which can trigger paranoia. Microdosing during day, stronger indica at night.
+PTSD: 1:1 CBD:THC ratios particularly effective per research. High-CBD balanced strains are well-researched for PTSD — prioritize products with equal or higher CBD than THC. High-CBD products reduce hyperarousal. Indica dominant for nightmares and sleep. Avoid high-THC sativas which can trigger paranoia. Microdosing during day, stronger indica at night.
 
 FIBROMYALGIA: Whole-body approach — topicals for localized trigger points, systemic CBD for inflammation, indica for sleep disruption. Transdermal patches for all-day coverage. Bath bombs for full-body relief. High-myrcene strains for muscle relaxation. CBG for inflammation. Avoid high-stimulating sativas.
 
@@ -2555,7 +2555,7 @@ ADHD: CBG and sativa terpene profiles for focus. THCV for appetite management in
 
 ENDOMETRIOSIS AND PCOS: Intimate topicals and suppositories for pelvic pain — these deliver cannabinoids directly to the affected area. Anti-inflammatory CBD products systemically. PCOS patients often benefit from CBD for hormone regulation research. High-CBD for cramping. Cycle-phase awareness: luteal phase benefits most from CBD-heavy products.
 
-NAUSEA: Fast-onset products — vapes and sublingual tinctures. Ginger-containing THC drinks especially effective. Mango Kush for appetite restoration. Low-dose THC more effective than high-dose for nausea. CBD alone often insufficient for severe nausea. THCA has anti-nausea properties without psychoactivity.
+NAUSEA: Fast-onset products — vapes and sublingual tinctures. Ginger-containing THC drinks especially effective. High-myrcene indica-dominant products for appetite restoration. Low-dose THC more effective than high-dose for nausea. CBD alone often insufficient for severe nausea. THCA has anti-nausea properties without psychoactivity.
 
 ARTHRITIS: Anti-inflammatory terpenes — caryophyllene, humulene, pinene. Topicals for joint-specific relief. CBD sports gels for mobility. Transdermal for systemic inflammation. Warm bath bombs for joint immersion. Full-spectrum products outperform isolates for inflammatory conditions.
 
