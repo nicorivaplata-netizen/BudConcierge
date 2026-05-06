@@ -200,140 +200,115 @@
        HOME SCREEN
   ═══════════════════════════════════════════ -->
   <div id="screen-home" class="screen">
-    <div class="topbar">
+    <div class="topbar" style="border-bottom:none;background:transparent;padding-bottom:0">
       <div style="display:flex;align-items:center;gap:8px;flex:1">
-        <svg width="28" height="28" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="28" cy="28" r="28" fill="#1a9968"/>
-  <line x1="28" y1="42" x2="28" y2="14" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-  <path d="M28,34 C21,29 11,27 9,19 C15,19 23,25 28,34 Z" fill="white"/>
-  <path d="M28,34 C35,29 45,27 47,19 C41,19 33,25 28,34 Z" fill="white"/>
-  <path d="M28,24 C22,19 13,16 11,9 C17,11 24,17 28,24 Z" fill="white"/>
-  <path d="M28,24 C34,19 43,16 45,9 C39,11 32,17 28,24 Z" fill="white"/>
-</svg>
-        <div>
-          <div class="topbar-title" id="home-title" style="line-height:1.1">Ivy</div>
-          <div class="topbar-sub">Your personal cannabis guide</div>
-        </div>
+        <svg width="26" height="26" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="28" cy="28" r="28" fill="#1a9968"/>
+          <line x1="28" y1="42" x2="28" y2="14" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M28,34 C21,29 11,27 9,19 C15,19 23,25 28,34 Z" fill="white"/>
+          <path d="M28,34 C35,29 45,27 47,19 C41,19 33,25 28,34 Z" fill="white"/>
+          <path d="M28,24 C22,19 13,16 11,9 C17,11 24,17 28,24 Z" fill="white"/>
+          <path d="M28,24 C34,19 43,16 45,9 C39,11 32,17 28,24 Z" fill="white"/>
+        </svg>
+        <div class="topbar-title" id="home-title" style="letter-spacing:-0.3px">Ivy</div>
       </div>
-      <div class="wb-avatar" id="home-avatar" style="width:34px;height:34px;font-size:13px;cursor:pointer" onclick="switchTab('profile')">?</div>
+      <div class="wb-avatar" id="home-avatar" style="width:34px;height:34px;font-size:13px;cursor:pointer;border:1.5px solid var(--green-mid)" onclick="switchTab('profile')">?</div>
     </div>
 
-    <div class="content">
-      <!-- Welcome banner -->
-      <div class="card welcome-banner" style="background:linear-gradient(135deg,#1a9968 0%,#0d6647 100%);border:none">
-        <div class="wb-avatar" id="wb-avatar" style="background:rgba(255,255,255,0.2);color:white;border:2px solid rgba(255,255,255,0.3)">?</div>
-        <div>
-          <div class="wb-title" id="wb-greeting" style="color:white">Welcome to Ivy</div>
-          <div class="wb-sub" id="wb-msg" style="color:rgba(255,255,255,0.85)">Your private cannabis guide — personalized, judgment-free, and always on your side.</div>
+    <div class="content" style="padding-top:12px">
+
+      <!-- Hero card — personalized welcome -->
+      <div class="home-hero" id="home-hero-card">
+        <div class="home-hero-greeting" id="home-hero-label">Welcome</div>
+        <div class="home-hero-name" id="wb-greeting">Your cannabis guide</div>
+        <div class="home-hero-sub" id="wb-msg">Private, personalized, judgment-free guidance — built around you.</div>
+        <div class="home-hero-pill" id="home-hero-pill" style="display:none">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          <span id="home-hero-pill-text">Ready for you</span>
         </div>
       </div>
 
-      <button class="btn-primary" id="home-cta" onclick="handleCTA()">Set up my profile</button>
+      <button class="btn-primary" id="home-cta" onclick="handleCTA()" style="border-radius:12px">Start chatting with Ivy</button>
 
-      <!-- Quick actions — always visible, works with or without profile -->
+      <!-- Quick actions -->
       <div id="quick-actions" style="display:flex;flex-direction:column;gap:8px">
-        <div class="section-label" id="quick-actions-label">Explore Ivy</div>
+        <div class="section-label" id="quick-actions-label" style="padding-left:2px">Quick access</div>
 
-        <!-- Dispensary shortcut — shown when a dispensary is selected -->
-        <div id="disp-shortcut-card" style="display:none;cursor:pointer;padding:14px 16px;background:linear-gradient(135deg,#0d6647,#1a9968);border-radius:14px;border:none"
-          onclick="useDispensaryShortcut()">
+        <!-- Dispensary shortcut -->
+        <div id="disp-shortcut-card" style="display:none;cursor:pointer;padding:14px 16px;background:linear-gradient(135deg,#0d6647,#1a9968);border-radius:16px;border:none;box-shadow:0 4px 16px rgba(13,102,71,0.3)" onclick="useDispensaryShortcut()">
           <div style="display:flex;justify-content:space-between;align-items:center">
-            <div style="display:flex;align-items:center;gap:10px">
-              <div style="width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div style="display:flex;align-items:center;gap:12px">
+              <div style="width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(255,255,255,0.2)">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
               </div>
               <div>
-                <div style="font-weight:700;font-size:14px;color:white" id="disp-shortcut-name">Chat with dispensary</div>
-                <div style="font-size:12px;color:rgba(255,255,255,0.8);margin-top:1px" id="disp-shortcut-sub">⚡ Live inventory loaded</div>
+                <div style="font-weight:700;font-size:14px;color:white;letter-spacing:-0.2px" id="disp-shortcut-name">Chat with dispensary</div>
+                <div style="font-size:11.5px;color:rgba(255,255,255,0.75);margin-top:2px" id="disp-shortcut-sub">⚡ Live inventory loaded</div>
               </div>
             </div>
-            <span style="color:rgba(255,255,255,0.7);font-size:20px">›</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
         </div>
 
         <!-- Chat card -->
-        <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('chat'); setTimeout(() => { if (!chatInitialized) startChat(); }, 100)">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <div style="display:flex;align-items:center;gap:8px">
-              <div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              </div>
-              <span style="font-weight:600;font-size:14px">Chat with Ivy</span>
-            </div>
-            <span style="color:#bbb">›</span>
+        <div class="action-card" onclick="switchTab('chat'); setTimeout(() => { if (!chatInitialized) startChat(); }, 100)">
+          <div class="action-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
-          <div style="font-size:13px;color:#888;padding-left:40px" id="chat-shortcut-sub">Ask anything — no profile needed to start</div>
+          <div style="flex:1;min-width:0">
+            <div class="action-title">Chat with Ivy</div>
+            <div class="action-sub" id="chat-shortcut-sub">Ask anything — private and judgment-free</div>
+          </div>
+          <svg class="action-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
 
-        <!-- Profile nudge card — only shown when no profile exists -->
-        <div id="profile-nudge" class="card" style="display:none;padding:14px 16px;background:linear-gradient(135deg,#f0faf5,#e1f5ee);border:1.5px solid #a8dfc9;cursor:pointer" onclick="switchTab('profile')">
-          <div style="display:flex;align-items:center;gap:12px">
-            <div style="width:36px;height:36px;border-radius:10px;background:#1a9968;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:700;color:#0a5c3a;margin-bottom:2px">Get more from Ivy</div>
-              <div style="font-size:12px;color:#3a7a5a;line-height:1.5">A 2 minute profile means every recommendation is built around you specifically.</div>
-            </div>
-            <span style="color:#1a9968;font-size:18px;font-weight:300">›</span>
-          </div>
-        </div>
+        <!-- Profile nudge / wellness snapshot -->
+        <div id="profile-nudge" style="display:none;cursor:pointer;border-radius:14px;overflow:hidden" onclick="switchTab('profile')"></div>
 
         <!-- Find dispensary card -->
-        <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('dispensary')">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <div style="display:flex;align-items:center;gap:8px">
-              <div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              </div>
-              <span style="font-weight:600;font-size:14px">Find a dispensary</span>
-            </div>
-            <span style="color:#bbb">›</span>
+        <div class="action-card" onclick="switchTab('dispensary')">
+          <div class="action-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           </div>
-          <div style="font-size:13px;color:#888;padding-left:40px">Search licensed dispensaries near you</div>
+          <div style="flex:1;min-width:0">
+            <div class="action-title">Find a dispensary</div>
+            <div class="action-sub">Search licensed dispensaries near you</div>
+          </div>
+          <svg class="action-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
 
         <!-- Journal card -->
-        <div class="card" style="cursor:pointer;padding:13px 16px" onclick="switchTab('journal')">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <div style="display:flex;align-items:center;gap:8px">
-              <div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-              </div>
-              <span style="font-weight:600;font-size:14px">My Journal</span>
-            </div>
-            <span style="color:#bbb">›</span>
+        <div class="action-card" onclick="switchTab('journal')">
+          <div class="action-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           </div>
-          <div style="font-size:13px;color:#888;padding-left:40px" id="journal-shortcut-sub">Track how products make you feel</div>
+          <div style="flex:1;min-width:0">
+            <div class="action-title">My Journal</div>
+            <div class="action-sub" id="journal-shortcut-sub">Track how products make you feel</div>
+          </div>
+          <svg class="action-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
 
         <!-- Profile card — only shown after profile exists -->
-        <div id="profile-shortcut" class="card" style="cursor:pointer;padding:13px 16px;display:none" onclick="switchTab('profile')">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <div style="display:flex;align-items:center;gap:8px">
-              <div style="width:32px;height:32px;border-radius:8px;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              </div>
-              <span style="font-weight:600;font-size:14px">Update my preferences</span>
-            </div>
-            <span style="color:#bbb">›</span>
+        <div id="profile-shortcut" class="action-card" style="display:none" onclick="switchTab('profile')">
+          <div class="action-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
-          <div style="font-size:13px;color:#888;padding-left:40px">Edit goals, tolerance, wellness profile</div>
+          <div style="flex:1;min-width:0">
+            <div class="action-title">My preferences</div>
+            <div class="action-sub">Edit goals, tolerance, wellness profile</div>
+          </div>
+          <svg class="action-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
 
       </div>
 
-      <!-- Strain history on home -->
+      <!-- Strain history -->
       <div id="home-history-section" style="display:none">
-        <div class="section-label" style="margin-bottom:6px">My saved strains</div>
-        <div class="card" style="padding:0;overflow:hidden" id="home-history-list"></div>
+        <div class="section-label" style="margin-bottom:8px;padding-left:2px">Saved products</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm)" id="home-history-list"></div>
       </div>
 
-      <!-- Today's suggestion — shown when profile exists -->
-      <div id="home-suggestion" style="display:none">
-        <div class="section-label" style="margin-bottom:6px">Today's suggestion</div>
-        <div id="home-suggestion-card" class="card" style="cursor:pointer;padding:14px 16px" onclick="switchTab('chat')"></div>
-      </div>
     </div>
 
     <div class="navbar-placeholder"></div>
@@ -729,7 +704,10 @@
       <button onclick="openNewEntry()" style="border:1px solid #a8dfc9;background:#E1F5EE;color:#085041;font-size:12px;font-weight:600;padding:5px 11px;border-radius:8px;cursor:pointer">+ New entry</button>
     </div>
     <div class="content">
-      <div id="journal-empty" style="text-align:center;padding:40px 20px;display:block">
+      <div id="journal-empty" class="empty-state" style="display:block">
+          <div class="empty-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
         <div style="width:60px;height:60px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#085041" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         </div>
@@ -1807,7 +1785,8 @@ function refreshUI() {
   const ini = initials(profile.name);
 
   document.getElementById('home-avatar').textContent = ini;
-  document.getElementById('wb-avatar').textContent   = ini;
+  const wbAv = document.getElementById('wb-avatar');
+  if (wbAv) wbAv.textContent = ini;
   document.getElementById('prof-avatar').textContent = ini;
 
   if (has) {
@@ -1821,6 +1800,8 @@ function refreshUI() {
     document.getElementById('home-title').textContent    = todGreet + ', ' + profile.name;
     document.getElementById('wb-greeting').textContent  = todGreet + ', ' + profile.name + '!';
     document.getElementById('wb-msg').textContent       = todTip;
+    const heroLabel = document.getElementById('home-hero-label');
+    if (heroLabel) heroLabel.textContent = 'Welcome back';
     document.getElementById('home-cta').textContent     = 'Start a new chat →';
     // home-badge hidden
     // Hide profile nudge in chat when profile exists
@@ -1875,6 +1856,8 @@ function refreshUI() {
     document.getElementById('home-title').textContent   = 'Ivy';
     document.getElementById('wb-greeting').textContent  = 'Welcome to Ivy';
     document.getElementById('wb-msg').textContent       = 'Set up your profile for personalized, judgment-free cannabis guidance.';
+    const heroLabelNew = document.getElementById('home-hero-label');
+    if (heroLabelNew) heroLabelNew.textContent = 'Welcome';
     document.getElementById('home-cta').textContent     = 'Set up my profile';
     document.getElementById('quick-actions').style.display = 'flex';
     document.getElementById('quick-actions-label').textContent = 'Explore Ivy';
@@ -1931,15 +1914,15 @@ function refreshUI() {
       // No profile — show nudge
       nudge.style.display = 'block';
       nudge.innerHTML = `
-        <div style="display:flex;align-items:center;gap:12px">
-          <div style="width:36px;height:36px;border-radius:10px;background:#1a9968;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <div style="background:linear-gradient(135deg,#f0faf5,#E1F5EE);border:1.5px solid #a8dfc9;border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px">
+          <div style="width:38px;height:38px;border-radius:11px;background:#1a9968;display:flex;align-items:center;justify-content:center;flex-shrink:0">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
           <div style="flex:1">
-            <div style="font-size:13px;font-weight:700;color:#0a5c3a;margin-bottom:2px">Get more from Ivy</div>
-            <div style="font-size:12px;color:#3a7a5a;line-height:1.5">A 2 minute profile means every recommendation is built around you specifically.</div>
+            <div style="font-size:13px;font-weight:700;color:#0a5c3a;margin-bottom:3px">Get more from Ivy</div>
+            <div style="font-size:12px;color:#3a7a5a;line-height:1.55">A 2 minute profile means every recommendation is built around you specifically.</div>
           </div>
-          <span style="color:#1a9968;font-size:18px;font-weight:300">›</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a9968" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </div>`;
     } else {
       // Has profile — show wellness snapshot
@@ -1954,26 +1937,28 @@ function refreshUI() {
       const journalCount = journal.length;
 
       nudge.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-          <div style="font-size:11px;font-weight:700;color:#0d6647;letter-spacing:0.07em">YOUR WELLNESS SNAPSHOT</div>
-          <span style="color:#1a9968;font-size:12px;font-weight:600">Edit ›</span>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <div style="background:white;border-radius:10px;padding:10px 12px">
-            <div style="font-size:10px;color:#9a9c97;margin-bottom:3px">Top goal</div>
-            <div style="font-size:13px;font-weight:700;color:#111">${topGoal}</div>
+        <div style="background:linear-gradient(135deg,#f0faf5,#E1F5EE);border:1.5px solid #a8dfc9;border-radius:14px;padding:14px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-size:10px;font-weight:700;color:#0d6647;letter-spacing:0.08em;text-transform:uppercase">Your wellness snapshot</div>
+            <span style="color:#1a9968;font-size:12px;font-weight:600">Edit ›</span>
           </div>
-          <div style="background:white;border-radius:10px;padding:10px 12px">
-            <div style="font-size:10px;color:#9a9c97;margin-bottom:3px">Experience</div>
-            <div style="font-size:13px;font-weight:700;color:#111">${expLabel}</div>
-          </div>
-          <div style="background:white;border-radius:10px;padding:10px 12px">
-            <div style="font-size:10px;color:#9a9c97;margin-bottom:3px">Saved products</div>
-            <div style="font-size:13px;font-weight:700;color:#111">${savedCount}</div>
-          </div>
-          <div style="background:white;border-radius:10px;padding:10px 12px">
-            <div style="font-size:10px;color:#9a9c97;margin-bottom:3px">Journal entries</div>
-            <div style="font-size:13px;font-weight:700;color:#111">${journalCount}</div>
+          <div class="snapshot-grid">
+            <div class="snapshot-cell">
+              <div class="snapshot-label">Top goal</div>
+              <div class="snapshot-value">${topGoal}</div>
+            </div>
+            <div class="snapshot-cell">
+              <div class="snapshot-label">Experience</div>
+              <div class="snapshot-value">${expLabel}</div>
+            </div>
+            <div class="snapshot-cell">
+              <div class="snapshot-label">Saved</div>
+              <div class="snapshot-value">${savedCount} products</div>
+            </div>
+            <div class="snapshot-cell">
+              <div class="snapshot-label">Journal</div>
+              <div class="snapshot-value">${journalCount} entries</div>
+            </div>
           </div>
         </div>`;
     }
@@ -2293,20 +2278,9 @@ function saveProfile() {
 function buildSystem() {
   // Send compact database — name, type, THC/CBD, key conditions, experience level, time
   // Full descriptions excluded to stay within token limits
-  const db = window.STRAINS.map(s => {
-    const pt = (s.product_types||['flower'])[0].toLowerCase();
-    let onset, duration;
-    if      (pt === 'edible')                    { onset = '45-90min'; duration = '4-8hr'; }
-    else if (pt === 'capsule')                   { onset = '45-90min'; duration = '4-8hr'; }
-    else if (pt === 'tincture')                  { onset = '15-45min'; duration = '2-6hr'; }
-    else if (pt === 'topical')                   { onset = 'local-only'; duration = 'varies'; }
-    else if (pt === 'thc-drink')                 { onset = '30-60min'; duration = '3-6hr'; }
-    else if (pt === 'vape' || pt === 'concentrate') { onset = '5-15min'; duration = '1-3hr'; }
-    else                                         { onset = '5-15min'; duration = '1-3hr'; }
-    const terps    = (s.terpenes||[]).slice(0,4).join(',');
-    const allTypes = (s.product_types||['flower']).join('/');
-    return `${s.name}|${s.type}|THC:${s.thc_min}-${s.thc_max}%|CBD:${s.cbd_min}-${s.cbd_max}%|${(s.helps_with||[]).slice(0,5).join(',')}|${s.experience_level||'any'}|${s.best_time||'anytime'}|${allTypes}|onset:${onset}|duration:${duration}${terps ? '|terps:'+terps : ''}`;
-  }).join('\n');
+  const db = window.STRAINS.map(s =>
+    `${s.name}|${s.type}|THC:${s.thc_min}-${s.thc_max}%|CBD:${s.cbd_min}-${s.cbd_max}%|${(s.helps_with||[]).slice(0,5).join(',')}|${s.experience_level||'any'}|${s.best_time||'anytime'}|${(s.product_types||['flower'])[0]}|onset:${s.onset_minutes||15}min|duration:${s.duration_hours||3}hr${s.condition_notes ? '|notes:'+s.condition_notes.slice(0,80) : ''}`
+  ).join('\n');
 
   // ── Strain history (saved products) ────────────────────────────────────────
   const history = strainHistory.length
@@ -2352,6 +2326,8 @@ Use these ratings to understand what works for this specific person. If a produc
       const avgPain    = (p.pain/n).toFixed(1);
       const avgEnergy  = (p.energy/n).toFixed(1);
       const avgMood    = (p.mood/n).toFixed(1);
+      const avgRating  = (p.rating/n).toFixed(1);
+
       const highs = [];
       const lows  = [];
       if (avgSleep   >= 7) highs.push(`sleep(${avgSleep})`);
@@ -2413,7 +2389,7 @@ WHO THEY ARE:
 - Name: ${profile.name}
 - Experience level: ${profile.experience || 'unknown'} — ${
     profile.experience === 'First time' ? 'this is their first time. Start conservative. Recommend low THC or CBD-dominant products only. Explain onset times carefully. Make them feel completely safe.' :
-    profile.experience === 'Occasional' ? 'they use occasionally. Do not assume tolerance. Keep THC at moderate levels.' :
+    profile.experience === 'Occasional' ? 'they use occasionally. Do not assume tolerance. Keep THC moderate. Ask about past experiences before going strong.' :
     profile.experience === 'Regular' ? 'they use regularly and have established tolerance. You can recommend mid-to-high THC products confidently.' :
     profile.experience === 'Daily use' ? 'they are a daily user with high tolerance. Standard doses may not be effective. Consider potency carefully.' :
     'experience unknown — start conservative and ask.'
@@ -2441,13 +2417,14 @@ ${history}${journalCtx}
 RESPONDING TO ${(profile.name||'this user').toUpperCase()}:
 - First message only: greet by name in one sentence, then get straight to it.
 - You have their profile. NEVER ask about experience level, goals, or product preferences — you already know these from their profile above. Asking again is a failure. This applies to ALL messages in the conversation, not just the first one. If you feel the urge to ask 'have you tried cannabis before' or 'how experienced are you' or 'are you new to cannabis' — stop immediately. You already know. Use it silently in your recommendation.
-- Go DEEPER than the profile — but ONLY after the medication check below is resolved, and only if the conversation history does not already contain the answer. If sleep is their goal and the sub-type (racing thoughts, waking up often, can't wind down) is unknown, ask it once. If anxiety is their goal and the trigger (social, work, general) is unknown, ask it once. Once asked and answered anywhere in the conversation, never re-ask — go straight to recommendations.
-- One clarifying question max per turn — only if genuinely needed and not already answered by profile or conversation history. Then commit.
+- Go DEEPER than the profile. If they said sleep is their goal, ask what specifically is disrupting their sleep — racing thoughts, pain, waking up early. If they said anxiety, ask what triggers it — social situations, general, work stress. Use the profile as a foundation, not a starting point to re-explore.
+- MULTIPLE GOALS: Find products that address ALL goals simultaneously. Lead with the overlap. Never ask permission to continue — address everything in one response.
+- One clarifying question max — only if genuinely needed and not already answered by profile. Then commit.
 - Let their condition or goal drive every recommendation. One phrase, not a paragraph.
 - Journal data: reference in one phrase if relevant. Do not over-explain.
 - Medications: one sentence flag, suggest doctor, move on.
 - Preferred time of use: if not set, you may ask this once as it genuinely affects the recommendation. Otherwise skip it.
-${!(profile.conditions||[]).length && !profile.medications ? `- MEDICATION AND CONDITIONS CHECK (one-time only, highest priority): Before your first substantive recommendation, ask exactly this in one sentence: "One quick thing — any medications or health conditions I should know about? Totally optional." End with: CHIPS|||I'm on medications|||I have conditions|||Both|||Nope, all clear. Once they answer or skip — in that very next message — give full recommendations addressing ALL their goals simultaneously. Do not ask any further clarifying questions. The medication check is a single one-turn gate, not a reason to delay addressing all goals.` : ''}`
+${!(profile.conditions||[]).length && !profile.medications ? `- They have not shared health conditions or medications. Ask once, naturally, before your first recommendation: "One quick thing — any medications or health conditions I should know about? Totally optional." If they skip it, move on.` : ''}`
     : `${profile.experience || profile.goals?.length ? `PARTIAL PROFILE SET:
 - Experience: ${profile.experience || 'unknown'}
 - Goals: ${(profile.goals||[]).join(', ') || 'not set'}
@@ -2494,22 +2471,28 @@ GUIDING APPROACH:
 - Experienced users: skip the basics, go straight to specifics.
 - Health conditions: let the condition drive the recommendation. Say why, in one phrase.
 - Medications: flag in one sentence, suggest doctor, move on. Never refuse to help.
+- Edibles: always mention 45-90 minute onset. Prevents the most common mistake.
 - Be confident. Specific and brief beats thorough and unread.
 
 ${profCtx}
 
+
+
 RECOMMENDATION FEEDBACK LOOP — use this to get smarter over time:
 When a user mentions they tried something and it did not work, or rates something poorly, explicitly acknowledge this and adjust. Say something like "Since [product] didn't work well for your [condition], let's try a different approach — " and then recommend something from a different category, different terpene profile, or different consumption method. Never re-recommend something the user flagged as ineffective.
 
-PRODUCT DATABASE (200+ real products across flower, edibles, THC drinks, tinctures, topicals, vapes, concentrates, capsules, and CBD strains):
+PRODUCT DATABASE (154 real products across 11 categories — flower, edibles, THC drinks, tinctures, topicals, vapes, concentrates, capsules, CBD strains, hybrids, and sativas):
 ${db}
 
-RECOMMENDATION FORMAT — output 2–3 recommendations, each on its own line, in EXACTLY this format:
-REC|||Exact Product Name|||One sentence reason tied to this person's specific condition or goal
+RECOMMENDATION FORMAT — when you have enough info, output each recommendation on its own line in EXACTLY this format:
+REC|||Product Name|||One sentence explaining why it fits this specific person's situation
 
-Never name products in plain text — always use REC||| so users can save them. Never use the same product name twice in one response.
+CRITICAL: When you have enough information to make recommendations, you MUST use the REC||| format. Never mention product names in plain text — always use the structured format so users can save them.
 
-LIVE INVENTORY RULE: When inventory is provided at the end of this prompt, you MUST only recommend products from that list, using the exact name shown. Do not recommend from the general database when live inventory is available.
+Give 2 to 3 recommendations using ONLY this format (one per line):
+REC|||Exact Product Name|||One sentence reason that names their specific condition or goal
+
+LIVE INVENTORY RULE: When a current dispensary inventory is provided above, you MUST only recommend products from that inventory list. Use the exact product name as it appears in the inventory. Do not recommend products from the general database when inventory is available. NEVER recommend the same product name twice in the same response — each REC line must be a different product.
 
 RECOMMENDATION QUALITY RULES — every recommendation must meet ALL of these:
 
@@ -2534,12 +2517,14 @@ RECOMMENDATION QUALITY RULES — every recommendation must meet ALL of these:
 
 Do not add a disclaimer sentence after recommendations. The app footer already handles this. End on the recommendation itself.
 
+When recommending, think about timing, duration, discretion, and how the product fits into this person's actual life — not just their stated goals.
+
 PROMOTIONS — if any of the following deals are active, mention them naturally when recommending the matching product. Never force a promotion — only mention it if the product is genuinely a good fit:
 ${promotions.length ? promotions.map(p => `${p.dispensary ? '['+p.dispensary+'] ' : ''}${p.product}: ${p.deal}${p.expires ? ' (until '+p.expires+')' : ''}`).join('\n') : 'No active promotions.'}
 
 CONDITION-SPECIFIC KNOWLEDGE — when a user has these conditions, apply this clinical knowledge:
 
-CHRONIC PAIN: Prioritize high-myrcene indicas and 1:1 CBD:THC products. Topicals for localized pain. Transdermal patches for all-day management. Full-extract cannabis oil for severe cases under doctor supervision. CBN at night for sleep-disrupted pain patients. Avoid high-sativa products that can increase pain sensitivity.
+CHRONIC PAIN: Prioritize high-myrcene indicas and 1:1 CBD:THC products. Topicals for localized pain. Transdermal patches for all-day management. RSO for severe cases under doctor supervision. CBN at night for sleep-disrupted pain patients. Avoid high-sativa products that can increase pain sensitivity.
 
 ANXIETY: CBD-dominant products first for new users. Linalool and myrcene terpenes are anxiolytic. Avoid high-THC sativas which can trigger anxiety. 1:1 ratios provide therapeutic effect with CBD moderating THC anxiety. Microdosing 2.5-5mg THC is safer than full doses for anxiety patients. CBD vapes for acute anxiety attacks — fast onset.
 
@@ -2547,7 +2532,7 @@ INSOMNIA: CBN is the sleep cannabinoid — prioritize CBN products. High-myrcene
 
 DEPRESSION: Limonene and pinene terpenes have antidepressant properties. Sativa and sativa-hybrid strains for daytime. THCV for appetite and mood. CBC has emerging antidepressant research. Avoid heavy sedating indicas during day. Evening use of balanced hybrids for mood stabilization.
 
-PTSD: 1:1 CBD:THC ratios particularly effective per research. High-CBD balanced strains are well-researched for PTSD — prioritize products with equal or higher CBD than THC. High-CBD products reduce hyperarousal. Indica dominant for nightmares and sleep. Avoid high-THC sativas which can trigger paranoia. Microdosing during day, stronger indica at night.
+PTSD: 1:1 CBD:THC ratios particularly effective per research. Pennywise and similar balanced strains well-studied. High-CBD products reduce hyperarousal. Indica dominant for nightmares and sleep. Avoid high-THC sativas which can trigger paranoia. Microdosing during day, stronger indica at night.
 
 FIBROMYALGIA: Whole-body approach — topicals for localized trigger points, systemic CBD for inflammation, indica for sleep disruption. Transdermal patches for all-day coverage. Bath bombs for full-body relief. High-myrcene strains for muscle relaxation. CBG for inflammation. Avoid high-stimulating sativas.
 
@@ -2555,7 +2540,7 @@ ADHD: CBG and sativa terpene profiles for focus. THCV for appetite management in
 
 ENDOMETRIOSIS AND PCOS: Intimate topicals and suppositories for pelvic pain — these deliver cannabinoids directly to the affected area. Anti-inflammatory CBD products systemically. PCOS patients often benefit from CBD for hormone regulation research. High-CBD for cramping. Cycle-phase awareness: luteal phase benefits most from CBD-heavy products.
 
-NAUSEA: Fast-onset products — vapes and sublingual tinctures. Ginger-containing THC drinks especially effective. High-myrcene indica-dominant products for appetite restoration. Low-dose THC more effective than high-dose for nausea. CBD alone often insufficient for severe nausea. THCA has anti-nausea properties without psychoactivity.
+NAUSEA: Fast-onset products — vapes and sublingual tinctures. Ginger-containing THC drinks especially effective. Mango Kush for appetite restoration. Low-dose THC more effective than high-dose for nausea. CBD alone often insufficient for severe nausea. THCA has anti-nausea properties without psychoactivity.
 
 ARTHRITIS: Anti-inflammatory terpenes — caryophyllene, humulene, pinene. Topicals for joint-specific relief. CBD sports gels for mobility. Transdermal for systemic inflammation. Warm bath bombs for joint immersion. Full-spectrum products outperform isolates for inflammatory conditions.
 
@@ -2631,6 +2616,12 @@ function addMessage(role, content, chips) {
   const shownRecs = new Set();
 
   if (role === 'bot') {
+    // Add small Ivy label above message
+    const ivyLabel = document.createElement('div');
+    ivyLabel.className = 'ivy-label';
+    ivyLabel.textContent = 'Ivy';
+    div.appendChild(ivyLabel);
+
     content.split(/\r?\n|\\n/).forEach(line => {
       if (line.startsWith('REC|||')) {
         const [, name, reason] = line.split('|||');
@@ -3104,7 +3095,8 @@ function clearProfile() {
   document.getElementById('prof-since').textContent = '';
   document.getElementById('prof-avatar').textContent = '?';
   document.getElementById('home-avatar').textContent = '?';
-  document.getElementById('wb-avatar').textContent = '?';
+  const wbAvReset = document.getElementById('wb-avatar');
+  if (wbAvReset) wbAvReset.textContent = '?';
   document.getElementById('messages').innerHTML = '';
   document.getElementById('chat-shortcut-sub').textContent = 'Ask anything — no profile needed to start';
   document.getElementById('journal-shortcut-sub').textContent = 'Track how products make you feel';
