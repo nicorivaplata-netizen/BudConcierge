@@ -296,7 +296,7 @@
           </div>
           <div style="flex:1;min-width:0">
             <div class="action-title">My preferences</div>
-            <div class="action-sub">Edit goals, tolerance, wellness profile</div>
+            <div class="action-sub">Goals, tolerance &amp; wellness profile</div>
           </div>
           <svg class="action-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
@@ -708,12 +708,9 @@
           <div class="empty-icon">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           </div>
-        <div style="width:60px;height:60px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#085041" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        </div>
-        <div style="font-size:15px;font-weight:600;color:#111;margin-bottom:8px">No entries yet</div>
-        <div style="font-size:13px;color:#9a9c97;line-height:1.6;margin-bottom:20px">Log how products make you feel after each session. Over time, your journal builds a personal profile that makes recommendations smarter.</div>
-        <button onclick="openNewEntry()" class="btn-primary">Log your first entry</button>
+        <div class="empty-title">No entries yet</div>
+        <div class="empty-sub">Log how products make you feel after each session. Over time, your journal builds a personal profile that makes recommendations smarter.</div>
+        <button onclick="openNewEntry()" class="empty-cta">Log your first entry</button>
       </div>
       <div id="journal-list" style="display:none;flex-direction:column;gap:12px"></div>
     </div>
@@ -1825,7 +1822,7 @@ function refreshUI() {
     document.getElementById('quick-actions').style.display = 'flex';
     document.getElementById('quick-actions-label').textContent = 'Quick start';
     const profileShortcut = document.getElementById('profile-shortcut');
-    if (profileShortcut) profileShortcut.style.display = 'block';
+    if (profileShortcut) profileShortcut.style.display = 'flex';
     const goals = profile.goals && (profile.goals||[]).length ? 'Personalized for: ' + (profile.goals||[]).slice(0,2).join(', ') : 'Ask anything — no profile needed to start';
     document.getElementById('chat-shortcut-sub').textContent = goals;
   }
