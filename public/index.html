@@ -2481,15 +2481,12 @@ When a user mentions they tried something and it did not work, or rates somethin
 PRODUCT DATABASE (154 real products across 11 categories — flower, edibles, THC drinks, tinctures, topicals, vapes, concentrates, capsules, CBD strains, hybrids, and sativas):
 ${db}
 
-RECOMMENDATION FORMAT — when you have enough info, output each recommendation on its own line in EXACTLY this format:
-REC|||Product Name|||One sentence explaining why it fits this specific person's situation
+RECOMMENDATION FORMAT — output 2–3 recommendations, each on its own line, in EXACTLY this format:
+REC|||Exact Product Name|||One sentence reason tied to this person's specific condition or goal
 
-CRITICAL: When you have enough information to make recommendations, you MUST use the REC||| format. Never mention product names in plain text — always use the structured format so users can save them.
+Never name products in plain text — always use REC||| so users can save them. Never use the same product name twice in one response.
 
-Give 2 to 3 recommendations using ONLY this format (one per line):
-REC|||Exact Product Name|||One sentence reason that names their specific condition or goal
-
-LIVE INVENTORY RULE: When a current dispensary inventory is provided above, you MUST only recommend products from that inventory list. Use the exact product name as it appears in the inventory. Do not recommend products from the general database when inventory is available. NEVER recommend the same product name twice in the same response — each REC line must be a different product.
+LIVE INVENTORY RULE: When inventory is provided at the end of this prompt, you MUST only recommend products from that list by exact name. Do not use the general database when live inventory is available. When the user has multiple goals, check the MULTI-GOAL OVERLAP section first — those products cover the most goals simultaneously. If no overlap products exist, use the FLAGGED PRODUCTS section to match goals individually.
 
 RECOMMENDATION QUALITY RULES — every recommendation must meet ALL of these:
 
@@ -3630,16 +3627,21 @@ inp.addEventListener('input', () => { inp.style.height = 'auto'; inp.style.heigh
 
 // ─── Dispensary Registry ──────────────────────────────────────────────────────
 const DISPENSARIES = {
-  'high-profile-pineville':      { name: 'High Profile — Pineville, MO',        brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-pineville' , menuUrl: 'https://highprofilecannabis.com/shop/pineville-dispensary' },
-  'mo-chesterfield-hp':          { name: 'High Profile — Chesterfield, MO',     brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-chesterfield' , menuUrl: 'https://highprofilecannabis.com/shop/chesterfield-dispensary' },
-  'mo-columbia-hp':              { name: 'High Profile — Columbia, MO',         brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-columbia' , menuUrl: 'https://highprofilecannabis.com/shop/columbia-dispensary' },
-  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO',   brand: 'High Profile',   state: 'MO', wmSlug: 'high-profile-cape-girardeau' , menuUrl: 'https://highprofilecannabis.com/shop/cape-girardeau-dispensary' },
-  'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis', state: 'AZ', wmSlug: 'story-dunlap' , menuUrl: 'https://storycannabis.com/shop/arizona/shop-dunlap/rec-menu' },
-  'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', state: 'MD', wmSlug: 'story-mechanicsville' , menuUrl: 'https://storycannabis.com/shop/maryland/shop-mechanicsville/med-menu' },
-  'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', state: 'OH', wmSlug: 'story-cleveland' , menuUrl: 'https://storycannabis.com/shop/ohio/shop-cleveland/rec-menu' },
-  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      state: 'AR', wmSlug: 'purspirit-cannabis-co' , menuUrl: 'https://menu.purspirit.com/shop/menu' },
-  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', wmSlug: 'the-source-rogers', city: 'rogers', altNames: ['the source rogers', 'source rogers', 'the source craft'] , menuUrl: 'https://www.thesource-mj.com/stores/the-source-rogers' },
-  'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       state: 'AR', wmSlug: 'the-hill-fayetteville' , menuUrl: 'https://thehillnwa.com/our-menu' },
+  // MO — Recreational + Medical since Nov 2022
+  'high-profile-pineville':      { name: 'High Profile — Pineville, MO',        brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-pineville',      menuUrl: 'https://highprofilecannabis.com/shop/pineville-dispensary' },
+  'mo-chesterfield-hp':          { name: 'High Profile — Chesterfield, MO',     brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-chesterfield',   menuUrl: 'https://highprofilecannabis.com/shop/chesterfield-dispensary' },
+  'mo-columbia-hp':              { name: 'High Profile — Columbia, MO',         brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-columbia',       menuUrl: 'https://highprofilecannabis.com/shop/columbia-dispensary' },
+  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO',   brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-cape-girardeau', menuUrl: 'https://highprofilecannabis.com/shop/cape-girardeau-dispensary' },
+  // AZ — Recreational + Medical since Nov 2020
+  'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis', state: 'AZ', recreational: true,  medical: true,  payment: '',            hours: '',                    wmSlug: 'story-dunlap',                menuUrl: 'https://storycannabis.com/shop/arizona/shop-dunlap/rec-menu' },
+  // MD — Recreational + Medical since Jul 2023
+  'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', state: 'MD', recreational: true,  medical: true,  payment: '',            hours: '',                    wmSlug: 'story-mechanicsville',        menuUrl: 'https://storycannabis.com/shop/maryland/shop-mechanicsville/med-menu' },
+  // OH — Recreational + Medical since Aug 2023
+  'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', state: 'OH', recreational: true,  medical: true,  payment: '',            hours: '',                    wmSlug: 'story-cleveland',             menuUrl: 'https://storycannabis.com/shop/ohio/shop-cleveland/rec-menu' },
+  // AR — Medical only (recreational ballot failed 2022)
+  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      state: 'AR', recreational: false, medical: true,  payment: '',            hours: '',                    wmSlug: 'purspirit-cannabis-co',        menuUrl: 'https://menu.purspirit.com/shop/menu' },
+  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', recreational: false, medical: true,  payment: '',            hours: '',                    wmSlug: 'the-source-rogers',           menuUrl: 'https://www.thesource-mj.com/stores/the-source-rogers', city: 'rogers', altNames: ['the source rogers', 'source rogers', 'the source craft'] },
+  'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       state: 'AR', recreational: false, medical: true,  payment: '',            hours: '',                    wmSlug: 'the-hill-fayetteville',       menuUrl: 'https://thehillnwa.com/our-menu' },
 };
 
 let selectedDispensary = null; // { slug, name, brand, inventory[] }
@@ -3667,70 +3669,146 @@ async function fetchInventory(slug) {
 
 function buildInventoryContext() {
   if (!selectedDispensary) return '';
-  const name = selectedDispensary.name;
+  const name    = selectedDispensary.name;
   const summary = selectedDispensary.summary;
-  const inv = selectedDispensary.inventory || [];
+  const inv     = selectedDispensary.inventory || [];
 
-  // Jane facets data — use catalog summary
+  // ── Jane facets path (catalog-level summary only) ─────────────────────────
   if (summary?.isFacetsData) {
-    const kinds = summary.kinds || {};
-    const brands = summary.topBrands || [];
-    const feelings = summary.feelings || [];
-    let ctx = `
-CURRENT ${name.toUpperCase()} CATALOG (${summary.totalProducts} products in stock):
-`;
-    ctx += `IMPORTANT: This dispensary carries these product types. Recommend products that fit this catalog.
-
-`;
-    ctx += `PRODUCT TYPES IN STOCK:
-`;
-    Object.entries(kinds).forEach(([kind, count]) => {
-      ctx += `- ${kind}: ${count} products
-`;
-    });
-    ctx += `
-TOP BRANDS CARRIED:
-`;
-    brands.forEach(b => { ctx += `- ${b.name} (${b.count} products)
-`; });
-    if (feelings.length) {
-      ctx += `
-CUSTOMER-REPORTED EFFECTS:
-`;
-      ctx += feelings.join(', ') + '\n';
-    }
-    ctx += `
-When recommending, refer to specific brands this dispensary carries (listed above). Do not recommend generic strain names — recommend products from these brands in the correct category.
-`;
+    const kinds    = summary.kinds    || {};
+    const brands   = summary.topBrands || [];
+    const feelings = summary.feelings  || [];
+    let ctx = `\nCURRENT ${name.toUpperCase()} CATALOG (${summary.totalProducts} products in stock):\n`;
+    ctx += `RULE: Only recommend products that fit this catalog.\n\nPRODUCT TYPES IN STOCK:\n`;
+    Object.entries(kinds).forEach(([kind, count]) => { ctx += `- ${kind}: ${count} products\n`; });
+    ctx += `\nTOP BRANDS CARRIED:\n`;
+    brands.forEach(b => { ctx += `- ${b.name} (${b.count} products)\n`; });
+    if (feelings.length) ctx += `\nCUSTOMER-REPORTED EFFECTS:\n${feelings.join(', ')}\n`;
+    ctx += `\nRecommend specific brands from the list above in the correct category.\n`;
     return ctx;
   }
 
-  // Static inventory — individual products
+  // ── Static inventory path ─────────────────────────────────────────────────
   if (!inv.length) return '';
+
+  // Helper: parse a percentage string like "23%" or "23.5" → float or null
+  function parsePct(val) {
+    if (!val) return null;
+    const n = parseFloat(String(val).replace(/[^0-9.]/g, ''));
+    return isNaN(n) ? null : n;
+  }
+
+  // Helper: infer which wellness goals a product addresses
+  // Works from type + category + name keywords — THC/CBD used when present
+  function goalTags(p) {
+    const lc  = (p.name + ' ' + (p.type || '') + ' ' + (p.category || '')).toLowerCase();
+    const thc = parsePct(p.thc);
+    const cbd = parsePct(p.cbd);
+    const cat = (p.category || '').toLowerCase();
+    const typ = (p.type    || '').toLowerCase();
+    const tags = new Set();
+
+    // Sleep — indica types, heavy sedating names
+    if (typ.includes('indica') ||
+        /kush|purple|cbn|granddaddy|bubba|northern.lights|zkittl|skywalker|9lb|nighttime|sleep/i.test(lc))
+      tags.add('sleep');
+
+    // Anxiety — CBD-dominant, low-THC, tinctures, known calming cultivars
+    if (typ === 'cbd' ||
+        /\bcbd\b|\b1:1\b|calm|harlequin|cannatonic|ac\/dc|pennywise|charlotte/i.test(lc) ||
+        cat === 'tincture' ||
+        (cbd !== null && thc !== null && cbd >= thc))
+      tags.add('anxiety');
+
+    // Pain — topicals, tinctures, high-THC indicas, anything localized
+    if (cat === 'topical' ||
+        cat === 'tincture' ||
+        /topical|patch|balm|cream|gel|relief|muscle/i.test(lc) ||
+        typ.includes('indica') ||
+        (thc !== null && thc >= 20))
+      tags.add('pain');
+
+    return [...tags];
+  }
+
+  // Helper: format a single product line
+  function fmt(p) {
+    let s = `- ${p.name}`;
+    if (p.type)  s += ` [${p.type}]`;
+    if (p.thc)   s += ` THC:${p.thc}`;
+    if (p.cbd)   s += ` CBD:${p.cbd}`;
+    if (p.price) s += ` $${p.price}`;
+    return s;
+  }
+
+  // ── Group by category ─────────────────────────────────────────────────────
   const byCategory = {};
   inv.forEach(p => {
     const cat = p.category || 'Other';
     if (!byCategory[cat]) byCategory[cat] = [];
     byCategory[cat].push(p);
   });
-  let ctx = `
-CURRENT ${name.toUpperCase()} INVENTORY (${inv.length} products in stock right now):
-`;
-  ctx += `IMPORTANT: Only recommend products from this inventory.
 
-`;
-  Object.entries(byCategory).forEach(([cat, products]) => {
-    ctx += `${cat.toUpperCase()}:
-`;
-    products.slice(0, 20).forEach(p => {
-      ctx += `- ${p.name}${p.brand ? ` by ${p.brand}` : ''}`;
-      if (p.type) ctx += ` [${p.type}]`;
-      if (p.thc) ctx += ` THC:${p.thc}`;
-      if (p.cbd) ctx += ` CBD:${p.cbd}`;
-      if (p.price) ctx += ` $${p.price}`;
-      ctx += '\n';
-    });
+  // ── Find flagged and overlap products ─────────────────────────────────────
+  let highestTHC = null;
+  let highestCBD = null;
+  const goalBuckets = { sleep: [], anxiety: [], pain: [] };
+  const overlapProducts = [];
+
+  inv.forEach(p => {
+    const thc = parsePct(p.thc);
+    const cbd = parsePct(p.cbd);
+    if (thc !== null && (!highestTHC || thc > parsePct(highestTHC.thc))) highestTHC = p;
+    if (cbd !== null && (!highestCBD || cbd > parsePct(highestCBD.cbd))) highestCBD = p;
+    const tags = goalTags(p);
+    tags.forEach(t => goalBuckets[t].push(p));
+    if (tags.length >= 2) overlapProducts.push({ p, tags });
   });
+
+  // ── Dispensary context note ───────────────────────────────────────────────
+  const disp = DISPENSARIES[selectedDispensary.slug] || {};
+  const meta = [];
+  if      (disp.recreational && disp.medical) meta.push('Recreational & Medical');
+  else if (disp.medical)                       meta.push('Medical patients only');
+  else if (disp.recreational)                  meta.push('Recreational');
+  if (disp.payment) meta.push('Payment: ' + disp.payment);
+  if (disp.hours)   meta.push('Hours: '   + disp.hours);
+
+  // ── Assemble context string ───────────────────────────────────────────────
+  let ctx = `\nCURRENT ${name.toUpperCase()} INVENTORY (${inv.length} products in stock):\n`;
+  if (meta.length) ctx += meta.join(' · ') + '\n';
+  ctx += 'RULE: Only recommend products from this inventory by exact name.\n';
+
+  // Category summary with counts
+  ctx += '\nCATEGORIES IN STOCK:\n';
+  Object.entries(byCategory).forEach(([cat, ps]) => {
+    ctx += `- ${cat}: ${ps.length} product${ps.length !== 1 ? 's' : ''}\n`;
+  });
+
+  // Flagged products
+  ctx += '\nFLAGGED PRODUCTS:\n';
+  if (highestTHC) ctx += `- Highest THC: ${fmt(highestTHC)}\n`;
+  if (highestCBD) ctx += `- Highest CBD: ${fmt(highestCBD)}\n`;
+  ['sleep', 'anxiety', 'pain'].forEach(goal => {
+    const ps = goalBuckets[goal];
+    if (ps.length) ctx += `- Best for ${goal}: ${ps.slice(0, 3).map(p => p.name).join(', ')}\n`;
+  });
+
+  // Multi-goal overlap — products that serve 2+ goals simultaneously
+  if (overlapProducts.length) {
+    ctx += '\nMULTI-GOAL OVERLAP — when the user has multiple goals, start here:\n';
+    overlapProducts.slice(0, 6).forEach(({ p, tags }) => {
+      ctx += `${fmt(p)} — covers: ${tags.join(' + ')}\n`;
+    });
+  }
+
+  // Full product list grouped by category
+  ctx += '\nFULL INVENTORY BY CATEGORY:\n';
+  Object.entries(byCategory).forEach(([cat, ps]) => {
+    ctx += `${cat.toUpperCase()}:\n`;
+    ps.slice(0, 20).forEach(p => { ctx += fmt(p) + '\n'; });
+  });
+
   return ctx;
 }
 
