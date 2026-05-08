@@ -3806,7 +3806,7 @@ function buildInventoryContext() {
   ctx += '\nFULL INVENTORY BY CATEGORY:\n';
   Object.entries(byCategory).forEach(([cat, ps]) => {
     ctx += `${cat.toUpperCase()}:\n`;
-    ps.slice(0, 20).forEach(p => { ctx += fmt(p) + '\n'; });
+    ps.slice(0, 40).forEach(p => { ctx += fmt(p) + '\n'; });
   });
 
   return ctx;
