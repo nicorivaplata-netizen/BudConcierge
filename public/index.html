@@ -704,7 +704,7 @@
       <button onclick="openNewEntry()" style="border:1px solid #a8dfc9;background:#E1F5EE;color:#085041;font-size:12px;font-weight:600;padding:5px 11px;border-radius:8px;cursor:pointer">+ New entry</button>
     </div>
     <div class="content">
-      <div id="journal-empty" class="empty-state" style="display:block">
+      <div id="journal-empty" class="empty-state" style="display:flex">
           <div class="empty-icon">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           </div>
@@ -1040,7 +1040,7 @@ function renderJournal() {
   }
 
   if (!journal.length) {
-    empty.style.display = 'block'; list.style.display = 'none'; return;
+    empty.style.display = 'flex'; list.style.display = 'none'; return;
   }
   empty.style.display = 'none'; list.style.display = 'flex';
 
