@@ -3114,6 +3114,14 @@ function clearProfile() {
     btn.disabled = false;
   });
 
+  // Clear home screen hero card
+  const wbGreeting = document.getElementById('wb-greeting');
+  if (wbGreeting) wbGreeting.textContent = 'Welcome to Ivy';
+  const homeTitle = document.getElementById('home-title');
+  if (homeTitle) homeTitle.textContent = 'Ivy';
+  const heroLabel = document.getElementById('home-hero-label');
+  if (heroLabel) heroLabel.textContent = 'Welcome';
+
   // Navigate directly to home — no reload needed
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-home').classList.add('active');
