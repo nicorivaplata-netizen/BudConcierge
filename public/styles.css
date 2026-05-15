@@ -35,12 +35,12 @@
   }
 }
 
-html,body { height:100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size:15px; background:var(--surface-2); color:var(--text-1); -webkit-font-smoothing:antialiased; }
+html,body { height:100%; overflow:hidden; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size:15px; background:var(--surface-2); color:var(--text-1); -webkit-font-smoothing:antialiased; }
 
-#app { max-width:430px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; background:var(--surface); overflow-x:hidden; }
+#app { height:100vh; display:flex; flex-direction:column; background:var(--surface); overflow:hidden; position:relative; max-width:430px; margin:0 auto; }
 
 .screen { display:none; }
-.screen.active { display:flex; flex-direction:column; flex:1; min-height:0; }
+.screen.active { display:flex; flex-direction:column; flex:1; overflow:hidden; min-height:0; }
 
 /* Top bar */
 .topbar { display:flex; align-items:center; gap:10px; padding:13px 16px; background:var(--surface); border-bottom:1px solid var(--border); min-height:58px; flex-shrink:0; }
@@ -53,7 +53,7 @@ html,body { height:100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont
 .back-btn:hover { background:var(--surface-2); }
 
 /* Nav */
-.navbar { display:flex; border-top:1px solid var(--border); background:var(--surface); flex-shrink:0; }
+.navbar { display:flex; border-top:1px solid var(--border); background:var(--surface); flex-shrink:0; position:sticky; bottom:0; z-index:100; width:100%; }
 .nav-item { flex:1; padding:8px 1px 7px; display:flex; flex-direction:column; align-items:center; gap:2px; font-size:8.5px; font-weight:600; color:var(--text-3); cursor:pointer; border:none; background:transparent; letter-spacing:0; min-width:0; overflow:hidden; white-space:nowrap; }
 .nav-item svg { width:19px; height:19px; }
 .nav-item.active { color:var(--green); }
