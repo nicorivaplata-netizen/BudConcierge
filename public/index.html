@@ -2543,20 +2543,26 @@ IBS AND CROHNS: Suppositories and rectal administration for gut-localized relief
 
 CHIP FORMAT — whenever you ask a question, you must end your message with a line in EXACTLY this format:
 CHIPS|||option1|||option2|||option3|||option4
-The chips must be short (2 to 4 words max) and directly answer the specific question you just asked. Never show generic chips.
+Chips must sound like something a real person would say out loud to a trusted friend. Never use form-field language or developer shorthand. Read each chip aloud — if it sounds like a checkbox label, rewrite it.
 
 MULTI-SELECT vs SINGLE-SELECT rules:
 - MOST questions should allow multi-select. Add select:multiple as the FIRST option when the user could reasonably pick more than one answer. Examples: goals, conditions, pain types, product formats, effects wanted, time of day.
-- ONLY use single-select (no select:multiple) for experience level questions where only one answer is correct per person.
-- When in doubt, use multi-select. Our users are often new to cannabis and may want to explore multiple options.
+- ONLY use single-select (no select:multiple) for experience level, medication yes/no, and name questions where only one answer applies.
+- When in doubt, use multi-select.
+
+Every chip option must sound warm, human, and specific. Never use placeholder language, developer shorthand, or form-field labels. Read each chip aloud — if it sounds like a checkbox label, rewrite it. If it sounds like something a real person would genuinely say, keep it.
 
 Examples:
-- Pain type: CHIPS|||select:multiple|||Muscle soreness|||Joint pain|||Headaches|||Back pain
-- Product format: CHIPS|||select:multiple|||Flower|||Edibles|||Vape|||Concentrates|||Tincture|||Drinks
-- Goals: CHIPS|||select:multiple|||Sleep|||Pain relief|||Anxiety|||Focus|||Mood
-- Time of day: CHIPS|||select:multiple|||Morning|||Afternoon|||Evening|||Before bed
-- Experience level: CHIPS|||First time|||Occasional|||Regular|||Daily (no select:multiple)
-- Name chips: Enter my name|||Just call me friend|||Stay anonymous (no select:multiple)
+- Medications: CHIPS|||Yes, I take medications|||Nothing to flag|||I'd rather not say (no select:multiple)
+- Experience level: CHIPS|||Complete beginner|||Tried it a couple times|||Occasional user|||Regular user (no select:multiple)
+- Sleep issues: CHIPS|||select:multiple|||Mind won't stop|||Waking up at night|||Can't wind down|||Something else
+- Pain type: CHIPS|||select:multiple|||Muscle soreness|||Joint pain|||Nerve pain|||Back pain|||Something else
+- Anxiety: CHIPS|||select:multiple|||Constant background hum|||Hits in social situations|||Work and stress related|||Comes in waves|||Something else
+- Product format: CHIPS|||select:multiple|||Flower|||Edibles|||Vape|||Tincture|||Concentrates|||Not sure yet
+- Time of day: CHIPS|||select:multiple|||Morning routine|||During the day|||Evening wind down|||Right before bed|||Something else
+- Mood goals: CHIPS|||select:multiple|||Need a lift|||More emotional balance|||Calm the noise|||Feel more present|||Something else
+- Goals: CHIPS|||select:multiple|||Better sleep|||Pain relief|||Anxiety relief|||Stress management|||Focus and clarity|||Mood support|||Something else
+- Name chips: CHIPS|||Enter my name|||Just call me friend|||Stay anonymous (no select:multiple)
 
 If you are making recommendations and not asking a question, do not include a CHIPS line.
 ${inventoryCtx}`;
@@ -2736,11 +2742,17 @@ function addMessage(role, content, chips) {
       'first time', 'occasional', 'regular', 'daily', 'very experienced',
       'enter my name', 'just call me friend', 'stay anonymous',
       // Medication and health condition chips — single answer only
-      "i'm on medications", 'i have health conditions', 'both', 'nope, all clear',
+      "i'm on medications", 'i have health conditions', 'both', 'nope, all clear', 'nope all clear',
       'no medications', 'no conditions', 'yes', 'no', 'skip this',
+      // New medication / condition chips
+      "i'll share that", 'yes, i take medications', 'yes i take medications',
+      "i'd rather not say", 'nothing to flag', 'yes a few things', 'skip for now',
+      'i have some',
       // Experience level alternatives Ivy might use
       'never tried it', 'tried it once or twice', 'use occasionally',
-      'use regularly', 'beginner', 'experienced', 'first timer'
+      'use regularly', 'beginner', 'experienced', 'first timer',
+      // New experience level chips
+      'complete beginner', 'tried it a couple times', 'occasional user', 'regular user'
     ];
     const isSingleSelect = displayChips.some(c =>
       singleSelectPatterns.includes(c.toLowerCase())
@@ -2782,7 +2794,7 @@ function addMessage(role, content, chips) {
             const hint = document.createElement('div');
             hint.className = 'multi-hint';
             hint.style.cssText = 'width:100%;font-size:11px;color:#9a9c97;margin-top:4px;font-style:italic';
-            hint.textContent = 'Tap more to add, then confirm';
+            hint.textContent = 'Select all that apply';
             cd.appendChild(hint);
           }
           // Show/update confirm button only when something is selected
@@ -2806,11 +2818,12 @@ function addMessage(role, content, chips) {
             cd.appendChild(confirmBtn);
           }
           if (confirmBtn) {
-            confirmBtn.textContent = `${[...selectedGoals].join(' & ')} \u2192`;
+            confirmBtn.textContent = `Confirm \u2192`;
             confirmBtn.style.opacity = selectedGoals.size > 0 ? '1' : '0.5';
           }
         };
-      } else if (c === 'Something else' || c === 'Enter my name') {
+      } else if (c === 'Something else' || c === 'Enter my name' ||
+                 c.toLowerCase() === "i'll share that" || c.toLowerCase() === 'yes, i take medications' || c.toLowerCase() === 'yes i take medications') {
         btn.onclick = () => {
           if (isMultiSelect && c === 'Something else') {
             // Highlight the button
@@ -2859,7 +2872,7 @@ function addMessage(role, content, chips) {
                 };
                 cd.appendChild(confirmBtn);
               }
-              confirmBtn.textContent = `Start with ${[...selectedGoals].join(' & ')} \u2192`;
+              confirmBtn.textContent = `Confirm \u2192`;
               confirmBtn.style.opacity = '1';
             };
 
@@ -2874,7 +2887,10 @@ function addMessage(role, content, chips) {
             // Single-select context — lock chips and focus main input
             cd.querySelectorAll('.chip').forEach(x => { x.classList.add('used'); x.style.pointerEvents = 'none'; });
             const input = document.getElementById('chat-input');
-            input.placeholder = c === 'Enter my name' ? 'Type your name...' : 'Tell me what you need help with...';
+            input.placeholder = c === 'Enter my name' ? 'Type your name...'
+              : (c.toLowerCase() === "i'll share that" || c.toLowerCase() === 'yes, i take medications' || c.toLowerCase() === 'yes i take medications')
+                ? 'Share your medications or conditions — this helps me guide you safely.'
+                : 'Tell me what you need help with...';
             input.focus();
           }
         };
@@ -2893,6 +2909,13 @@ function addMessage(role, content, chips) {
         btn.onclick = () => {
           const alreadySelected = btn.style.background === 'var(--green-mid)' || btn.classList.contains('chip-selected');
           if (alreadySelected) return; // Already selected, do nothing
+
+          // Apply visual feedback immediately on tap — before any other logic
+          btn.style.background = 'var(--green-mid)';
+          btn.style.borderColor = 'var(--green)';
+          btn.style.color = 'var(--green-dark)';
+          btn.style.fontWeight = '600';
+          btn.style.pointerEvents = 'none';
 
           // Check if this chip group already has a selection
           const hasSelection = [...btn.parentElement.querySelectorAll('.chip')]
