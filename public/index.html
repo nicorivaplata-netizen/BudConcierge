@@ -219,7 +219,7 @@
 
       <!-- Hero card — personalized welcome -->
       <div class="home-hero" id="home-hero-card">
-        <div class="home-hero-greeting" id="home-hero-label">Welcome</div>
+        <div class="home-hero-greeting" id="home-hero-label" style="display:none">Welcome</div>
         <div class="home-hero-name" id="wb-greeting">Your cannabis guide</div>
         <div class="home-hero-sub" id="wb-msg">Private, personalized, judgment-free guidance — built around you.</div>
         <div class="home-hero-pill" id="home-hero-pill" style="display:none">
@@ -1794,11 +1794,10 @@ function refreshUI() {
       : hr < 17
       ? 'Afternoon tip: A balanced hybrid can ease afternoon stress without slowing you down.'
       : 'Evening tip: Indica-dominant strains and CBD tinctures are ideal for wind-down and sleep.';
+    const firstName = profile.name.trim().split(' ')[0];
     document.getElementById('home-title').textContent    = todGreet + ', ' + profile.name;
-    document.getElementById('wb-greeting').textContent  = todGreet + ', ' + profile.name + '!';
+    document.getElementById('wb-greeting').textContent  = 'Hey ' + firstName;
     document.getElementById('wb-msg').textContent       = todTip;
-    const heroLabel = document.getElementById('home-hero-label');
-    if (heroLabel) heroLabel.textContent = 'Welcome back';
     document.getElementById('home-cta').textContent     = 'Start a new chat →';
     // home-badge hidden
     // Hide profile nudge in chat when profile exists
@@ -1825,6 +1824,8 @@ function refreshUI() {
     if (profileShortcut) profileShortcut.style.display = 'flex';
     const goals = profile.goals && (profile.goals||[]).length ? 'Personalized for: ' + (profile.goals||[]).slice(0,2).join(', ') : 'Ask anything — no profile needed to start';
     document.getElementById('chat-shortcut-sub').textContent = goals;
+  } else {
+    document.getElementById('wb-greeting').textContent = 'Welcome to Ivy';
   }
 
   // Show dispensary shortcut if one is selected — regardless of profile state
@@ -1853,8 +1854,6 @@ function refreshUI() {
     document.getElementById('home-title').textContent   = 'Ivy';
     document.getElementById('wb-greeting').textContent  = 'Welcome to Ivy';
     document.getElementById('wb-msg').textContent       = 'Set up your profile for personalized, judgment-free cannabis guidance.';
-    const heroLabelNew = document.getElementById('home-hero-label');
-    if (heroLabelNew) heroLabelNew.textContent = 'Welcome';
     document.getElementById('home-cta').textContent     = 'Set up my profile';
     document.getElementById('quick-actions').style.display = 'flex';
     document.getElementById('quick-actions-label').textContent = 'Explore Ivy';
@@ -3119,9 +3118,6 @@ function clearProfile() {
   if (wbGreeting) wbGreeting.textContent = 'Welcome to Ivy';
   const homeTitle = document.getElementById('home-title');
   if (homeTitle) homeTitle.textContent = 'Ivy';
-  const heroLabel = document.getElementById('home-hero-label');
-  if (heroLabel) heroLabel.textContent = 'Welcome';
-
   // Navigate directly to home — no reload needed
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-home').classList.add('active');
