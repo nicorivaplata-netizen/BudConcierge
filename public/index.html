@@ -3234,8 +3234,8 @@ function startChat() {
   // No profile yet — Ivy will introduce herself and ask for name naturally
   // through conversation (system prompt handles this)
   if (!profile.name) {
-    const welcomeMsg = "Hi, I'm Ivy \u2014 think of me as a knowledgeable friend who happens to know a lot about cannabis. I'll ask you a couple of quick questions and give you a recommendation that's actually built around you. No judgment, completely private, and I'll never push you toward anything. What are you hoping cannabis can help you with?";
-    const welcomeChips = ['Sleep', 'Pain relief', 'Anxiety', 'Focus', 'Just exploring', 'Something else'];
+    const welcomeMsg = "Hi, I'm Ivy \u2014 your private cannabis guide. I give personalized recommendations based on exactly what you need. No judgment, no guesswork. To get started, what are you hoping cannabis can help you with?";
+    const welcomeChips = ['select:multiple', 'Better sleep', 'Pain relief', 'Anxiety relief', 'Stress management', 'Focus and clarity', 'Still exploring', 'Something else'];
     addMessage('bot', welcomeMsg, welcomeChips);
     chatHistory.push({ role: 'assistant', content: welcomeMsg });
     return;
