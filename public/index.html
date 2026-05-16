@@ -1603,52 +1603,72 @@ function finishOnboard() {
   greeting += `I'm Ivy — really glad you're here. `;
 
   const topGoal = (goals[0] || '').toLowerCase();
-  const deepQuestions = {
-    'sleep': `Since you're ${expLabel || 'here'} and sleep is on your mind — what's actually making it hard? Racing thoughts, waking up in the night, or just can't wind down?`,
-    'pain relief': `Since you're ${expLabel || 'here'} and dealing with pain — where's it hitting you most? Muscle soreness, joints, chronic pain, or something else?`,
-    'anxiety': `Since you're ${expLabel || 'here'} and working on anxiety — is it more of an everyday background hum, or does it hit harder in specific situations?`,
-    'stress': `Since you're ${expLabel || 'here'} and managing stress — is it more about unwinding at the end of the day, or taking the edge off throughout?`,
-    'focus': `Since you're ${expLabel || 'here'} and looking for focus — is it for creative work, staying sharp for structured tasks, or general clarity?`,
-    'mood': `Since you're ${expLabel || 'here'} and working on mood — are you looking for a lift, more balance, or just to feel a little lighter?`,
-    'nausea': `Since you're ${expLabel || 'here'} and dealing with nausea — is it chronic, situational, or related to a specific condition or treatment?`,
-    'appetite': `Since you're ${expLabel || 'here'} and working on appetite — is this about stimulating it, managing it, or something related to a health condition?`,
+  const expKey = profile.experience || obData.experience || '';
+
+  // Clinically precise questions — each maps directly to distinct chip options below
+  const deepQuestionText = {
+    'better sleep':      'What does a bad night actually look like for you?',
+    'sleep':             'What does a bad night actually look like for you?',
+    'pain relief':       'Help me understand your pain — what does it feel like?',
+    'anxiety relief':    'When does anxiety hit you hardest?',
+    'anxiety':           'When does anxiety hit you hardest?',
+    'stress management': 'What does stress feel like for you?',
+    'stress':            'What does stress feel like for you?',
+    'focus and clarity': 'What gets in the way of your focus?',
+    'focus':             'What gets in the way of your focus?',
+    'mood support':      'What would feeling better actually look like?',
+    'mood':              'What would feeling better actually look like?',
+    'nausea relief':     'Tell me more about when nausea tends to hit.',
+    'nausea':            'Tell me more about when nausea tends to hit.',
+    'appetite':          'What are you dealing with around appetite?',
   };
 
   if (goals.length > 1) {
-    // Multiple goals — acknowledge all, then ask deeper about the first
     const allGoals = goals.length === 2
       ? `${goals[0].toLowerCase()} and ${goals[1].toLowerCase()}`
       : goals.slice(0,-1).map(g => g.toLowerCase()).join(', ') + ', and ' + goals[goals.length-1].toLowerCase();
-    greeting += `You've got a lot going on — ${allGoals}. I want to help with all of it. Let's start with ${goals[0].toLowerCase()} since that's often the thread that ties the others together. `;
-    if (deepQuestions[topGoal]) {
-      greeting += deepQuestions[topGoal].replace(`Since you're ${expLabel || 'here'} and ${
-        topGoal === 'sleep' ? 'sleep is on your mind' :
-        topGoal === 'pain relief' ? 'dealing with pain' :
-        topGoal === 'anxiety' ? 'working on anxiety' :
-        topGoal === 'stress' ? 'managing stress' :
-        topGoal === 'focus' ? 'looking for focus' :
-        topGoal === 'mood' ? 'working on mood' : topGoal + ' is on your mind'
-      } — `, '');
+    if (expKey === 'first_time') {
+      greeting += `Welcome — you've picked a great place to start. Cannabis affects ${goals[0].toLowerCase()} and ${goals[1].toLowerCase()} differently, and since you've never tried it before I want to make sure your first experience is a good one. Let's start with ${goals[0].toLowerCase()} — tell me a bit more so I can get this right for you.`;
+    } else if (expKey === 'beginner') {
+      greeting += `Good choices — ${goals[0].toLowerCase()} and ${goals[1].toLowerCase()} are two of the most common reasons people turn to cannabis. `;
+      if (deepQuestionText[topGoal]) greeting += deepQuestionText[topGoal];
+    } else if (expKey === 'occasional') {
+      greeting += `Both are very treatable with the right product. Let's make sure we find exactly the right fit for you. `;
+      if (deepQuestionText[topGoal]) greeting += deepQuestionText[topGoal];
+    } else if (expKey === 'regular' || expKey === 'experienced') {
+      greeting += `Let's get specific — I can give you a precise recommendation if you help me understand the details. `;
+      if (deepQuestionText[topGoal]) greeting += deepQuestionText[topGoal];
+    } else {
+      greeting += `You've got two solid goals — ${allGoals}. Let's start with ${goals[0].toLowerCase()}. `;
+      if (deepQuestionText[topGoal]) greeting += deepQuestionText[topGoal];
     }
-  } else if (topGoal && deepQuestions[topGoal]) {
-    greeting += deepQuestions[topGoal];
+  } else if (topGoal && deepQuestionText[topGoal]) {
+    const ctx = expLabel ? `Since you're ${expLabel} and ${topGoal} is on your mind — ` : '';
+    greeting += ctx + deepQuestionText[topGoal];
   } else if (topGoal) {
     greeting += `You mentioned ${topGoal} — tell me a bit more about what that looks like for you so I can give you something really specific.`;
   } else {
     greeting += `What's bringing you here today?`;
   }
 
+  // Precise chip sets — each option maps to a meaningfully different cannabis solution
   const deepChips = {
-    'sleep': ['Racing thoughts', 'Waking up often', "Can't wind down", 'Something else'],
-    'pain relief': ['Muscle soreness', 'Joint pain', 'Chronic pain', 'Something else'],
-    'anxiety': ['Everyday anxiety', 'Social situations', 'Work stress', 'Something else'],
-    'stress': ['End of day', 'Throughout the day', 'Something else'],
-    'focus': ['Creative work', 'Structured tasks', 'Something else'],
-    'mood': ['Need a lift', 'More balance', 'Something else'],
-    'nausea': ['Chronic', 'Situational', 'Something else'],
-    'appetite': ['Stimulate it', 'Manage it', 'Something else'],
+    'better sleep':      ['select:single', 'Can not fall asleep', 'Fall asleep but wake up', 'Wake up too early', 'Something else'],
+    'sleep':             ['select:single', 'Can not fall asleep', 'Fall asleep but wake up', 'Wake up too early', 'Something else'],
+    'pain relief':       ['select:single', 'Constant dull ache', 'Sharp or acute flare ups', 'Inflammation and stiffness', 'Nerve or shooting pain', 'Something else'],
+    'anxiety relief':    ['select:single', 'Constant background hum', 'Specific situations or triggers', 'Physical symptoms like tension', 'Racing mind at night', 'Something else'],
+    'anxiety':           ['select:single', 'Constant background hum', 'Specific situations or triggers', 'Physical symptoms like tension', 'Racing mind at night', 'Something else'],
+    'stress management': ['select:single', 'Mental overload, can not switch off', 'Physical tension in body', 'Emotional and reactive', 'Low energy and flat', 'Something else'],
+    'stress':            ['select:single', 'Mental overload, can not switch off', 'Physical tension in body', 'Emotional and reactive', 'Low energy and flat', 'Something else'],
+    'focus and clarity': ['select:single', 'Mind wanders constantly', 'Anxiety blocks me', 'Low motivation or energy', 'Creative block', 'Something else'],
+    'focus':             ['select:single', 'Mind wanders constantly', 'Anxiety blocks me', 'Low motivation or energy', 'Creative block', 'Something else'],
+    'mood support':      ['select:single', 'More energy and motivation', 'Quieter mind', 'More present and engaged', 'Less emotional reactivity', 'Something else'],
+    'mood':              ['select:single', 'More energy and motivation', 'Quieter mind', 'More present and engaged', 'Less emotional reactivity', 'Something else'],
+    'nausea relief':     ['select:single', 'Related to a medical treatment', 'Chronic and unpredictable', 'Tied to anxiety or stress', 'Something else'],
+    'nausea':            ['select:single', 'Related to a medical treatment', 'Chronic and unpredictable', 'Tied to anxiety or stress', 'Something else'],
+    'appetite':          ['select:single', 'Stimulate it', 'Manage it', 'Something else'],
   };
-  const chips = deepChips[topGoal] || ['Something else'];
+  const chips = deepChips[topGoal] || ['select:single', 'Tell me more about what you are dealing with', 'Something else'];
 
 
   // Set initialized FIRST to prevent startChat being triggered by switchTab
@@ -2518,15 +2538,21 @@ CHIP FORMAT — end every question with EXACTLY this format:
 CHIPS|||option1|||option2|||option3|||option4
 Each chip must sound like something a real person says to a trusted friend. Read it aloud — if it sounds like a form label, rewrite it.
 
-MULTI-SELECT: Add select:multiple as the FIRST option for goals, conditions, pain types, formats, time of day. Single-select only for experience level, medication yes/no, and name. When in doubt, multi-select.
+MULTI-SELECT: Add select:multiple as the FIRST option for goals, conditions, pain types, formats, time of day. Single-select only for experience level, medication yes/no, name, and diagnostic follow-up questions. When in doubt, multi-select.
 
-Examples (max 4 chips — multi-select always ends with Something else):
+CHIP PRECISION RULE: Each chip option must represent a meaningfully different problem that leads to a different recommendation. If two options would result in the same recommendation, merge them into one. Precision in the question leads to precision in the recommendation.
+
+Examples (max 5 chips — multi-select always ends with Something else):
 - Medications: CHIPS|||Yes, I take medications|||Nothing to flag|||I'd rather not say (no select:multiple)
 - Experience: CHIPS|||Complete beginner|||Tried it a couple times|||Occasional user|||Regular user (no select:multiple)
-- Sleep: CHIPS|||select:multiple|||Mind won't stop|||Waking up at night|||Can't wind down|||Something else
-- Anxiety: CHIPS|||select:multiple|||Constant background hum|||Social situations|||Work stress|||Something else
 - Goals: CHIPS|||select:multiple|||Better sleep|||Pain relief|||Anxiety relief|||Something else
 - Name: CHIPS|||Enter my name|||Just call me friend|||Stay anonymous (no select:multiple)
+- Sleep follow-up: CHIPS|||Can not fall asleep|||Fall asleep but wake up|||Wake up too early|||Something else (no select:multiple — one answer only)
+- Anxiety follow-up: CHIPS|||Constant background hum|||Specific situations or triggers|||Physical symptoms like tension|||Racing mind at night|||Something else (no select:multiple)
+- Pain follow-up: CHIPS|||Constant dull ache|||Sharp or acute flare ups|||Inflammation and stiffness|||Nerve or shooting pain|||Something else (no select:multiple)
+- Stress follow-up: CHIPS|||Mental overload, can not switch off|||Physical tension in body|||Emotional and reactive|||Low energy and flat|||Something else (no select:multiple)
+- Focus follow-up: CHIPS|||Mind wanders constantly|||Anxiety blocks me|||Low motivation or energy|||Creative block|||Something else (no select:multiple)
+- Mood follow-up: CHIPS|||More energy and motivation|||Quieter mind|||More present and engaged|||Less emotional reactivity|||Something else (no select:multiple)
 
 If making recommendations and not asking a question, omit the CHIPS line.
 ${inventoryCtx}`;
@@ -2698,8 +2724,9 @@ function addMessage(role, content, chips) {
   if (chips && chips.length) {
     const cd = document.createElement('div');
     cd.className = 'chips';
-    // Clean chips — remove internal marker
-    const displayChips = chips.filter(c => c !== 'select:multiple');
+    // Clean chips — remove internal markers
+    const hasSelectSingle = chips.includes('select:single');
+    const displayChips = chips.filter(c => c !== 'select:multiple' && c !== 'select:single');
 
     // Single-select only for experience level or name chips
     const singleSelectPatterns = [
@@ -2721,15 +2748,23 @@ function addMessage(role, content, chips) {
     const isSingleSelect = displayChips.some(c =>
       singleSelectPatterns.includes(c.toLowerCase())
     );
-    // Everything else is multi-select by default
-    const isMultiSelect = !isSingleSelect && displayChips.length > 1;
+    // Everything else is multi-select by default; select:single forces single-select
+    const isMultiSelect = !isSingleSelect && !hasSelectSingle && displayChips.length > 1;
 
     // Add Something else option for multi-select sets that don't have it
     if (isMultiSelect && !displayChips.includes('Something else')) {
       displayChips.push('Something else');
     }
-    // Add hint text for multi-select — shown after first tap, not immediately
-    // (hint is added dynamically when first chip is selected)
+
+    // Static hint for forced single-select diagnostic chips (e.g. finishOnboard deep questions)
+    if (hasSelectSingle) {
+      const singleHint = document.createElement('div');
+      singleHint.style.cssText = 'width:100%;font-size:11px;color:#9a9c97;margin-bottom:4px;font-style:italic';
+      singleHint.textContent = 'Tap the option that fits you best';
+      cd.appendChild(singleHint);
+    }
+
+    // Multi-select hint added dynamically after first tap (see handler below)
     const selectedGoals = new Set();
 
     displayChips.forEach(c => {
