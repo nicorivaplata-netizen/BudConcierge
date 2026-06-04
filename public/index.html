@@ -472,10 +472,11 @@
         <div>
           <div class="section-label" style="margin-bottom:8px">Experience level</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button class="opt-btn" data-field="experience" data-val="First time" onclick="pickExperience(this)">First time</button>
-            <button class="opt-btn" data-field="experience" data-val="Occasional" onclick="pickExperience(this)">Occasional</button>
-            <button class="opt-btn" data-field="experience" data-val="Regular" onclick="pickExperience(this)">Regular</button>
-            <button class="opt-btn" data-field="experience" data-val="Daily use" onclick="pickExperience(this)">Daily use</button>
+            <button class="opt-btn" data-field="experience" data-val="first_time" onclick="pickExperience(this)">First time</button>
+            <button class="opt-btn" data-field="experience" data-val="beginner" onclick="pickExperience(this)">Tried it a couple times</button>
+            <button class="opt-btn" data-field="experience" data-val="occasional" onclick="pickExperience(this)">Occasional</button>
+            <button class="opt-btn" data-field="experience" data-val="regular" onclick="pickExperience(this)">Regular</button>
+            <button class="opt-btn" data-field="experience" data-val="experienced" onclick="pickExperience(this)">Very experienced</button>
           </div>
         </div>
 
@@ -521,14 +522,14 @@
         <div>
           <div class="section-label" style="margin-bottom:8px">Goals (select all that apply)</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button class="opt-btn" data-field="goals" data-val="Sleep" onclick="pickMany(this)">Sleep</button>
-            <button class="opt-btn" data-field="goals" data-val="Anxiety and stress" onclick="pickMany(this)">Anxiety and stress</button>
+            <button class="opt-btn" data-field="goals" data-val="Better sleep" onclick="pickMany(this)">Better sleep</button>
+            <button class="opt-btn" data-field="goals" data-val="Anxiety relief" onclick="pickMany(this)">Anxiety relief</button>
             <button class="opt-btn" data-field="goals" data-val="Pain relief" onclick="pickMany(this)">Pain relief</button>
             <button class="opt-btn" data-field="goals" data-val="Focus" onclick="pickMany(this)">Focus</button>
-            <button class="opt-btn" data-field="goals" data-val="Mood" onclick="pickMany(this)">Mood</button>
-            <button class="opt-btn" data-field="goals" data-val="Relaxation" onclick="pickMany(this)">Relaxation</button>
-            <button class="opt-btn" data-field="goals" data-val="Nausea" onclick="pickMany(this)">Nausea</button>
-            <button class="opt-btn" data-field="goals" data-val="General wellness" onclick="pickMany(this)">General wellness</button>
+            <button class="opt-btn" data-field="goals" data-val="Mood support" onclick="pickMany(this)">Mood support</button>
+            <button class="opt-btn" data-field="goals" data-val="Stress management" onclick="pickMany(this)">Stress management</button>
+            <button class="opt-btn" data-field="goals" data-val="Nausea relief" onclick="pickMany(this)">Nausea relief</button>
+            <button class="opt-btn" data-field="goals" data-val="Still exploring" onclick="pickMany(this)">Still exploring</button>
           </div>
         </div>
 
@@ -1596,7 +1597,7 @@ function finishOnboard() {
     'occasional': 'an occasional user',
     'regular': 'a regular user',
     'experienced': 'very experienced'
-  }[obData.experience] || null;
+  }[profile.experience] || null;
 
   const nameIntro = greetName ? `Hey ${greetName}! ` : 'Hey! ';
   let greeting = nameIntro;
@@ -2143,7 +2144,7 @@ function openEdit() {
     b.classList.toggle('on', strainPrefArr.includes(b.dataset.val));
   });
   const strainSect = document.getElementById('strain-pref-section');
-  if (strainSect) strainSect.style.display = (profile.experience === 'Occasional' || profile.experience === 'Regular' || profile.experience === 'Daily use') ? 'block' : 'none';
+  if (strainSect) strainSect.style.display = (['occasional', 'regular', 'experienced'].includes(profile.experience)) ? 'block' : 'none';
   // Restore gender and hormonal section visibility
   if (profile.gender) {
     document.querySelectorAll('.opt-btn[data-field="gender"]').forEach(b => {
@@ -2211,7 +2212,7 @@ function pickExperience(btn) {
   const exp = btn.dataset.val;
   const strainSection = document.getElementById('strain-pref-section');
   if (strainSection) {
-    if (exp === 'Occasional' || exp === 'Regular' || exp === 'Daily use') {
+    if (exp === 'occasional' || exp === 'regular' || exp === 'experienced') {
       strainSection.style.display = 'block';
     } else {
       strainSection.style.display = 'none';
@@ -2265,7 +2266,11 @@ function saveProfile() {
   const getM = f => [...document.querySelectorAll(`.opt-btn.on[data-field="${f}"]`)].map(b => b.dataset.val);
 
   const expRaw = get1('experience');
-  const exp = {'First time':'first_time','Occasional':'occasional','Regular':'regular','Daily use':'regular','Very experienced':'experienced'}[expRaw] || expRaw;
+  // data-val is now the canonical key; legacy display-value mappings kept for any existing stored data
+  const exp = {
+    'first_time':'first_time', 'beginner':'beginner', 'occasional':'occasional', 'regular':'regular', 'experienced':'experienced',
+    'First time':'first_time', 'Tried it a couple times':'beginner', 'Occasional':'occasional', 'Regular':'regular', 'Daily use':'regular', 'Very experienced':'experienced'
+  }[expRaw] || expRaw;
   const conditionsOther = document.getElementById('conditions-other')?.value.trim();
   const conditionsList = getM('conditions');
   if (conditionsOther) conditionsList.push(conditionsOther);
@@ -2447,8 +2452,7 @@ RESPONDING TO ${(profile.name||'this user').toUpperCase()}:
 - Let their condition or goal drive every recommendation. One phrase, not a paragraph.
 - Journal data: reference in one phrase if relevant. Do not over-explain.
 - Medications: one sentence flag, suggest doctor, move on.
-- Preferred time of use: if not set, you may ask this once as it genuinely affects the recommendation. Otherwise skip it.
-${!(profile.conditions||[]).length && !profile.medications ? `- They have not shared health conditions or medications. Ask once, naturally, before your first recommendation: "One quick thing — any medications or health conditions I should know about? Totally optional." If they skip it, move on.` : ''}`
+- Preferred time of use: if not set, you may ask this once as it genuinely affects the recommendation. Otherwise skip it.`
     : `${profile.experience || profile.goals?.length ? `PARTIAL PROFILE SET:
 - Experience: ${profile.experience || 'unknown'}
 - Goals: ${(profile.goals||[]).join(', ') || 'not set'}
@@ -2819,6 +2823,12 @@ function addMessage(role, content, chips) {
             confirmBtn.onclick = () => {
               if (selectedGoals.size === 0) return;
               cd.querySelectorAll('.chip').forEach(x => { x.classList.add('used'); x.style.pointerEvents = 'none'; });
+              // Persist goals to profile when no-profile user confirms their welcome chip selection
+              if (window._saveNextGoalSelection) {
+                window._saveNextGoalSelection = false;
+                const saved = [...selectedGoals].filter(g => g !== 'Something else');
+                if (saved.length) { profile.goals = saved; saveData(); }
+              }
               const msg = selectedGoals.size === 1
                 ? [...selectedGoals][0]
                 : [...selectedGoals].join(' and ');
@@ -3275,6 +3285,7 @@ function startChat() {
     }
     const welcomeMsg = "Hi, I'm Ivy \u2014 your private cannabis guide. I give personalized recommendations based on exactly what you need. No judgment, no guesswork. To get started, what are you hoping cannabis can help you with?";
     const welcomeChips = ['select:multiple', 'Better sleep', 'Pain relief', 'Anxiety relief', 'Stress management', 'Focus and clarity', 'Still exploring', 'Something else'];
+    window._saveNextGoalSelection = true; // persist selected goals to profile.goals on confirm
     addMessage('bot', welcomeMsg, welcomeChips);
     chatHistory.push({ role: 'assistant', content: welcomeMsg });
     return;
@@ -3314,8 +3325,8 @@ function startChat() {
 
   // Build chips from their goals or defaults
   const greetChips = goals.length > 0
-    ? [...goals.slice(0,3), 'Something else']
-    : ['Better sleep', 'Pain relief', 'Anxiety relief', 'Something else'];
+    ? ['select:single', ...goals.slice(0,3), 'Something else']
+    : ['select:single', 'Better sleep', 'Pain relief', 'Anxiety relief', 'Something else'];
 
   // Only send generic greeting if no dispensary greeting is pending
   if (!window._pendingDispensaryGreeting) {
