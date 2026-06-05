@@ -12,6 +12,10 @@
   <link rel="stylesheet" href="styles.css">
   <!-- PWA: makes it installable on phones like a real app -->
   <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Ivy">
+  <meta name="mobile-web-app-capable" content="yes">
 
 <style>
 .ob-dot{width:8px;height:8px;border-radius:50%;background:#d3d1c7;transition:background .2s}
@@ -3970,6 +3974,11 @@ if (savedDisp) {
     const { slug } = JSON.parse(savedDisp);
     if (slug && DISPENSARIES[slug]) fetchInventory(slug);
   } catch(e) {}
+}
+
+// Register service worker for PWA
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
 }
 </script>
 </body>

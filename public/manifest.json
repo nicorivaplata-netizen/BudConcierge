@@ -1,17 +1,25 @@
 {
-  "name": "BudConcierge",
-  "short_name": "BudConcierge",
-  "description": "Your personal AI cannabis guide",
+  "name": "Ivy — Cannabis Wellness Guide",
+  "short_name": "Ivy",
+  "description": "Your private, personalized cannabis wellness guide. Free. No judgment.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#1D9E75",
+  "theme_color": "#1a9968",
   "orientation": "portrait",
+  "categories": ["health", "lifestyle"],
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%231D9E75'/><text y='130' x='96' font-size='110' text-anchor='middle' fill='white'>🌿</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%231a9968'/><line x1='96' y1='156' x2='96' y2='60' stroke='white' stroke-width='8' stroke-linecap='round'/><path d='M96,130 C72,115 44,112 38,88 C56,88 80,104 96,130 Z' fill='white'/><path d='M96,130 C120,115 148,112 154,88 C136,88 112,104 96,130 Z' fill='white'/><path d='M96,100 C72,85 46,78 42,54 C60,60 84,76 96,100 Z' fill='white'/><path d='M96,100 C120,85 146,78 150,54 C132,60 108,76 96,100 Z' fill='white'/></svg>",
       "sizes": "192x192",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%231a9968'/><line x1='256' y1='420' x2='256' y2='160' stroke='white' stroke-width='20' stroke-linecap='round'/><path d='M256,350 C192,310 118,304 102,240 C148,240 212,276 256,350 Z' fill='white'/><path d='M256,350 C320,310 394,304 410,240 C364,240 300,276 256,350 Z' fill='white'/><path d='M256,270 C192,230 122,208 112,144 C158,160 222,196 256,270 Z' fill='white'/><path d='M256,270 C320,230 390,208 400,144 C354,160 290,196 256,270 Z' fill='white'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }
