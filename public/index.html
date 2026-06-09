@@ -2752,13 +2752,18 @@ async function getBotReply(userMsg) {
   chatHistory.push({ role: 'user', content: userMsg });
   showTyping(); isTyping = true;
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
+
   try {
     // Calls OUR backend proxy at /api/chat — the API key never touches the browser
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: chatHistory, system: buildSystem() })
+      body: JSON.stringify({ messages: chatHistory, system: buildSystem() }),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
 
     const data = await res.json();
     if (!res.ok) {
@@ -2781,6 +2786,12 @@ async function getBotReply(userMsg) {
 
     addMessage('bot', cleanReply, chips);
   } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      removeTyping(); isTyping = false;
+      addMessage('bot', "I'm taking a moment to think — please try sending your message again.", []);
+      return;
+    }
     removeTyping(); isTyping = false;
     addMessage('bot', 'Connection error: ' + err.message + '. If this persists, check that your ANTHROPIC_API_KEY is set correctly in Vercel.');
   }
