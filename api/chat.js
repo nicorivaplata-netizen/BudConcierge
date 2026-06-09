@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'claude-sonnet-4-5',
         max_tokens: 1024,
-        system: system || '',
+        system: 'CRITICAL: Always respond in English only, regardless of any other language in the conversation or user messages.\n\n' + (system || ''),
         messages,
       }),
     });
