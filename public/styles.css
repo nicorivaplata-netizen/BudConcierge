@@ -252,7 +252,7 @@ html,body { height:100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont
 .pref-row { display:flex; justify-content:space-between; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--border); }
 .pref-row:last-child { border-bottom:none; padding-bottom:0; }
 .pref-label { font-size:13px; color:var(--text-2); flex-shrink:0; margin-right:12px; font-weight:500; }
-.pref-val   { font-size:13px; font-weight:600; text-align:right; }
+.pref-val   { font-size:13px; font-weight:600; text-align:right; max-width:60%; word-break:break-word; overflow-wrap:break-word; }
 .pref-val.empty { color:var(--text-3); font-weight:400; font-style:italic; }
 
 /* History */

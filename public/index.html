@@ -429,9 +429,9 @@
             <span class="pref-label">Health conditions</span>
             <div id="pf-conditions"><span class="pref-val empty">Not set</span></div>
           </div>
-          <div class="pref-row" style="border-bottom:none">
+          <div class="pref-row" style="border-bottom:none;flex-wrap:wrap;gap:4px">
             <span class="pref-label">Medications</span>
-            <span class="pref-val empty" id="pf-medications">Not set</span>
+            <span class="pref-val empty" id="pf-medications" style="max-width:100%;text-align:left;word-break:break-word">Not set</span>
           </div>
         </div>
       </div>
@@ -1897,7 +1897,14 @@ function refreshUI() {
   }
 
   // Profile fields
-  setField('pf-experience', profile.experience);
+  const pfExpLabels = {
+    'first_time': 'First timer',
+    'beginner': 'Beginner',
+    'occasional': 'Occasional user',
+    'regular': 'Regular user',
+    'experienced': 'Experienced'
+  };
+  setField('pf-experience', pfExpLabels[profile.experience] || profile.experience);
   const strainPrefEl = document.getElementById('pf-strain-pref');
   const strainPrefRow = document.getElementById('pf-strain-pref-row');
   if (strainPrefEl && strainPrefRow) {
@@ -2131,10 +2138,14 @@ function openEdit() {
   document.getElementById('edit-name').value = profile.name || '';
 
   // Re-select saved values
-  ['experience', 'time'].forEach(field => {
-    document.querySelectorAll(`.opt-btn[data-field="${field}"]`).forEach(b => {
-      if (b.dataset.val === profile[field]) b.classList.add('on');
-    });
+  document.querySelectorAll(`.opt-btn[data-field="experience"]`).forEach(b => {
+    if (b.dataset.val === profile.experience) b.classList.add('on');
+  });
+  const savedTime = Array.isArray(profile.time)
+    ? profile.time
+    : (profile.time ? [profile.time] : []);
+  document.querySelectorAll(`.opt-btn[data-field="time"]`).forEach(b => {
+    if (savedTime.includes(b.dataset.val)) b.classList.add('on');
   });
   ['products', 'goals'].forEach(field => {
     const arr = profile[field] || [];
