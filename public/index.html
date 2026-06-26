@@ -2456,7 +2456,29 @@ ${conditions.length > 0
   ? `Conditions already known: ${conditions.join(', ')}. Skip this step entirely.`
   : `Ask: "Is this connected to something specific — an injury, a chronic condition, or more general stress and tension?"
 Chips: CHIPS|||select:single|||A specific condition or diagnosis|||An injury or physical issue|||General stress and tension|||Something else
-Skip if the user has already described a specific condition in this conversation OR if profile.conditions contains entries.`
+
+CRITICAL — CHIP RESPONSE RULES FOR STEP 3:
+When user selects "A specific condition or diagnosis":
+Do NOT proceed to STEP 4. Ask immediately: "What condition are you dealing with?"
+Do not use chips — let them type their answer freely.
+Wait for their typed response. Use that specific condition to inform the recommendation.
+Only after receiving the specific condition name proceed to STEP 4.
+
+When user selects "An injury or physical issue":
+Do NOT proceed to STEP 4. Ask immediately: "What kind of injury or physical issue is it?"
+Do not use chips — let them type their answer freely.
+Wait for their typed response. Use that specific injury to inform the recommendation.
+Only after receiving the specific injury description proceed to STEP 4.
+
+When user selects "General stress and tension":
+Proceed directly to STEP 4. No follow-up needed — this answer is complete and does not require elaboration.
+
+When user selects "Something else":
+Ask: "Tell me what is going on in your own words."
+Do not use chips. Wait for their free text response.
+Only after receiving their response proceed to STEP 4.
+
+Skip STEP 3 entirely if the user has already described a specific condition in this conversation OR if profile.conditions contains entries.`
 }
 
 STEP 4 — MEDICATION CHECK (ask once, skip if already known):
