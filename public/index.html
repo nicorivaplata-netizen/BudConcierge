@@ -2345,6 +2345,7 @@ function buildSystem() {
         `- ${e.product || 'Unknown'}: rated ${e.rating || '?'}/5${e.notes ? ', ' + e.notes.slice(0, 80) : ''}`
       ).join('\n')
     : '';
+  const topJournalEntry = recentJournal.find(e => (e.rating || 0) >= 4) || recentJournal[0];
 
   // Strain history with rating context
   const ratedHistory = (strainHistory || []).slice(0, 8).map(h => {
@@ -2480,8 +2481,8 @@ ${expKey === 'first_time' || expKey === 'beginner'
 }
 
 STEP 6 — JOURNAL CHECK-IN (returning users only):
-${journalCtx
-  ? `Journal data exists. Before STEP 1 open with: "Last time I suggested [product] for your [goal] — did you get a chance to try it?" Chips: CHIPS|||select:single|||Yes and it helped|||Tried it, mixed results|||Have not tried it yet|||Something else. Use answer to inform this session's recommendation. Then proceed to STEP 1.`
+${journalCtx && topJournalEntry
+  ? `RETURNING USER — check-in required before anything else. Your FIRST sentence must name "${topJournalEntry.product}" explicitly. Say something like: "Last time we looked at ${topJournalEntry.product} for your ${goals[0] || 'goal'} — did you get a chance to try it?" Then give: CHIPS|||select:single|||Yes and it helped|||Tried it, mixed results|||Have not tried it yet|||Something else. Use answer to guide this session. Then proceed to STEP 1.`
   : `No journal entries yet. Do not mention the journal at all.`
 }
 
