@@ -1,0 +1,87 @@
+[
+  {
+    "name": "senior_warfarin_arthritis",
+    "description": "72-year-old first timer on Warfarin with arthritis — blood thinner high-risk scenario",
+    "profile": {
+      "name": "Dorothy",
+      "experience": "first_time",
+      "goals": ["Pain relief"],
+      "conditions": ["arthritis", "atrial fibrillation"],
+      "medications": "Warfarin 5mg daily",
+      "time": ["daytime"],
+      "products": [],
+      "gender": "Female",
+      "hormonal": "",
+      "cycle": "",
+      "hormonal_conditions": "",
+      "strain_pref": []
+    },
+    "journal": [],
+    "strainHistory": [],
+    "userMessage": "My doctor said my arthritis is getting worse and I can't take more anti-inflammatories because I'm on Warfarin for my heart. A friend suggested cannabis for the pain. Is that safe for me?",
+    "checks": ["has_rec", "doctor_push", "flags_interaction", "no_shame", "no_refusal", "validates_warmly", "dosing_guidance"]
+  },
+  {
+    "name": "dispensary_qr_scan",
+    "description": "User scanned QR code at dispensary — no profile, immediate help needed",
+    "profile": {
+      "name": "",
+      "experience": "",
+      "goals": [],
+      "conditions": [],
+      "medications": "",
+      "time": [],
+      "products": [],
+      "gender": "",
+      "hormonal": "",
+      "cycle": "",
+      "hormonal_conditions": "",
+      "strain_pref": []
+    },
+    "journal": [],
+    "strainHistory": [],
+    "userMessage": "I am at the dispensary right now and I have no idea what to get. I just need something for stress.",
+    "checks": ["asks_name", "english_only", "one_question_mark", "no_jargon"]
+  },
+  {
+    "name": "negative_feedback_pivot",
+    "description": "Jack Herer caused anxiety spike — must pivot completely, not re-recommend",
+    "profile": {
+      "name": "Taylor",
+      "experience": "occasional",
+      "goals": ["Anxiety relief", "Better sleep"],
+      "conditions": ["generalized anxiety disorder"],
+      "medications": "",
+      "time": ["evening"],
+      "products": ["edible"],
+      "gender": "",
+      "hormonal": "",
+      "cycle": "",
+      "hormonal_conditions": "",
+      "strain_pref": []
+    },
+    "journal": [
+      {
+        "product": "Jack Herer",
+        "rating": 1,
+        "notes": "Too stimulating — anxiety spiked badly, did not sleep at all, felt wired for hours",
+        "date": "2026-06-05"
+      }
+    ],
+    "strainHistory": [
+      { "name": "Jack Herer", "rating": 1 }
+    ],
+    "conversationHistory": [
+      {
+        "role": "user",
+        "content": "I need something for anxiety and sleep at night"
+      },
+      {
+        "role": "assistant",
+        "content": "REC|||Jack Herer|||Great for daytime anxiety relief with an uplifting effect that transitions to calm.\n\nCHIPS|||Sounds good|||Tell me more"
+      }
+    ],
+    "userMessage": "Jack Herer made everything so much worse. I was wired all night and my anxiety was through the roof. Please give me something completely different.",
+    "checks": ["pivots_on_feedback", "has_rec", "no_refusal", "validates_warmly", "english_only"]
+  }
+]

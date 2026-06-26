@@ -1,0 +1,16 @@
+{
+  "name": "dogfood",
+  "version": "1.0.0",
+  "description": "Autonomous testing agent for Ivy. Runs named personas against the live Anthropic API using the same system prompt logic as `public/index.html`'s `buildSystem()`. Reads the real strain database from `public/strains.js` at runtime so tests always run against current data.",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.106.0"
+  }
+}

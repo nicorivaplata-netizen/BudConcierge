@@ -3,3 +3,6 @@ node_modules/
 .env
 .env.local
 .DS_Store
+public/index.html.backup
+dogfood/node_modules
+dogfood/.env
