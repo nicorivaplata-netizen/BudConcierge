@@ -3332,19 +3332,22 @@ function startChat() {
   greeting += `good ${tod}.`;
 
   // Acknowledge their goals if set
-  if (goals.length > 0) {
+  if (goals.length > 1) {
     let goalsText = '';
-    if (goals.length === 1) goalsText = goals[0].toLowerCase();
-    else if (goals.length === 2) goalsText = `${goals[0].toLowerCase()} and ${goals[1].toLowerCase()}`;
+    if (goals.length === 2) goalsText = `${goals[0].toLowerCase()} and ${goals[1].toLowerCase()}`;
     else goalsText = goals.slice(0,-1).map(g=>g.toLowerCase()).join(', ') + ', and ' + goals[goals.length-1].toLowerCase();
-    greeting += ` What can I help you with today? I know you’ve been working on ${goalsText}.`;
+    greeting += ` You have been working on ${goalsText} — tap "All of these" if you want help with everything today, or pick one to focus on.`;
+  } else if (goals.length === 1) {
+    greeting += ` What can I help you with today? I know you have been working on ${goals[0].toLowerCase()}.`;
   } else {
     greeting += ` What can I help you with today?`;
   }
 
   // Build chips from their goals or defaults
-  const greetChips = goals.length > 0
-    ? ['select:single', ...goals.slice(0,3), 'Something else']
+  const greetChips = goals.length > 1
+    ? ['select:multiple', 'All of these', ...goals.slice(0,3), 'Something else']
+    : goals.length === 1
+    ? ['select:single', goals[0], 'Something else']
     : ['select:single', 'Better sleep', 'Pain relief', 'Anxiety relief', 'Something else'];
 
   // Only send generic greeting if no dispensary greeting is pending
@@ -3358,7 +3361,7 @@ function startChat() {
     const dispName = window._pendingDispensaryGreeting;
     window._pendingDispensaryGreeting = null;
     setTimeout(() => {
-      const dispMsg = `I’ve loaded the live inventory from ${dispName} — I’ll only recommend products that are actually in stock there right now. What are you looking to help with today?`;
+      const dispMsg = `I've loaded the live inventory from ${dispName} — I'll only recommend products that are actually in stock there right now. What are you looking to help with today?`;
       addMessage('bot', dispMsg, ['Better sleep', 'Pain relief', 'Anxiety relief', 'Still exploring', 'Something else']);
       chatHistory.push({ role: 'assistant', content: dispMsg });
     }, 700);
