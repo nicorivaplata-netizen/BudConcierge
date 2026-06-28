@@ -878,6 +878,20 @@ function saveJournalEntry() {
   }
   if (journal.length > 100) journal = journal.slice(0, 100);
   saveJournal();
+
+  // Sync journal rating to strainHistory so profile reflects journal rating
+  if (entry.rating && entry.product) {
+    const historyMatch = strainHistory.findIndex(h =>
+      h.name && h.name.toLowerCase().trim() === entry.product.toLowerCase().trim()
+    );
+    if (historyMatch > -1) {
+      strainHistory[historyMatch].rating = entry.rating;
+      saveData();
+      renderHistory('home-history-list');
+      renderHistory('prof-history-list');
+    }
+  }
+
   // Reset save button text
   const saveBtn = document.querySelector('#screen-new-entry .btn-primary');
   if (saveBtn) saveBtn.textContent = 'Save entry';
@@ -1122,7 +1136,10 @@ function askIvyAboutPatterns() {
   setTimeout(() => {
     const inp = document.getElementById('chat-input');
     if (inp) { inp.value = msg; inp.focus(); }
-  }, 200);
+    // Scroll messages container to bottom so user sees latest message
+    const msgsEl = document.getElementById('messages');
+    if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
+  }, 300);
 }
 
 function deleteJournalEntry(i) {
@@ -2201,7 +2218,7 @@ function openEdit() {
       const parts = entry.split(' ');
       const id = Date.now() + Math.random();
       const freq = ['once daily','twice daily','three times daily','as needed'].find(f => entry.includes(f)) || 'once daily';
-      const time = ['morning','afternoon','evening','bedtime'].find(t => entry.includes(t)) || 'morning';
+      const time = ['morning','afternoon','evening','bedtime'].filter(t => entry.includes(t));
       const dose = parts.find(p => /\d+mg/i.test(p)) || '';
       const name = parts[0] || '';
       medications.push({ id, name, dose, frequency: freq, time });
@@ -3122,6 +3139,19 @@ function rateStrain(index, rating) {
     renderHistory('home-history-list');
     renderHistory('prof-history-list');
     toast('prof-toast', 'Rating saved!');
+
+    // Sync rating back to most recent matching journal entry
+    const productName = strainHistory[index].name;
+    if (productName) {
+      const journalMatch = journal.findIndex(j =>
+        j.product && j.product.toLowerCase().trim() === productName.toLowerCase().trim()
+      );
+      if (journalMatch > -1 && !journal[journalMatch].rating) {
+        // Only sync if journal entry has no rating yet — don't override
+        journal[journalMatch].rating = rating;
+        saveJournal();
+      }
+    }
   }
 }
 
@@ -3531,7 +3561,7 @@ let medications = []; // array of {name, dose, frequency, time}
 
 function addMedication() {
   const id = Date.now();
-  medications.push({ id, name: '', dose: '', frequency: '', time: '' });
+  medications.push({ id, name: '', dose: '', frequency: '', time: [] });
   renderMedications();
 }
 
@@ -3543,6 +3573,21 @@ function removeMedication(id) {
 function updateMed(id, field, value) {
   const med = medications.find(m => m.id === id);
   if (med) med[field] = value;
+}
+
+function toggleMedTime(id, timeVal) {
+  const med = medications.find(m => m.id === id);
+  if (!med) return;
+  if (!Array.isArray(med.time)) {
+    med.time = med.time ? [med.time] : [];
+  }
+  const idx = med.time.indexOf(timeVal);
+  if (idx > -1) {
+    med.time.splice(idx, 1);
+  } else {
+    med.time.push(timeVal);
+  }
+  renderMedications();
 }
 
 function renderMedications() {
@@ -3578,12 +3623,17 @@ function renderMedications() {
       </div>
       <div>
         <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-weight:500">TIME OF DAY <span style="font-weight:400;font-size:9px">(optional)</span></div>
+        <div style="font-size:10px;color:#9a9c97;margin-bottom:4px;font-style:italic">Select all that apply</div>
         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
-          ${['Morning','Afternoon','Evening','Bedtime'].map(t => `
-          <button onclick="updateMed(${m.id},'time','${t.toLowerCase()}');this.parentElement.querySelectorAll('button').forEach(b=>{b.style.background='#f7f8f6';b.style.border='1.5px solid rgba(0,0,0,0.1)';b.style.color='#333';});this.style.background='#E1F5EE';this.style.border='1.5px solid #1a9968';this.style.color='#0d6647'"
-            style="padding:7px 4px;border:1.5px solid rgba(0,0,0,0.1);border-radius:7px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;background:${m.time===t.toLowerCase()?'#E1F5EE':'#f7f8f6'};color:${m.time===t.toLowerCase()?'#0d6647':'#333'}">
+          ${['Morning','Afternoon','Evening','Bedtime'].map(t => {
+            const timeArr = Array.isArray(m.time) ? m.time : (m.time ? [m.time] : []);
+            const isSelected = timeArr.includes(t.toLowerCase());
+            return `
+          <button onclick="toggleMedTime(${m.id},'${t.toLowerCase()}')"
+            style="padding:7px 4px;border:1.5px solid ${isSelected?'#1a9968':'rgba(0,0,0,0.1)'};border-radius:7px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;background:${isSelected?'#E1F5EE':'#f7f8f6'};color:${isSelected?'#0d6647':'#333'}">
             ${t}
-          </button>`).join('')}
+          </button>`;
+          }).join('')}
         </div>
       </div>
     </div>
@@ -3598,7 +3648,8 @@ function getMedicationsString() {
       const parts = [m.name.trim()];
       if (m.dose && m.dose.trim()) parts.push(m.dose.trim());
       if (m.frequency && m.frequency !== 'once daily') parts.push(m.frequency);
-      if (m.time && m.time !== 'morning') parts.push('taken in the ' + m.time);
+      const timeArr = Array.isArray(m.time) ? m.time : (m.time ? [m.time] : []);
+      if (timeArr.length) parts.push('taken in the ' + timeArr.join(', '));
       return parts.join(' ');
     }).join('; ');
 }
