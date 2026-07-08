@@ -64,11 +64,11 @@
       <div style="display:flex;flex-direction:column;gap:6px;margin-top:14px;max-width:300px">
         <div style="display:flex;align-items:center;gap:7px;background:#f0faf5;border-radius:8px;padding:8px 12px">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1a9968" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <span style="font-size:11px;color:#0d6647;font-weight:500">Your data stays on your device only</span>
+          <span style="font-size:11px;color:#0d6647;font-weight:500">Your data is stored privately on your device</span>
         </div>
         <div style="display:flex;align-items:center;gap:7px;background:#f0faf5;border-radius:8px;padding:8px 12px">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1a9968" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          <span style="font-size:11px;color:#0d6647;font-weight:500">Never sold, never shared, never tracked</span>
+          <span style="font-size:11px;color:#0d6647;font-weight:500">Never sold, never used for ads, processed securely to power your guidance</span>
         </div>
       </div>
 
@@ -112,7 +112,7 @@
         <!-- Slide 1 — Welcome -->
         <div id="ob-slide-1" class="ob-slide" style="width:100%;text-align:center">
           <h2 style="font-size:24px;font-weight:700;color:#111310;margin-bottom:12px;letter-spacing:-0.5px;line-height:1.2">Meet Ivy</h2>
-          <p style="font-size:14px;color:#5a5c57;line-height:1.75;margin-bottom:20px">I'm Ivy — your personal cannabis wellness guide. Tell me what you need help with and I'll recommend exactly what's right for you. No guesswork, no judgment.</p>
+          <p style="font-size:14px;color:#5a5c57;line-height:1.75;margin-bottom:20px">I'm Ivy — your personal cannabis wellness guide. Tell me what you need help with and I'll help you find options worth exploring — built around your specific situation, not a generic list.</p>
           <div style="display:flex;flex-direction:column;gap:8px;text-align:left">
             <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:#f7f8f6;border-radius:10px">
               <span style="font-size:18px">💬</span>
@@ -344,7 +344,7 @@
 
     <div class="messages" id="messages"></div>
 
-    <div class="disclaimer">Wellness guidance only — not medical advice · 21+ or valid medical card required · Your data stays private on your device</div>
+    <div class="disclaimer">Wellness guidance only — not medical advice · 21+ or valid medical card required · Your data is stored privately on your device</div>
 
     <div class="input-row">
       <textarea class="chat-input" id="chat-input" placeholder="Ask anything..." rows="1"></textarea>
@@ -426,7 +426,7 @@
             <span class="pref-val empty" id="pf-gender">Not set</span>
           </div>
           <div class="pref-row" style="flex-direction:column;align-items:flex-start;gap:6px">
-            <span class="pref-label">Health conditions</span>
+            <span class="pref-label">What are you managing</span>
             <div id="pf-conditions"><span class="pref-val empty">Not set</span></div>
           </div>
           <div class="pref-row" style="border-bottom:none;flex-wrap:wrap;gap:4px">
@@ -598,28 +598,24 @@
         <div class="card" style="display:flex;flex-direction:column;gap:16px">
 
           <div>
-            <div class="section-label" style="margin-bottom:8px">Health conditions <span style="font-weight:400;color:#9a9c97">(select all that apply)</span></div>
+            <div class="section-label" style="margin-bottom:8px">What are you managing <span style="font-weight:400;color:#9a9c97;font-size:12px">(optional — helps Ivy personalize your guidance)</span></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-              <button class="opt-btn" data-field="conditions" data-val="Anxiety" onclick="pickMany(this)">Anxiety</button>
-              <button class="opt-btn" data-field="conditions" data-val="Depression" onclick="pickMany(this)">Depression</button>
-              <button class="opt-btn" data-field="conditions" data-val="PTSD" onclick="pickMany(this)">PTSD</button>
               <button class="opt-btn" data-field="conditions" data-val="Chronic pain" onclick="pickMany(this)">Chronic pain</button>
-              <button class="opt-btn" data-field="conditions" data-val="Insomnia" onclick="pickMany(this)">Insomnia</button>
-              <button class="opt-btn" data-field="conditions" data-val="Fibromyalgia" onclick="pickMany(this)">Fibromyalgia</button>
-              <button class="opt-btn" data-field="conditions" data-val="Arthritis" onclick="pickMany(this)">Arthritis</button>
-              <button class="opt-btn" data-field="conditions" data-val="Migraines" onclick="pickMany(this)">Migraines</button>
+              <button class="opt-btn" data-field="conditions" data-val="Sleep issues" onclick="pickMany(this)">Sleep issues</button>
+              <button class="opt-btn" data-field="conditions" data-val="Anxiety" onclick="pickMany(this)">Anxiety</button>
+              <button class="opt-btn" data-field="conditions" data-val="Low mood" onclick="pickMany(this)">Low mood</button>
+              <button class="opt-btn" data-field="conditions" data-val="Stress" onclick="pickMany(this)">Stress</button>
+              <button class="opt-btn" data-field="conditions" data-val="Inflammation" onclick="pickMany(this)">Inflammation</button>
               <button class="opt-btn" data-field="conditions" data-val="Nausea" onclick="pickMany(this)">Nausea</button>
-              <button class="opt-btn" data-field="conditions" data-val="ADHD" onclick="pickMany(this)">ADHD</button>
-              <button class="opt-btn" data-field="conditions" data-val="Epilepsy" onclick="pickMany(this)">Epilepsy</button>
-              <button class="opt-btn" data-field="conditions" data-val="IBS" onclick="pickMany(this)">IBS</button>
+              <button class="opt-btn" data-field="conditions" data-val="Muscle tension" onclick="pickMany(this)">Muscle tension</button>
             </div>
-            <input type="text" id="conditions-other" placeholder="Other condition (optional)..." maxlength="80"
+            <input type="text" id="conditions-other" placeholder="Anything else worth knowing (optional)..." maxlength="80"
               style="width:100%;margin-top:8px;padding:9px 12px;border:1.5px solid rgba(0,0,0,0.12);border-radius:9px;font-size:13px;background:#fff;color:#111;font-family:inherit;box-sizing:border-box">
           </div>
 
           <div>
             <div class="section-label" style="margin-bottom:4px">Medications <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
-            <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">We flag known interactions and suggest speaking with your doctor. We never claim safety.</div>
+            <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">Cannabis may interact with some medications. We share general wellness context to help inform your conversations with your doctor or pharmacist — not to replace them.</div>
 
             <!-- Medication list -->
             <div id="med-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px"></div>
@@ -637,7 +633,7 @@
       <button class="btn-primary" onclick="saveProfile()">Save profile</button>
       <div style="display:flex;align-items:center;justify-content:center;gap:5px;margin-top:8px">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4a9c78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <span style="font-size:10.5px;color:#4a9c78">Your profile stays private on your device and is never shared.</span>
+        <span style="font-size:10.5px;color:#4a9c78">Your profile is stored privately on your device and never sold or used for advertising.</span>
       </div>
       <div id="edit-toast" class="toast"></div>
 
@@ -3332,7 +3328,7 @@ function startChat() {
       chatHistory.push({ role: 'assistant', content: dispMsg });
       return;
     }
-    const welcomeMsg = "Hi, I'm Ivy \u2014 your private cannabis guide. I give personalized recommendations based on exactly what you need. No judgment, no guesswork. To get started, what are you hoping cannabis can help you with?";
+    const welcomeMsg = "Hi, I'm Ivy \u2014 your private cannabis guide. I give personalized guidance based on your specific situation. No judgment, no generic answers. To get started, what are you hoping cannabis can help you with?";
     const welcomeChips = ['select:multiple', 'Better sleep', 'Pain relief', 'Anxiety relief', 'Stress management', 'Focus and clarity', 'Still exploring', 'Something else'];
     window._saveNextGoalSelection = true; // persist selected goals to profile.goals on confirm
     addMessage('bot', welcomeMsg, welcomeChips);
@@ -3484,9 +3480,9 @@ function showQuickSetup() {
         <div style="font-size:11px;color:#9a9c97;margin-bottom:12px">Conditions and medications help Ivy personalize safely</div>
 
         <!-- Conditions grid -->
-        <div style="font-size:11px;font-weight:600;color:#0d6647;letter-spacing:0.04em;margin-bottom:8px">HEALTH CONDITIONS (select any that apply)</div>
+        <div style="font-size:11px;font-weight:600;color:#0d6647;letter-spacing:0.04em;margin-bottom:8px">WHAT ARE YOU MANAGING (select any that apply)</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px" id="qs-conditions-grid">
-          ${['Chronic pain','Anxiety','Depression','Insomnia','PTSD','Fibromyalgia','Arthritis','Migraines','Nausea','ADHD','IBS'].map(c => `
+          ${['Chronic pain','Sleep issues','Anxiety','Low mood','Stress','Inflammation','Nausea','Muscle tension'].map(c => `
           <button onclick="qsToggleCondition(this,'${c}')"
             style="padding:8px 6px;border:1.5px solid rgba(0,0,0,0.1);border-radius:8px;font-size:12px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#333;text-align:center">
             ${c}
@@ -3497,7 +3493,7 @@ function showQuickSetup() {
           </button>
         </div>
         <div id="qs-other-input-wrap" style="display:none;margin-bottom:10px">
-          <input id="qs-other-condition-input" type="text" placeholder="Other condition (optional)..."
+          <input id="qs-other-condition-input" type="text" placeholder="Anything else worth knowing (optional)..."
             maxlength="60"
             style="width:100%;padding:9px 12px;border:1.5px solid #1a9968;border-radius:9px;font-size:13px;font-family:inherit;outline:none;box-sizing:border-box"
             oninput="quickSetupData.otherCondition=this.value">
@@ -3521,7 +3517,7 @@ function showQuickSetup() {
 
         <div style="display:flex;align-items:center;justify-content:center;gap:5px;margin-top:8px">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#4a9c78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <span style="font-size:10.5px;color:#4a9c78;line-height:1.4">Private. Stays on your device. Never sold or shared.</span>
+          <span style="font-size:10.5px;color:#4a9c78;line-height:1.4">Stored privately on your device. Never sold or used for advertising.</span>
         </div>
       </div>
 
