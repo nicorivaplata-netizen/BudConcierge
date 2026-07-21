@@ -22,6 +22,10 @@
 .ob-dot.active{background:#1a9968}
 .ob-slide{width:100%}
 </style>
+<script>
+window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 <div id="app">
@@ -894,6 +898,7 @@ function saveJournalEntry() {
   const t = document.getElementById('entry-toast');
   t.textContent = editingIndex >= 0 ? 'Entry updated!' : 'Entry saved!'; t.classList.add('show');
   setTimeout(() => { t.classList.remove('show'); switchTab('journal'); renderJournal(); }, 1000);
+  if (window.va) window.va('event', {name: 'Journal Entry Saved'});
 }
 
 function getJournalInsights() {
@@ -1709,6 +1714,7 @@ function finishOnboard() {
     addMessage('bot', g, ch);
     chatHistory.push({ role: 'assistant', content: g });
   }, 300);
+  if (window.va) window.va('event', {name: 'Onboarding Completed'});
 }
 
 // ─── Storage keys ───────────────────────────────────────────────────────────
@@ -2725,6 +2731,7 @@ function addMessage(role, content, chips) {
     const rc = document.createElement('div');
     rc.innerHTML = recHtml;
     div.appendChild(rc);
+    if (window.va) window.va('event', {name: 'Recommendation Received'});
 
     // Find near me button after rec cards
     const findRow = document.createElement('div');
@@ -3291,6 +3298,7 @@ function saveStrain(id, btn) {
   btn.textContent = '✓ Saved';
   btn.classList.add('saved');
   refreshUI();
+  if (window.va) window.va('event', {name: 'Product Saved'});
 
   // Journal nudge will appear when user opens Journal tab
 }
