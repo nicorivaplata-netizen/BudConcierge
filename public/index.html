@@ -661,14 +661,97 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       <!-- Search bar -->
       <div class="card" style="display:flex;flex-direction:column;gap:10px">
         <div style="font-size:13px;color:#5a5c57;line-height:1.6">Search your dispensary. Partner dispensaries show live inventory so Ivy only recommends what is actually in stock.</div>
-        <div style="display:flex;gap:8px">
-          <input type="text" id="disp-search" placeholder="Dispensary name or city..." onkeydown="if(event.key==='Enter')searchDispensaries()"
-            style="flex:1;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111">
-          <button onclick="searchDispensaries()" style="padding:10px 14px;background:#1a9968;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">Search</button>
+        <div style="display:flex;flex-direction:column;gap:10px">
+
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <label style="font-size:11px;font-weight:600;color:#5a8f74;letter-spacing:0.06em;text-transform:uppercase">State</label>
+            <select id="disp-state"
+              style="width:100%;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111;font-family:inherit">
+              <option value="">Select a state...</option>
+              <option value="AL">Alabama — Medical</option>
+              <option value="AK">Alaska — Recreational</option>
+              <option value="AZ">Arizona — Recreational</option>
+              <option value="AR">Arkansas — Medical</option>
+              <option value="CA">California — Recreational</option>
+              <option value="CO">Colorado — Recreational</option>
+              <option value="CT">Connecticut — Recreational</option>
+              <option value="DC">Washington DC — Recreational</option>
+              <option value="DE">Delaware — Recreational</option>
+              <option value="FL">Florida — Medical</option>
+              <option value="GA">Georgia — Medical (limited)</option>
+              <option value="HI">Hawaii — Medical</option>
+              <option value="ID">Idaho — Not available</option>
+              <option value="IL">Illinois — Recreational</option>
+              <option value="IN">Indiana — CBD only</option>
+              <option value="IA">Iowa — Medical (limited)</option>
+              <option value="KS">Kansas — Not available</option>
+              <option value="KY">Kentucky — Medical</option>
+              <option value="LA">Louisiana — Medical</option>
+              <option value="ME">Maine — Recreational</option>
+              <option value="MD">Maryland — Recreational</option>
+              <option value="MA">Massachusetts — Recreational</option>
+              <option value="MI">Michigan — Recreational</option>
+              <option value="MN">Minnesota — Recreational</option>
+              <option value="MS">Mississippi — Medical</option>
+              <option value="MO">Missouri — Recreational</option>
+              <option value="MT">Montana — Recreational</option>
+              <option value="NE">Nebraska — Medical</option>
+              <option value="NV">Nevada — Recreational</option>
+              <option value="NH">New Hampshire — Medical</option>
+              <option value="NJ">New Jersey — Recreational</option>
+              <option value="NM">New Mexico — Recreational</option>
+              <option value="NY">New York — Recreational</option>
+              <option value="NC">North Carolina — CBD only</option>
+              <option value="ND">North Dakota — Medical</option>
+              <option value="OH">Ohio — Recreational</option>
+              <option value="OK">Oklahoma — Medical</option>
+              <option value="OR">Oregon — Recreational</option>
+              <option value="PA">Pennsylvania — Medical</option>
+              <option value="RI">Rhode Island — Recreational</option>
+              <option value="SC">South Carolina — Not available</option>
+              <option value="SD">South Dakota — Medical</option>
+              <option value="TN">Tennessee — CBD only</option>
+              <option value="TX">Texas — Medical (limited)</option>
+              <option value="UT">Utah — Medical</option>
+              <option value="VT">Vermont — Recreational</option>
+              <option value="VA">Virginia — Recreational</option>
+              <option value="WA">Washington — Recreational</option>
+              <option value="WV">West Virginia — Medical</option>
+              <option value="WI">Wisconsin — CBD only</option>
+              <option value="WY">Wyoming — Not available</option>
+            </select>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <label style="font-size:11px;font-weight:600;color:#5a8f74;letter-spacing:0.06em;text-transform:uppercase">City</label>
+              <input type="text" id="disp-city"
+                placeholder="e.g. Dallas"
+                onkeydown="if(event.key==='Enter')searchDispensaries()"
+                style="padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111;font-family:inherit">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <label style="font-size:11px;font-weight:600;color:#5a8f74;letter-spacing:0.06em;text-transform:uppercase">Zip Code</label>
+              <input type="text" id="disp-zip"
+                placeholder="e.g. 75201"
+                inputmode="numeric"
+                maxlength="5"
+                onkeydown="if(event.key==='Enter')searchDispensaries()"
+                style="padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111;font-family:inherit">
+            </div>
+          </div>
+
+          <button onclick="searchDispensaries()"
+            style="width:100%;padding:11px;background:#1a9968;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+            Find Dispensaries
+          </button>
+
+          <button onclick="findNearMe()"
+            style="width:100%;padding:11px;border:1.5px solid #1a9968;background:#E1F5EE;color:#085041;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">
+            Use my current location
+          </button>
+
         </div>
-        <button onclick="findNearMe()" style="width:100%;padding:11px;border:1.5px solid #1a9968;background:#E1F5EE;color:#085041;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">
-          Use my current location
-        </button>
       </div>
 
       <!-- Currently selected dispensary -->
@@ -1187,16 +1270,57 @@ function editJournalEntry(i) {
 
 // ─── Dispensary Finder ────────────────────────────────────────────────────────
 async function searchDispensaries() {
-  const q = document.getElementById('disp-search').value.trim();
-  if (!q) return;
+  const state = document.getElementById('disp-state')?.value?.trim() || '';
+  const city  = document.getElementById('disp-city')?.value?.trim()  || '';
+  const zip   = document.getElementById('disp-zip')?.value?.trim()   || '';
+
+  if (!state && !zip) {
+    setDispStatus('Please select a state or enter a zip code.');
+    return;
+  }
+
+  let query = '';
+  if (zip && state) {
+    query = `${zip} ${state}`;
+  } else if (zip) {
+    query = zip;
+  } else if (city && state) {
+    query = `${city}, ${state}`;
+  } else if (city) {
+    query = city;
+  } else {
+    query = state;
+  }
+
   setDispStatus('Searching...');
   document.getElementById('disp-results').innerHTML = '';
+
   try {
-    const res = await fetch('/api/dispensaries?query=' + encodeURIComponent(q));
+    const res = await fetch('/api/dispensaries?query=' +
+      encodeURIComponent(query) +
+      (state ? '&state=' + encodeURIComponent(state) : ''));
     const data = await res.json();
-    if (data.error) { setDispStatus('Search failed: ' + data.error); return; }
-    renderDispensaries(data.dispensaries || []);
-  } catch(e) { setDispStatus('Connection error — try again'); }
+
+    if (data.error) {
+      setDispStatus('Search failed: ' + data.error);
+      return;
+    }
+
+    if (data.legalStatus === 'none') {
+      setDispStatus('Cannabis and CBD retail is not available in ' + (state || 'this state') + '.');
+      return;
+    }
+
+    if (!data.dispensaries || data.dispensaries.length === 0) {
+      setDispStatus('No dispensaries found — try a nearby city or different zip code.');
+      return;
+    }
+
+    renderDispensaries(data.dispensaries);
+    setDispStatus('');
+  } catch(e) {
+    setDispStatus('Connection error — please try again.');
+  }
 }
 
 function findNearMe() {
@@ -2760,11 +2884,8 @@ function addMessage(role, content, chips) {
         findBtn.onclick = function() {
           switchTab('dispensary');
           setTimeout(() => {
-            const searchInput = document.getElementById('disp-search');
-            if (searchInput) {
-              searchInput.focus();
-              searchInput.placeholder = 'City, zip code, or dispensary name...';
-            }
+            const cityInput = document.getElementById('disp-city');
+            if (cityInput) cityInput.focus();
           }, 300);
         };
         findRow.appendChild(findBtn);
@@ -3215,8 +3336,10 @@ function clearProfile() {
   // Reset Find tab — clear search results and deselect dispensary
   const findEl = document.getElementById('disp-results');
   if (findEl) findEl.innerHTML = '';
-  const searchInput = document.getElementById('disp-search');
-  if (searchInput) searchInput.value = '';
+  const cityInput = document.getElementById('disp-city');
+  if (cityInput) cityInput.value = '';
+  const zipInput = document.getElementById('disp-zip');
+  if (zipInput) zipInput.value = '';
   const partnerStatus = document.getElementById('partner-status');
   if (partnerStatus) partnerStatus.textContent = '';
   const dispStatus = document.getElementById('disp-status');
