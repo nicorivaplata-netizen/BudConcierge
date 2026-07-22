@@ -220,6 +220,89 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     </button>
   </div>
 
+  <div id="home-conditions-section" style="display:none">
+
+    <div class="section-label" style="margin-bottom:10px;padding-left:2px">
+      What brings you here today?
+    </div>
+
+    <div style="background:var(--surface);border:0.5px solid var(--border-mid);border-radius:var(--radius-md);overflow:hidden;margin-bottom:10px">
+
+      <div class="condition-entry" onclick="startConditionChat('sleep')">
+        <div class="condition-icon" style="background:#e8f0fb">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#185fa5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </div>
+        <div class="condition-info">
+          <div class="condition-title">Sleep issues</div>
+          <div class="condition-sub">Trouble falling or staying asleep</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+
+      <div style="height:0.5px;background:var(--border);margin:0 14px"></div>
+
+      <div class="condition-entry" onclick="startConditionChat('pain')">
+        <div class="condition-icon" style="background:#e8f7f1">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0f6e56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <div class="condition-info">
+          <div class="condition-title">Pain or inflammation</div>
+          <div class="condition-sub">Chronic pain, muscle tension, nerve pain</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+
+      <div style="height:0.5px;background:var(--border);margin:0 14px"></div>
+
+      <div class="condition-entry" onclick="startConditionChat('anxiety')">
+        <div class="condition-icon" style="background:#faf0fb">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#993556" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </div>
+        <div class="condition-info">
+          <div class="condition-title">Anxiety or stress</div>
+          <div class="condition-sub">Worry, tension, or racing thoughts</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+
+      <div style="height:0.5px;background:var(--border);margin:0 14px"></div>
+
+      <div class="condition-entry" onclick="startConditionChat('other')">
+        <div class="condition-icon" style="background:var(--surface-3)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+          </svg>
+        </div>
+        <div class="condition-info">
+          <div class="condition-title">Something else</div>
+          <div class="condition-sub">Mood, focus, nausea, or another need</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+
+    </div>
+
+    <button onclick="handleCTA()"
+      style="width:100%;padding:10px;background:transparent;color:var(--text-3);border:0.5px solid var(--border-mid);border-radius:var(--radius-md);font-size:12px;font-weight:400;cursor:pointer;font-family:var(--font);margin-bottom:10px">
+      Set up a full profile instead
+    </button>
+
+    <div style="display:flex;align-items:center;justify-content:center;gap:5px">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+      <span style="font-size:10px;color:var(--text-3)">Private. Stored on your device. Never sold.</span>
+    </div>
+
+  </div>
+
   <div class="content" style="padding-top:16px">
 
     <div id="home-reeng-section" style="display:none">
