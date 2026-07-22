@@ -15,51 +15,66 @@ export default async function handler(req, res) {
     const apiKey = process.env.GOOGLE_PLACES_API_KEY;
     if (!apiKey) return res.status(500).json({ error: 'Google Places API key not configured' });
 
-    let searchUrl;
+    const fieldMask = 'places.id,places.displayName,places.formattedAddress,places.rating,places.regularOpeningHours,places.location,places.websiteUri,places.nationalPhoneNumber';
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': apiKey,
+      'X-Goog-FieldMask': fieldMask,
+    };
+
+    let response;
 
     if (lat && lng) {
-      searchUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=20000&type=establishment&keyword=cannabis+dispensary&key=${apiKey}`;
+      const nearbyUrl = 'https://places.googleapis.com/v1/places:searchNearby';
+      response = await fetch(nearbyUrl, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          includedTypes: ['establishment'],
+          maxResultCount: 20,
+          locationRestriction: {
+            circle: {
+              center: {
+                latitude: parseFloat(lat),
+                longitude: parseFloat(lng),
+              },
+              radius: 32000.0,
+            },
+          },
+          rankPreference: 'DISTANCE',
+        }),
+      });
     } else {
-      searchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=cannabis+dispensary+${encodeURIComponent(query)}&key=${apiKey}`;
+      const searchUrl = 'https://places.googleapis.com/v1/places:searchText';
+      response = await fetch(searchUrl, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          textQuery: `cannabis dispensary ${encodeURIComponent(query)}`,
+          maxResultCount: 20,
+          languageCode: 'en',
+        }),
+      });
     }
 
-    const response = await fetch(searchUrl);
     const data = await response.json();
 
-    if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
-      return res.status(500).json({ error: 'Google Places error: ' + data.status, details: data.error_message });
+    if (!response.ok) {
+      return res.status(500).json({ error: 'Google Places error', details: data.error?.message });
     }
 
-    // For each result fetch Place Details to get website + phone
-    const results = (data.results || []).slice(0, 8);
+    const places = (data.places || []).slice(0, 8);
 
-    const dispensaries = await Promise.all(results.map(async place => {
-      let website = null;
-      let phone = null;
-
-      try {
-        const detailUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&fields=website,formatted_phone_number&key=${apiKey}`;
-        const detailRes = await fetch(detailUrl);
-        const detailData = await detailRes.json();
-        if (detailData.result) {
-          website = detailData.result.website || null;
-          phone = detailData.result.formatted_phone_number || null;
-        }
-      } catch (e) {
-        // Website fetch failed — continue without it
-      }
-
-      return {
-        id:      place.place_id,
-        name:    place.name,
-        address: place.formatted_address || place.vicinity || '',
-        rating:  place.rating || null,
-        open:    place.opening_hours?.open_now ?? null,
-        lat:     place.geometry?.location?.lat,
-        lng:     place.geometry?.location?.lng,
-        website,
-        phone,
-      };
+    const dispensaries = places.map(place => ({
+      id:      place.id,
+      name:    place.displayName?.text || '',
+      address: place.formattedAddress || '',
+      rating:  place.rating || null,
+      open:    place.regularOpeningHours?.openNow ?? null,
+      lat:     place.location?.latitude,
+      lng:     place.location?.longitude,
+      website: place.websiteUri || null,
+      phone:   place.nationalPhoneNumber || null,
     }));
 
     return res.status(200).json({ dispensaries, total: dispensaries.length });
