@@ -212,7 +212,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     <div class="ivy-hero-sub" id="wb-msg">Private, personalized, judgment-free guidance built around you.</div>
     <div class="ivy-goal-chips" id="home-goal-chips" style="display:none"></div>
     <div id="home-goal-chips-alt" style="display:none">
-      <span class="ivy-goal-chip-alt" onclick="handleCTA()">Something else you need help with?</span>
+      <span class="ivy-goal-chip-alt" onclick="handleCTAAndScroll()">Something else you need help with?</span>
     </div>
     <button class="btn-primary" id="home-cta" onclick="handleCTA()"
       style="border-radius:12px;margin-top:4px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)">
@@ -255,7 +255,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     <div id="home-first-session-prompt" style="display:none">
       <div class="ivy-reeng-card">
         <div class="ivy-reeng-inner">
-          <div class="ivy-reeng-eyebrow">Ready when you are</div>
+          <div class="ivy-reeng-eyebrow">Get Personalized Guidance</div>
           <div class="ivy-reeng-headline">Ready to start your first conversation? I already know your goals. Let us help you figure out where to start.</div>
           <div class="ivy-reeng-actions" style="margin-top:12px">
             <button class="ivy-reeng-btn ivy-reeng-btn-primary"
@@ -270,7 +270,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     <div id="home-history-section" style="display:none">
       <div class="section-label" style="margin-bottom:10px;padding-left:2px">Saved products</div>
       <div class="ivy-saved-grid" id="home-saved-grid"></div>
-      <button class="ivy-view-all" onclick="switchTab('profile')">View all saved products</button>
+      <button class="ivy-view-all" onclick="switchTab('journal')">View in journal</button>
     </div>
 
     <div id="disp-shortcut-card" style="display:none;cursor:pointer;padding:14px 16px;background:linear-gradient(135deg,#0d6647,#1a9968);border-radius:16px;border:none;box-shadow:0 4px 16px rgba(13,102,71,0.3);margin-bottom:12px" onclick="useDispensaryShortcut()">
@@ -1010,44 +1010,27 @@ function getJournalInsights() {
   return { bestType, bestTypeAvg: Math.round(bestTypeAvg*10)/10, bestEffect: effectLabels[bestEffect], bestEffectAvg, topProduct, count: journal.length };
 }
 
-function dismissJournalNudge(productName) {
-  // Temporarily dismiss this nudge by marking it in session storage
-  try {
-    const dismissed = JSON.parse(sessionStorage.getItem('bc_nudge_dismissed') || '[]');
-    dismissed.push(productName.toLowerCase().trim());
-    sessionStorage.setItem('bc_nudge_dismissed', JSON.stringify(dismissed));
-  } catch(e) {}
-  // Re-render journal to show next untried product or hide nudge
-  const nudgeEl = document.getElementById('journal-nudge');
+function snoozeJournalNudge(productName, btn) {
+  const card = btn.closest('div[style*="background:var(--green-light)"]');
+  if (!card) return;
 
-  // Find next untried saved product that hasn't been dismissed
-  const dismissed = JSON.parse(sessionStorage.getItem('bc_nudge_dismissed') || '[]');
-  const journaledNames = new Set(journal.map(e => e.product?.toLowerCase().trim()));
-  const next = strainHistory.find(h =>
-    h.name &&
-    !journaledNames.has(h.name.toLowerCase().trim()) &&
-    !dismissed.includes(h.name.toLowerCase().trim())
-  );
-
-  if (nudgeEl) nudgeEl.innerHTML = '';
-  if (next && nudgeEl) {
-    nudgeEl.innerHTML = `
-      <div style="background:#E1F5EE;border:1.5px solid #a8dfc9;border-radius:14px;padding:14px 16px;margin-bottom:12px">
-        <div style="font-size:11px;font-weight:700;color:#0d6647;letter-spacing:0.06em;margin-bottom:6px">HAVE YOU TRIED IT YET?</div>
-        <div style="font-size:13px;color:#111;font-weight:600;margin-bottom:4px">${next.name}</div>
-        <div style="font-size:12px;color:#5a5c57;margin-bottom:12px">You saved this recently. If you've tried it, log how it felt — it takes 30 seconds.</div>
-        <div style="display:flex;gap:8px">
-          <button onclick="startJournalEntry('${next.name.replace(/'/g,"\'")}','${next.type||''}')"
-            style="flex:1;padding:9px;background:#1a9968;border:none;border-radius:10px;font-size:13px;font-weight:700;color:white;cursor:pointer;font-family:inherit">
-            Log how it felt
-          </button>
-          <button onclick="dismissJournalNudge('${next.name.replace(/'/g,"\'")}' )"
-            style="padding:9px 12px;background:transparent;border:1.5px solid #a8dfc9;border-radius:10px;font-size:12px;color:#9a9c97;cursor:pointer;font-family:inherit">
-            Not yet
-          </button>
-        </div>
-      </div>`;
+  const actionsRow = btn.parentElement;
+  if (actionsRow) {
+    actionsRow.innerHTML = `
+      <div style="width:100%;text-align:center;padding:6px 0;font-size:12px;color:var(--text-3);font-style:italic">
+        Reminder saved. We will check in next time.
+      </div>
+    `;
   }
+
+  try {
+    const snoozed = JSON.parse(sessionStorage.getItem('bc_nudge_snoozed') || '[]');
+    const key = productName.toLowerCase().trim();
+    if (!snoozed.includes(key)) {
+      snoozed.push(key);
+      sessionStorage.setItem('bc_nudge_snoozed', JSON.stringify(snoozed));
+    }
+  } catch(e) {}
 }
 
 function startJournalEntry(productName, productType) {
@@ -1094,9 +1077,17 @@ function renderJournal() {
 
   // Find saved products that haven't been journaled yet — nudge to log them
   const journaledNames = new Set(journal.map(e => e.product?.toLowerCase().trim()));
-  const untriedSaved = strainHistory.filter(h =>
-    h.name && !journaledNames.has(h.name.toLowerCase().trim())
-  ).slice(0, 3);
+  const _snoozed = (() => {
+    try {
+      return JSON.parse(sessionStorage.getItem('bc_nudge_snoozed') || '[]');
+    } catch(e) { return []; }
+  })();
+
+  const untriedSaved = strainHistory.filter(function(h) {
+    return h.name &&
+      !journaledNames.has(h.name.toLowerCase().trim()) &&
+      !_snoozed.includes(h.name.toLowerCase().trim());
+  });
 
   // Inject or update nudge card above journal list
   let nudgeEl = document.getElementById('journal-nudge');
@@ -1109,23 +1100,27 @@ function renderJournal() {
   }
 
   if (untriedSaved.length > 0) {
-    const product = untriedSaved[0];
-    nudgeEl.innerHTML = `
-      <div style="background:#E1F5EE;border:1.5px solid #a8dfc9;border-radius:14px;padding:14px 16px;margin-bottom:12px">
-        <div style="font-size:11px;font-weight:700;color:#0d6647;letter-spacing:0.06em;margin-bottom:6px">HAVE YOU TRIED IT YET?</div>
-        <div style="font-size:13px;color:#111;font-weight:600;margin-bottom:4px">${product.name}</div>
-        <div style="font-size:12px;color:#5a5c57;margin-bottom:12px">You saved this recently. If you've tried it, log how it felt — it takes 30 seconds.</div>
-        <div style="display:flex;gap:8px">
-          <button onclick="startJournalEntry('${product.name.replace(/'/g,"\\'")}','${product.type||''}')"
-            style="flex:1;padding:9px;background:#1a9968;border:none;border-radius:10px;font-size:13px;font-weight:700;color:white;cursor:pointer;font-family:inherit">
-            Log how it felt
-          </button>
-          <button onclick="dismissJournalNudge('${product.name.replace(/'/g,"\\'")}' )"
-            style="padding:9px 12px;background:transparent;border:1.5px solid #a8dfc9;border-radius:10px;font-size:12px;color:#9a9c97;cursor:pointer;font-family:inherit">
-            Not yet
-          </button>
+    nudgeEl.innerHTML = untriedSaved.map(function(product) {
+      const safeName = product.name.replace(/'/g, "\\'");
+      const safeType = (product.type || '').replace(/'/g, "\\'");
+      return `
+        <div style="background:var(--green-light);border:0.5px solid var(--green-mid);border-radius:12px;padding:14px;margin-bottom:8px">
+          <div style="font-size:10px;font-weight:600;color:var(--green-text);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px">Have you tried it yet?</div>
+          <div style="font-size:13px;font-weight:500;color:var(--text-1);margin-bottom:3px">${product.name}</div>
+          <div style="font-size:12px;color:var(--text-2);line-height:1.5;margin-bottom:10px">You saved this product. Log how it felt so Ivy can refine future recommendations for you.</div>
+          <div style="display:flex;gap:8px">
+            <button onclick="startJournalEntry('${safeName}','${safeType}')"
+              style="flex:1;padding:9px;background:var(--green-dark);border:none;border-radius:9px;font-size:12px;font-weight:500;color:white;cursor:pointer;font-family:var(--font)">
+              Log how it felt
+            </button>
+            <button onclick="snoozeJournalNudge('${safeName}', this)"
+              style="padding:9px 12px;background:transparent;border:0.5px solid var(--green-mid);border-radius:9px;font-size:12px;color:var(--text-3);cursor:pointer;font-family:var(--font)">
+              Not yet
+            </button>
+          </div>
         </div>
-      </div>`;
+      `;
+    }).join('');
   } else {
     nudgeEl.innerHTML = '';
   }
@@ -2069,6 +2064,19 @@ function refreshUI() {
     if (reengSection) reengSection.style.display = 'none';
     if (firstPrompt) firstPrompt.style.display = 'none';
     if (histSection) histSection.style.display = 'none';
+
+    const _reengSection = document.getElementById('home-reeng-section');
+    const _firstPrompt = document.getElementById('home-first-session-prompt');
+    const _histSection = document.getElementById('home-history-section');
+    const _chipsEl = document.getElementById('home-goal-chips');
+    const _chipsAlt = document.getElementById('home-goal-chips-alt');
+    if (_reengSection) _reengSection.style.display = 'none';
+    if (_firstPrompt) _firstPrompt.style.display = 'none';
+    if (_histSection) _histSection.style.display = 'none';
+    if (_chipsEl) _chipsEl.style.display = 'none';
+    if (_chipsAlt) _chipsAlt.style.display = 'none';
+    document.getElementById('home-cta').style.display = 'block';
+    document.getElementById('home-cta').textContent = 'Get started';
   }
 
   // Show dispensary shortcut if one is selected — regardless of profile state
@@ -2268,9 +2276,21 @@ function startGoalChat(goal) {
       if (input) {
         input.value = 'I need help with ' + goal.toLowerCase();
         sendMessage();
+        setTimeout(function() {
+          var msgsEl = document.getElementById('messages');
+          if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
+        }, 300);
       }
     }, 400);
   }, 100);
+}
+
+function handleCTAAndScroll() {
+  handleCTA();
+  setTimeout(function() {
+    var msgsEl = document.getElementById('messages');
+    if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
+  }, 600);
 }
 
 function updateCompletion() {

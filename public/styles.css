@@ -143,9 +143,9 @@
 }
 .ivy-reeng-headline {
   font-size: 14px;
-  font-weight: 600;
-  color: var(--text-1);
-  line-height: 1.4;
+  font-weight: 400;
+  color: var(--text-2);
+  line-height: 1.55;
   margin-bottom: 4px;
 }
 .ivy-reeng-sub {
