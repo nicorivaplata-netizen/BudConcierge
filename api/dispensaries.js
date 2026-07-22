@@ -68,6 +68,20 @@ function detectState(query, stateParam) {
   return match ? match[1] : null;
 }
 
+function mapPlace(place) {
+  return {
+    id:      place.id,
+    name:    place.displayName?.text || '',
+    address: place.formattedAddress || '',
+    rating:  place.rating || null,
+    open:    place.regularOpeningHours?.openNow ?? null,
+    lat:     place.location?.latitude,
+    lng:     place.location?.longitude,
+    website: place.websiteUri || null,
+    phone:   place.nationalPhoneNumber || null,
+  };
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -98,41 +112,6 @@ export default async function handler(req, res) {
       });
     }
 
-    let searchTerms;
-    if (RECREATIONAL_STATES.has(detectedState)) {
-      searchTerms = [
-        `cannabis dispensary ${query}`,
-        `marijuana dispensary ${query}`,
-        `recreational dispensary ${query}`,
-        `medical marijuana dispensary ${query}`,
-        `cannabis store ${query}`,
-      ];
-    } else if (MEDICAL_STATES.has(detectedState)) {
-      searchTerms = [
-        `medical marijuana dispensary ${query}`,
-        `medical cannabis dispensary ${query}`,
-        `CBD store ${query}`,
-        `hemp store ${query}`,
-        `CBD wellness store ${query}`,
-      ];
-    } else if (CBD_ONLY_STATES.has(detectedState)) {
-      searchTerms = [
-        `CBD store ${query}`,
-        `hemp store ${query}`,
-        `CBD shop ${query}`,
-        `hemp CBD store ${query}`,
-        `natural wellness CBD ${query}`,
-      ];
-    } else {
-      searchTerms = [
-        `cannabis dispensary ${query}`,
-        `marijuana dispensary ${query}`,
-        `CBD store ${query}`,
-        `medical marijuana dispensary ${query}`,
-        `hemp store ${query}`,
-      ];
-    }
-
     const legalStatus = RECREATIONAL_STATES.has(detectedState) ? 'recreational' :
                         MEDICAL_STATES.has(detectedState) ? 'medical' :
                         CBD_ONLY_STATES.has(detectedState) ? 'cbd_only' :
@@ -145,60 +124,161 @@ export default async function handler(req, res) {
       'X-Goog-FieldMask': fieldMask,
     };
 
-    let response;
+    const allPlaces = [];
+    const seenIds = new Set();
+    let lastError = null;
 
     if (lat && lng) {
-      const nearbyUrl = 'https://places.googleapis.com/v1/places:searchNearby';
-      response = await fetch(nearbyUrl, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          includedTypes: ['establishment'],
-          maxResultCount: 20,
-          locationRestriction: {
-            circle: {
-              center: {
-                latitude: parseFloat(lat),
-                longitude: parseFloat(lng),
+      // Nearby search — textQuery with locationBias (avoids hard radius cutoff)
+      let nearbyTerms;
+      if (RECREATIONAL_STATES.has(detectedState)) {
+        nearbyTerms = [
+          'cannabis dispensary',
+          'marijuana dispensary',
+          'cannabis store',
+        ];
+      } else if (MEDICAL_STATES.has(detectedState)) {
+        nearbyTerms = [
+          'cannabis dispensary',
+          'dispensary',
+          'CBD store',
+          'hemp store',
+        ];
+      } else if (CBD_ONLY_STATES.has(detectedState)) {
+        nearbyTerms = [
+          'CBD store',
+          'hemp store',
+          'CBD shop',
+        ];
+      } else {
+        nearbyTerms = [
+          'cannabis dispensary',
+          'marijuana dispensary',
+          'CBD store',
+          'hemp store',
+        ];
+      }
+
+      for (const term of nearbyTerms) {
+        try {
+          const r = await fetch('https://places.googleapis.com/v1/places:searchText', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              textQuery: term,
+              maxResultCount: 20,
+              languageCode: 'en',
+              locationBias: {
+                circle: {
+                  center: {
+                    latitude: parseFloat(lat),
+                    longitude: parseFloat(lng),
+                  },
+                  radius: 32000.0,
+                },
               },
-              radius: 32000.0,
-            },
-          },
-          rankPreference: 'DISTANCE',
-        }),
-      });
+            }),
+          });
+
+          if (!r.ok) {
+            const errData = await r.json();
+            lastError = errData.error?.message || 'Google Places error';
+            continue;
+          }
+
+          const d = await r.json();
+          for (const place of (d.places || [])) {
+            if (!seenIds.has(place.id)) {
+              seenIds.add(place.id);
+              allPlaces.push(place);
+            }
+          }
+
+          await new Promise(resolve => setTimeout(resolve, 150));
+
+        } catch(e) {
+          lastError = e.message;
+          continue;
+        }
+      }
+
     } else {
-      const searchUrl = 'https://places.googleapis.com/v1/places:searchText';
-      response = await fetch(searchUrl, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          textQuery: searchTerms[0],
-          maxResultCount: 20,
-          languageCode: 'en',
-        }),
-      });
+      // Text search — run all terms and combine deduplicated results
+      let searchTerms;
+      if (RECREATIONAL_STATES.has(detectedState)) {
+        searchTerms = [
+          `cannabis dispensary ${query}`,
+          `marijuana dispensary ${query}`,
+          `recreational dispensary ${query}`,
+          `dispensary ${query}`,
+          `cannabis store ${query}`,
+        ];
+      } else if (MEDICAL_STATES.has(detectedState)) {
+        searchTerms = [
+          `cannabis dispensary ${query}`,
+          `marijuana dispensary ${query}`,
+          `dispensary ${query}`,
+          `CBD store ${query}`,
+          `hemp store ${query}`,
+        ];
+      } else if (CBD_ONLY_STATES.has(detectedState)) {
+        searchTerms = [
+          `CBD store ${query}`,
+          `hemp store ${query}`,
+          `CBD shop ${query}`,
+          `hemp CBD store ${query}`,
+          `natural wellness CBD ${query}`,
+        ];
+      } else {
+        searchTerms = [
+          `cannabis dispensary ${query}`,
+          `marijuana dispensary ${query}`,
+          `CBD store ${query}`,
+          `dispensary ${query}`,
+          `hemp store ${query}`,
+        ];
+      }
+
+      for (const term of searchTerms) {
+        try {
+          const r = await fetch('https://places.googleapis.com/v1/places:searchText', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              textQuery: term,
+              maxResultCount: 20,
+              languageCode: 'en',
+            }),
+          });
+
+          if (!r.ok) {
+            const errData = await r.json();
+            lastError = errData.error?.message || 'Google Places error';
+            continue;
+          }
+
+          const d = await r.json();
+          for (const place of (d.places || [])) {
+            if (!seenIds.has(place.id)) {
+              seenIds.add(place.id);
+              allPlaces.push(place);
+            }
+          }
+
+          await new Promise(resolve => setTimeout(resolve, 150));
+
+        } catch(e) {
+          lastError = e.message;
+          continue;
+        }
+      }
     }
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      return res.status(500).json({ error: 'Google Places error', details: data.error?.message });
+    if (allPlaces.length === 0 && lastError) {
+      return res.status(500).json({ error: 'Google Places error', details: lastError });
     }
 
-    const places = (data.places || []).slice(0, 8);
-
-    const dispensaries = places.map(place => ({
-      id:      place.id,
-      name:    place.displayName?.text || '',
-      address: place.formattedAddress || '',
-      rating:  place.rating || null,
-      open:    place.regularOpeningHours?.openNow ?? null,
-      lat:     place.location?.latitude,
-      lng:     place.location?.longitude,
-      website: place.websiteUri || null,
-      phone:   place.nationalPhoneNumber || null,
-    }));
+    const dispensaries = allPlaces.map(mapPlace);
 
     return res.status(200).json({ dispensaries, total: dispensaries.length, legalStatus });
 
