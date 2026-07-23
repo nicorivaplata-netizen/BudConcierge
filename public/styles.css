@@ -255,6 +255,41 @@
   font-family: var(--font);
   width: 100%;
 }
+.condition-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.condition-entry:active {
+  background: var(--surface-2);
+}
+.condition-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.condition-info {
+  flex: 1;
+  min-width: 0;
+}
+.condition-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-1);
+  margin-bottom: 2px;
+}
+.condition-sub {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.4;
+}
 .ivy-privacy-note {
   background: var(--green-light);
   border: 0.5px solid var(--green-mid);

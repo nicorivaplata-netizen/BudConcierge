@@ -2036,6 +2036,8 @@ function refreshUI() {
     document.getElementById('wb-greeting').textContent = todGreet + ', ' + firstName + '.';
     document.getElementById('wb-msg').textContent = 'What would you like to work on today?';
     document.getElementById('home-cta').style.display = 'none';
+    const _condSectionHide = document.getElementById('home-conditions-section');
+    if (_condSectionHide) _condSectionHide.style.display = 'none';
 
     const goals = profile.goals || [];
     const chipsEl = document.getElementById('home-goal-chips');
@@ -2133,8 +2135,9 @@ function refreshUI() {
     document.getElementById('wb-greeting').textContent = 'Hi, I am Ivy.';
     document.getElementById('wb-msg').textContent =
       'A private cannabis wellness guide built around your specific situation. Free, judgment-free, and here when you need it.';
-    document.getElementById('home-cta').style.display = 'block';
-    document.getElementById('home-cta').textContent = 'Get started';
+    document.getElementById('home-cta').style.display = 'none';
+    const _condSection = document.getElementById('home-conditions-section');
+    if (_condSection) _condSection.style.display = 'block';
 
     const chipsEl = document.getElementById('home-goal-chips');
     const chipsAlt = document.getElementById('home-goal-chips-alt');
@@ -2158,8 +2161,6 @@ function refreshUI() {
     if (_histSection) _histSection.style.display = 'none';
     if (_chipsEl) _chipsEl.style.display = 'none';
     if (_chipsAlt) _chipsAlt.style.display = 'none';
-    document.getElementById('home-cta').style.display = 'block';
-    document.getElementById('home-cta').textContent = 'Get started';
   }
 
   // Show dispensary shortcut if one is selected — regardless of profile state
@@ -2358,6 +2359,33 @@ function startGoalChat(goal) {
       var input = document.getElementById('chat-input');
       if (input) {
         input.value = 'I need help with ' + goal.toLowerCase();
+        sendMessage();
+        setTimeout(function() {
+          var msgsEl = document.getElementById('messages');
+          if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
+        }, 300);
+      }
+    }, 400);
+  }, 100);
+}
+
+function startConditionChat(condition) {
+  var prompts = {
+    sleep: 'I am having trouble sleeping and would like help finding the right cannabis product for me.',
+    pain: 'I am dealing with pain and inflammation and would like help finding the right cannabis product for me.',
+    anxiety: 'I am dealing with anxiety and stress and would like help finding the right cannabis product for me.',
+    other: 'I would like help finding a cannabis product that fits my wellness needs.'
+  };
+
+  var prompt = prompts[condition] || prompts.other;
+
+  switchTab('chat');
+  setTimeout(function() {
+    if (!chatInitialized) startChat();
+    setTimeout(function() {
+      var input = document.getElementById('chat-input');
+      if (input) {
+        input.value = prompt;
         sendMessage();
         setTimeout(function() {
           var msgsEl = document.getElementById('messages');
