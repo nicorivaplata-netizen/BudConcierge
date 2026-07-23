@@ -16,27 +16,41 @@ export default async function handler(req, res) {
     }
 
     // Forward to Anthropic — API key stays here on the server, never exposed to the browser
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 1024,
-        system: 'CRITICAL: Always respond in English only, regardless of any other language in the conversation or user messages.\n\n' + (system || ''),
-        messages,
-      }),
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
 
-    if (!response.ok) {
-      const error = await response.json();
-      return res.status(response.status).json({ error: error.error?.message || 'API error' });
+    let anthropicRes;
+    try {
+      anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1000,
+          system: 'CRITICAL: Always respond in English only, regardless of any other language in the conversation or user messages.\n\n' + (system || ''),
+          messages
+        }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+    } catch(fetchErr) {
+      clearTimeout(timeoutId);
+      if (fetchErr.name === 'AbortError') {
+        return res.status(504).json({ error: 'Request timed out. Please try again.' });
+      }
+      throw fetchErr;
     }
 
-    const data = await response.json();
+    if (!anthropicRes.ok) {
+      const error = await anthropicRes.json();
+      return res.status(anthropicRes.status).json({ error: error.error?.message || 'API error' });
+    }
+
+    const data = await anthropicRes.json();
     return res.status(200).json(data);
 
   } catch (err) {

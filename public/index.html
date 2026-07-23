@@ -2030,6 +2030,10 @@ function switchTab(tab) {
 
 // ─── UI refresh ───────────────────────────────────────────────────────────────
 function refreshUI() {
+  if (sessionStorage.getItem('bc_qr_session')) {
+    showQRWelcome();
+  }
+
   const has = !!profile.name;
   const ini = initials(profile.name);
 
@@ -3661,6 +3665,46 @@ function startChat() {
   }
 }
 
+function showQRWelcome() {
+  const slug = sessionStorage.getItem('bc_qr_slug');
+  if (!slug || !DISPENSARIES[slug]) return false;
+
+  const disp = DISPENSARIES[slug];
+  selectedDispensary = disp;
+  saveData();
+
+  const heroName = document.getElementById('home-hero-label') || document.getElementById('wb-greeting');
+  const heroMsg = document.getElementById('wb-msg');
+
+  if (heroName) heroName.textContent = 'Welcome to ' + disp.name + '.';
+  if (heroMsg) heroMsg.textContent = 'Get personalized guidance from ' + disp.name + '\'s live menu — private, free, and built around you.';
+
+  return true;
+}
+
+function startQRChat() {
+  var slug = sessionStorage.getItem('bc_qr_slug');
+  var disp = slug && DISPENSARIES[slug] ? DISPENSARIES[slug] : null;
+
+  switchTab('chat');
+  setTimeout(function() {
+    if (!chatInitialized) startChat();
+    if (disp) {
+      setTimeout(function() {
+        var input = document.getElementById('chat-input');
+        if (input) {
+          input.value = 'Hi Ivy, I am at ' + disp.name + ' and would like personalized guidance.';
+          sendMessage();
+          setTimeout(function() {
+            var msgsEl = document.getElementById('messages');
+            if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
+          }, 300);
+        }
+      }, 400);
+    }
+  }, 100);
+}
+
 // ── Quick Setup Card — shown inline in chat for new users ────────────────────
 let quickSetupData = { name: '', experience: '', goals: [], conditions: [], otherCondition: '', medications: '' };
 
@@ -4042,20 +4086,24 @@ inp.addEventListener('input', () => { inp.style.height = 'auto'; inp.style.heigh
 // ─── Dispensary Registry ──────────────────────────────────────────────────────
 const DISPENSARIES = {
   // MO — Recreational + Medical since Nov 2022
-  'high-profile-pineville':      { name: 'High Profile — Pineville, MO',        brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-pineville',      menuUrl: 'https://highprofilecannabis.com/shop/pineville-dispensary' },
-  'mo-chesterfield-hp':          { name: 'High Profile — Chesterfield, MO',     brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-chesterfield',   menuUrl: 'https://highprofilecannabis.com/shop/chesterfield-dispensary' },
-  'mo-columbia-hp':              { name: 'High Profile — Columbia, MO',         brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-columbia',       menuUrl: 'https://highprofilecannabis.com/shop/columbia-dispensary' },
-  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO',   brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-cape-girardeau', menuUrl: 'https://highprofilecannabis.com/shop/cape-girardeau-dispensary' },
+  'high-profile-pineville':      { name: 'High Profile — Pineville, MO',        brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  type: 'cannabis', payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-pineville',      menuUrl: 'https://highprofilecannabis.com/shop/pineville-dispensary' },
+  'mo-chesterfield-hp':          { name: 'High Profile — Chesterfield, MO',     brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  type: 'cannabis', payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-chesterfield',   menuUrl: 'https://highprofilecannabis.com/shop/chesterfield-dispensary' },
+  'mo-columbia-hp':              { name: 'High Profile — Columbia, MO',         brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  type: 'cannabis', payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-columbia',       menuUrl: 'https://highprofilecannabis.com/shop/columbia-dispensary' },
+  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO',   brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  type: 'cannabis', payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-cape-girardeau', menuUrl: 'https://highprofilecannabis.com/shop/cape-girardeau-dispensary' },
   // AZ — Recreational + Medical since Nov 2020
-  'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis', state: 'AZ', recreational: true,  medical: true,  payment: '',            hours: '',                    wmSlug: 'story-dunlap',                menuUrl: 'https://storycannabis.com/shop/arizona/shop-dunlap/rec-menu' },
+  'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis', state: 'AZ', recreational: true,  medical: true,  type: 'cannabis', payment: '',            hours: '',                    wmSlug: 'story-dunlap',                menuUrl: 'https://storycannabis.com/shop/arizona/shop-dunlap/rec-menu' },
   // MD — Recreational + Medical since Jul 2023
-  'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', state: 'MD', recreational: true,  medical: true,  payment: '',            hours: '',                    wmSlug: 'story-mechanicsville',        menuUrl: 'https://storycannabis.com/shop/maryland/shop-mechanicsville/med-menu' },
+  'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', state: 'MD', recreational: true,  medical: true,  type: 'cannabis', payment: '',            hours: '',                    wmSlug: 'story-mechanicsville',        menuUrl: 'https://storycannabis.com/shop/maryland/shop-mechanicsville/med-menu' },
   // OH — Recreational + Medical since Aug 2023
-  'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', state: 'OH', recreational: true,  medical: true,  payment: '',            hours: '',                    wmSlug: 'story-cleveland',             menuUrl: 'https://storycannabis.com/shop/ohio/shop-cleveland/rec-menu' },
+  'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', state: 'OH', recreational: true,  medical: true,  type: 'cannabis', payment: '',            hours: '',                    wmSlug: 'story-cleveland',             menuUrl: 'https://storycannabis.com/shop/ohio/shop-cleveland/rec-menu' },
   // AR — Medical only (recreational ballot failed 2022)
-  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      state: 'AR', recreational: false, medical: true,  payment: '',            hours: '',                    wmSlug: 'purspirit-cannabis-co',        menuUrl: 'https://menu.purspirit.com/shop/menu' },
-  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', recreational: false, medical: true,  payment: '',            hours: '',                    wmSlug: 'the-source-rogers',           menuUrl: 'https://www.thesource-mj.com/stores/the-source-rogers', city: 'rogers', altNames: ['the source rogers', 'source rogers', 'the source craft'] },
-  'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       state: 'AR', recreational: false, medical: true,  payment: '',            hours: '',                    wmSlug: 'the-hill-fayetteville',       menuUrl: 'https://thehillnwa.com/our-menu' },
+  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      state: 'AR', recreational: false, medical: true,  type: 'cannabis', payment: '',            hours: '',                    wmSlug: 'purspirit-cannabis-co',        menuUrl: 'https://menu.purspirit.com/shop/menu' },
+  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', recreational: false, medical: true,  type: 'cannabis', payment: '',            hours: '',                    wmSlug: 'the-source-rogers',           menuUrl: 'https://www.thesource-mj.com/stores/the-source-rogers', city: 'rogers', altNames: ['the source rogers', 'source rogers', 'the source craft'] },
+  'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       state: 'AR', recreational: false, medical: true,  type: 'cannabis', payment: '',            hours: '',                    wmSlug: 'the-hill-fayetteville',       menuUrl: 'https://thehillnwa.com/our-menu' },
+  // TX/OK — CBD retail (non-plant-touching)
+  'sunmed-dallas-legacy':        { name: 'SunMed — Legacy West, Plano TX',       brand: 'SunMed',         state: 'TX', recreational: false, medical: false, type: 'cbd',     payment: 'Cash + card', hours: 'Mon–Sat 10am–8pm, Sun 11am–6pm', menuUrl: 'https://gosunmed.com' },
+  'sunmed-dallas-frisco':        { name: 'SunMed — Frisco, TX',                  brand: 'SunMed',         state: 'TX', recreational: false, medical: false, type: 'cbd',     payment: 'Cash + card', hours: 'Mon–Sat 10am–8pm, Sun 11am–6pm', menuUrl: 'https://gosunmed.com' },
+  'sunmed-okc':                  { name: 'SunMed — Oklahoma City, OK',           brand: 'SunMed',         state: 'OK', recreational: false, medical: false, type: 'cbd',     payment: 'Cash + card', hours: 'Mon–Sat 10am–8pm, Sun 11am–6pm', menuUrl: 'https://gosunmed.com' },
 };
 
 let selectedDispensary = null; // { slug, name, brand, inventory[] }
@@ -4227,6 +4275,17 @@ function buildInventoryContext() {
 }
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────
+(function detectQR() {
+  var params = new URLSearchParams(window.location.search);
+  var slug = params.get('ref');
+  var kiosk = params.get('kiosk') === 'true';
+  if (slug) {
+    sessionStorage.setItem('bc_qr_slug', slug);
+    sessionStorage.setItem('bc_qr_session', '1');
+    if (kiosk) sessionStorage.setItem('bc_kiosk', '1');
+  }
+})();
+
 loadData();
 loadJournal();
 refreshUI();
