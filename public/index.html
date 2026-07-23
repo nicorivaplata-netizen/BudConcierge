@@ -206,20 +206,35 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
        HOME SCREEN
   ═══════════════════════════════════════════ -->
   <div id="screen-home" class="screen">
-  <div class="ivy-hero" id="home-hero-section">
-    <div class="ivy-hero-wordmark">IVY</div>
-    <div class="ivy-hero-greeting" id="wb-greeting">Your cannabis guide</div>
-    <div class="ivy-hero-sub" id="wb-msg">Private, personalized, judgment-free guidance built around you.</div>
-    <div class="ivy-goal-chips" id="home-goal-chips" style="display:none"></div>
-    <div id="home-goal-chips-alt" style="display:none">
-      <span class="ivy-goal-chip-alt" onclick="handleCTAAndScroll()">Something else you need help with?</span>
+    <div class="topbar" style="border-bottom:none;background:transparent;padding-bottom:0">
+      <div style="display:flex;align-items:center;gap:8px;flex:1">
+        <svg width="26" height="26" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="28" cy="28" r="28" fill="#1a9968"/>
+          <line x1="28" y1="42" x2="28" y2="14" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M28,34 C21,29 11,27 9,19 C15,19 23,25 28,34 Z" fill="white"/>
+          <path d="M28,34 C35,29 45,27 47,19 C41,19 33,25 28,34 Z" fill="white"/>
+          <path d="M28,24 C22,19 13,16 11,9 C17,11 24,17 28,24 Z" fill="white"/>
+          <path d="M28,24 C34,19 43,16 45,9 C39,11 32,17 28,24 Z" fill="white"/>
+        </svg>
+        <div class="topbar-title" id="home-title" style="letter-spacing:-0.3px">Ivy</div>
+      </div>
+      <div class="wb-avatar" id="home-avatar" style="width:34px;height:34px;font-size:13px;cursor:pointer;border:1.5px solid var(--green-mid)" onclick="switchTab('profile')">?</div>
     </div>
-    <button class="btn-primary" id="home-cta" onclick="handleCTA()"
-      style="border-radius:12px;margin-top:4px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:white;font-weight:600;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)">
-      Get started
-    </button>
-  </div>
 
+    <div class="content" style="padding-top:12px">
+
+      <!-- Hero card — personalized welcome -->
+      <div class="home-hero" id="home-hero-card">
+        <div class="home-hero-greeting" id="home-hero-label" style="display:none">Welcome</div>
+        <div class="home-hero-name" id="wb-greeting">Your cannabis guide</div>
+        <div class="home-hero-sub" id="wb-msg">Private, personalized, judgment-free guidance — built around you.</div>
+        <div class="home-hero-pill" id="home-hero-pill" style="display:none">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          <span id="home-hero-pill-text">Ready for you</span>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="home-cta" onclick="handleCTA()" style="border-radius:12px">Start chatting with Ivy</button>
   <div id="home-conditions-section" style="display:none">
 
     <div class="section-label" style="margin-bottom:10px;padding-left:2px">
@@ -303,100 +318,105 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
 
   </div>
 
-  <div class="content" style="padding-top:16px">
+      <!-- Quick actions -->
+      <div id="quick-actions" style="display:flex;flex-direction:column;gap:8px">
+        <div class="section-label" id="quick-actions-label" style="padding-left:2px">Quick access</div>
 
-    <div id="home-reeng-section" style="display:none">
-      <div class="ivy-reeng-card" id="home-reeng-card">
-        <div class="ivy-reeng-inner">
-          <div class="ivy-reeng-eyebrow">Last session</div>
-          <div class="ivy-reeng-headline" id="home-reeng-headline">Ready to continue where you left off?</div>
-          <div class="ivy-reeng-sub" id="home-reeng-sub">Your last conversation with Ivy is ready to pick up.</div>
-          <div class="ivy-reeng-product" id="home-reeng-product" style="display:none">
-            <div class="ivy-reeng-product-icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/></svg>
+        <!-- Dispensary shortcut -->
+        <div id="disp-shortcut-card" style="display:none;cursor:pointer;padding:14px 16px;background:linear-gradient(135deg,#0d6647,#1a9968);border-radius:16px;border:none;box-shadow:0 4px 16px rgba(13,102,71,0.3)" onclick="useDispensaryShortcut()">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="display:flex;align-items:center;gap:12px">
+              <div style="width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(255,255,255,0.2)">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <div style="font-weight:700;font-size:14px;color:white;letter-spacing:-0.2px" id="disp-shortcut-name">Chat with dispensary</div>
+                <div style="font-size:11.5px;color:rgba(255,255,255,0.75);margin-top:2px" id="disp-shortcut-sub">⚡ Live inventory loaded</div>
+              </div>
             </div>
-            <div style="flex:1;min-width:0">
-              <div class="ivy-reeng-product-name" id="home-reeng-product-name"></div>
-              <div class="ivy-reeng-product-desc" id="home-reeng-product-desc"></div>
-              <div class="ivy-reeng-product-stars" id="home-reeng-product-stars"></div>
-            </div>
-          </div>
-          <div class="ivy-reeng-actions">
-            <button class="ivy-reeng-btn ivy-reeng-btn-primary"
-              onclick="switchTab('chat'); setTimeout(() => { if (!chatInitialized) startChat(); }, 100)">
-              Continue conversation
-            </button>
-            <button class="ivy-reeng-btn ivy-reeng-btn-secondary"
-              onclick="switchTab('journal')">
-              View journal
-            </button>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div id="home-first-session-prompt" style="display:none">
-      <div class="ivy-reeng-card">
-        <div class="ivy-reeng-inner">
-          <div class="ivy-reeng-eyebrow">Get Personalized Guidance</div>
-          <div class="ivy-reeng-headline">Ready to start your first conversation? I already know your goals. Let us help you figure out where to start.</div>
-          <div class="ivy-reeng-actions" style="margin-top:12px">
-            <button class="ivy-reeng-btn ivy-reeng-btn-primary"
-              onclick="switchTab('chat'); setTimeout(() => { if (!chatInitialized) startChat(); }, 100)">
-              Start chatting
-            </button>
+        <!-- Chat card -->
+        <div class="action-card" onclick="switchTab('chat'); setTimeout(() => { if (!chatInitialized) startChat(); }, 100)">
+          <div class="action-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
+          <div style="flex:1;min-width:0">
+            <div class="action-title">Chat with Ivy</div>
+            <div class="action-sub" id="chat-shortcut-sub">Ask anything — private and judgment-free</div>
+          </div>
+          <svg class="action-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
-      </div>
-    </div>
 
-    <div id="home-history-section" style="display:none">
-      <div class="section-label" style="margin-bottom:10px;padding-left:2px">Saved products</div>
-      <div class="ivy-saved-grid" id="home-saved-grid"></div>
-      <button class="ivy-view-all" onclick="switchTab('journal')">View in journal</button>
-    </div>
+        <!-- Profile nudge / wellness snapshot -->
+        <div id="profile-nudge" style="display:none;cursor:pointer;border-radius:14px;overflow:hidden" onclick="switchTab('profile')"></div>
 
-    <div id="disp-shortcut-card" style="display:none;cursor:pointer;padding:14px 16px;background:linear-gradient(135deg,#0d6647,#1a9968);border-radius:16px;border:none;box-shadow:0 4px 16px rgba(13,102,71,0.3);margin-bottom:12px" onclick="useDispensaryShortcut()">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div style="display:flex;align-items:center;gap:12px">
-          <div style="width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(255,255,255,0.2)">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <!-- Find dispensary card -->
+        <div class="action-card" onclick="switchTab('dispensary')">
+          <div class="action-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           </div>
-          <div>
-            <div style="font-weight:700;font-size:14px;color:white;letter-spacing:-0.2px" id="disp-shortcut-name">Chat with dispensary</div>
-            <div style="font-size:11.5px;color:rgba(255,255,255,0.75);margin-top:2px" id="disp-shortcut-sub">Live inventory loaded</div>
+          <div style="flex:1;min-width:0">
+            <div class="action-title">Find a dispensary</div>
+            <div class="action-sub">Search licensed dispensaries near you</div>
           </div>
+          <svg class="action-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+
+        <!-- Journal card -->
+        <div class="action-card" onclick="switchTab('journal')">
+          <div class="action-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div class="action-title">My Journal</div>
+            <div class="action-sub" id="journal-shortcut-sub">Track how products make you feel</div>
+          </div>
+          <svg class="action-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+
+        <!-- Profile card — only shown after profile exists -->
+        <div id="profile-shortcut" class="action-card" style="display:none" onclick="switchTab('profile')">
+          <div class="action-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div style="flex:1;min-width:0">
+            <div class="action-title">My preferences</div>
+            <div class="action-sub">Goals, tolerance &amp; wellness profile</div>
+          </div>
+          <svg class="action-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+
       </div>
+
+      <!-- Strain history -->
+      <div id="home-history-section" style="display:none">
+        <div class="section-label" style="margin-bottom:8px;padding-left:2px">Saved products</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm)" id="home-history-list"></div>
+      </div>
+
     </div>
 
-  </div>
-
-  <div class="navbar-placeholder"></div>
+    <div class="navbar-placeholder"></div>
   </div>
 
   <!-- ═══════════════════════════════════════════
        CHAT SCREEN
   ═══════════════════════════════════════════ -->
+
+
   <div id="screen-chat" class="screen">
-    <div class="ivy-hero" style="padding:14px 20px 18px">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="display:flex;align-items:center;gap:10px">
-          <button class="back-btn" onclick="switchTab('home')"
-            style="color:rgba(255,255,255,0.7);border:none;background:transparent;padding:0;cursor:pointer">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          </button>
-          <div>
-            <div style="font-size:15px;font-weight:600;color:white">Ivy</div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.6)" id="chat-header-sub">Cannabis wellness guide</div>
-          </div>
-        </div>
-        <button onclick="newChat()"
-          style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:white;font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:var(--font)">
-          New chat
-        </button>
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('home')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div style="flex:1">
+        <div class="topbar-title">Ivy</div>
+        <div class="topbar-sub">Personalized cannabis guidance</div>
       </div>
+      <button onclick="newChat()" style="border:none;background:transparent;cursor:pointer;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600;color:#1a9968;border:1px solid #a8dfc9;background:#E1F5EE" title="Start new chat">New chat</button>
     </div>
 
     <!-- Profile nudge — shown only when no profile exists -->
@@ -431,21 +451,23 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
        PROFILE SCREEN
   ═══════════════════════════════════════════ -->
   <div id="screen-profile" class="screen">
-    <div class="ivy-hero" style="padding:16px 20px 28px;text-align:center">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-        <button class="back-btn" onclick="switchTab('home')"
-          style="color:rgba(255,255,255,0.7);border:none;background:transparent;padding:0;cursor:pointer">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <span id="prof-badge" style="font-size:10px;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.85);padding:3px 10px;border-radius:10px;font-weight:600;border:1px solid rgba(255,255,255,0.2)">New</span>
-      </div>
-      <div class="wb-avatar" id="prof-avatar"
-        style="width:60px;height:60px;font-size:22px;margin:0 auto 10px;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.3);color:white">?</div>
-      <div style="font-size:18px;font-weight:600;color:white;margin-bottom:2px" id="prof-name">Set up your profile</div>
-      <div style="font-size:12px;color:rgba(255,255,255,0.6)" id="prof-since"></div>
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('home')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="topbar-title" style="flex:1">My profile</div>
+      <span id="prof-badge" style="font-size:10px;background:#E1F5EE;color:#085041;padding:2px 8px;border-radius:10px;font-weight:600">New</span>
     </div>
 
     <div class="content">
+      <!-- Avatar row -->
+      <div class="card" style="display:flex;align-items:center;gap:14px">
+        <div class="wb-avatar" id="prof-avatar" style="width:52px;height:52px;font-size:20px">?</div>
+        <div style="flex:1">
+          <div style="font-size:16px;font-weight:600" id="prof-name">Set up your profile</div>
+          <div style="font-size:12px;color:#888" id="prof-since"></div>
+        </div>
+      </div>
 
       <!-- Profile completion indicator -->
       <div id="prof-completion-wrap" style="display:none">
@@ -710,16 +732,13 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
        DISPENSARY FINDER SCREEN
   ═══════════════════════════════════════════ -->
   <div id="screen-dispensary" class="screen">
-    <div class="ivy-hero" style="padding:14px 20px 22px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-        <button class="back-btn" onclick="switchTab('home')"
-          style="color:rgba(255,255,255,0.7);border:none;background:transparent;padding:0;cursor:pointer">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <div>
-          <div style="font-size:17px;font-weight:500;color:white">Find a dispensary</div>
-          <div style="font-size:11px;color:rgba(255,255,255,0.6)">Search by state, city, or zip code</div>
-        </div>
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('home')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div style="flex:1">
+        <div class="topbar-title">Find a dispensary</div>
+        <div class="topbar-sub">Powered by Google Places</div>
       </div>
     </div>
     <div class="content">
@@ -844,23 +863,15 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
        MY JOURNAL SCREEN
   ═══════════════════════════════════════════ -->
   <div id="screen-journal" class="screen">
-    <div class="ivy-hero" style="padding:14px 20px 22px">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="display:flex;align-items:center;gap:10px">
-          <button class="back-btn" onclick="switchTab('home')"
-            style="color:rgba(255,255,255,0.7);border:none;background:transparent;padding:0;cursor:pointer">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          </button>
-          <div>
-            <div style="font-size:17px;font-weight:500;color:white">My journal</div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.6)">Track what works for you</div>
-          </div>
-        </div>
-        <button onclick="openNewEntry()"
-          style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:white;font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;cursor:pointer;font-family:var(--font)">
-          New entry
-        </button>
+    <div class="topbar">
+      <button class="back-btn" onclick="switchTab('home')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div style="flex:1">
+        <div class="topbar-title">My Journal</div>
+        <div class="topbar-sub">Track how products make you feel</div>
       </div>
+      <button onclick="openNewEntry()" style="border:1px solid #a8dfc9;background:#E1F5EE;color:#085041;font-size:12px;font-weight:600;padding:5px 11px;border-radius:8px;cursor:pointer">+ New entry</button>
     </div>
     <div class="content">
       <div id="journal-empty" class="empty-state" style="display:flex">
@@ -2031,77 +2042,17 @@ function refreshUI() {
   if (has) {
     const hr = new Date().getHours();
     const todGreet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+    const todTip = hr < 12
+      ? 'Morning tip: Sativa-leaning strains or CBD products are great for daytime focus and energy.'
+      : hr < 17
+      ? 'Afternoon tip: A balanced hybrid can ease afternoon stress without slowing you down.'
+      : 'Evening tip: Indica-dominant strains and CBD tinctures are ideal for wind-down and sleep.';
     const firstName = profile.name.trim().split(' ')[0];
-
-    document.getElementById('wb-greeting').textContent = todGreet + ', ' + firstName + '.';
-    document.getElementById('wb-msg').textContent = 'What would you like to work on today?';
-    document.getElementById('home-cta').style.display = 'none';
-    const _condSectionHide = document.getElementById('home-conditions-section');
-    if (_condSectionHide) _condSectionHide.style.display = 'none';
-
-    const goals = profile.goals || [];
-    const chipsEl = document.getElementById('home-goal-chips');
-    const chipsAlt = document.getElementById('home-goal-chips-alt');
-    if (goals.length > 0 && chipsEl) {
-      chipsEl.innerHTML = goals.map(function(g) {
-        return '<button class="ivy-goal-chip" onclick="startGoalChat(\'' + g.replace(/'/g, "\\'") + '\')">' + g + '</button>';
-      }).join('');
-      chipsEl.style.display = 'flex';
-      if (chipsAlt) chipsAlt.style.display = 'block';
-    }
-
-    const reengSection = document.getElementById('home-reeng-section');
-    const firstPrompt = document.getElementById('home-first-session-prompt');
-    const recentJournal = (journal || []).slice(0, 1);
-
-    if (recentJournal.length > 0 && reengSection) {
-      reengSection.style.display = 'block';
-      if (firstPrompt) firstPrompt.style.display = 'none';
-
-      const lastEntry = recentJournal[0];
-      const goalText = goals.length > 0 ? goals[0].toLowerCase() : 'your wellness';
-      const headlineEl = document.getElementById('home-reeng-headline');
-      const subEl = document.getElementById('home-reeng-sub');
-
-      if (headlineEl) headlineEl.textContent =
-        'Last time we helped you with ' + goalText + '. Need to go deeper?';
-      if (subEl) subEl.textContent =
-        'You worked on ' + goalText + '. Here is what Ivy recommended.';
-
-      if (lastEntry.product) {
-        const productEl = document.getElementById('home-reeng-product');
-        if (productEl) productEl.style.display = 'flex';
-        const nameEl = document.getElementById('home-reeng-product-name');
-        const descEl = document.getElementById('home-reeng-product-desc');
-        const starsEl = document.getElementById('home-reeng-product-stars');
-        if (nameEl) nameEl.textContent = lastEntry.product;
-        if (descEl) descEl.textContent = lastEntry.notes
-          ? lastEntry.notes.slice(0, 60) + (lastEntry.notes.length > 60 ? '...' : '')
-          : 'Tap to continue this conversation.';
-        if (starsEl && lastEntry.rating) {
-          starsEl.textContent = '★'.repeat(lastEntry.rating) + '☆'.repeat(5 - lastEntry.rating)
-            + ' rated ' + lastEntry.rating + ' stars';
-        }
-      }
-    } else if (firstPrompt) {
-      if (reengSection) reengSection.style.display = 'none';
-      firstPrompt.style.display = 'block';
-    }
-
-    const histSection = document.getElementById('home-history-section');
-    const savedGrid = document.getElementById('home-saved-grid');
-    if (strainHistory && strainHistory.length > 0 && histSection && savedGrid) {
-      histSection.style.display = 'block';
-      savedGrid.innerHTML = strainHistory.slice(0, 4).map(function(h) {
-        return '<div class="ivy-saved-card"><div class="ivy-saved-name">' + (h.name || 'Product') + '</div>' +
-          '<div class="ivy-saved-stars">' + (h.rating
-            ? '★'.repeat(h.rating) + '☆'.repeat(5 - h.rating)
-            : 'Not yet rated') + '</div></div>';
-      }).join('');
-    } else if (histSection) {
-      histSection.style.display = 'none';
-    }
-
+    document.getElementById('home-title').textContent    = todGreet + ', ' + profile.name;
+    document.getElementById('wb-greeting').textContent  = 'Hey ' + firstName;
+    document.getElementById('wb-msg').textContent       = todTip;
+    document.getElementById('home-cta').textContent     = 'Chat with Ivy';
+    // Hide profile nudge in chat when profile exists
     const nudge = document.getElementById('chat-profile-nudge');
     if (nudge) nudge.style.display = 'none';
     const profFields = [
@@ -2113,54 +2064,26 @@ function refreshUI() {
     ];
     const profDone = profFields.filter(Boolean).length;
     const badgeText = profDone === 5 ? 'Complete' : profDone >= 3 ? 'In progress' : 'Getting started';
+    const badgeBg   = profDone === 5 ? '#E1F5EE'  : profDone >= 3 ? '#FAEEDA'     : '#E6F1FB';
+    const badgeColor= profDone === 5 ? '#085041'  : profDone >= 3 ? '#412402'     : '#0C447C';
     const badge = document.getElementById('prof-badge');
-    if (badge) {
-      badge.textContent = badgeText;
-      badge.style.background = 'rgba(255,255,255,0.15)';
-      badge.style.color = 'rgba(255,255,255,0.85)';
-    }
-    const pfExpLabels = {
-      'first_time': 'First timer',
-      'beginner': 'Beginner',
-      'occasional': 'Occasional user',
-      'regular': 'Regular user',
-      'experienced': 'Experienced'
-    };
-    setField('pf-experience', pfExpLabels[profile.experience] || profile.experience);
-    document.getElementById('prof-name').textContent = profile.name;
-    document.getElementById('prof-since').textContent = profile.joined
-      ? 'Member since ' + profile.joined : '';
-
+    if (badge) { badge.textContent = badgeText; badge.style.background = badgeBg; badge.style.color = badgeColor; }
+    document.getElementById('prof-name').textContent    = profile.name;
+    document.getElementById('prof-since').textContent   = profile.joined ? 'Member since ' + profile.joined : '';
+    document.getElementById('quick-actions').style.display = 'flex';
+    document.getElementById('quick-actions-label').textContent = 'Quick start';
+    const profileShortcut = document.getElementById('profile-shortcut');
+    if (profileShortcut) profileShortcut.style.display = 'flex';
+    const goals = profile.goals && (profile.goals||[]).length ? 'Personalized for: ' + (profile.goals||[]).slice(0,2).join(', ') : 'Ask anything — no profile needed to start';
+    document.getElementById('chat-shortcut-sub').textContent = goals;
+    const condSectionHide = document.getElementById('home-conditions-section');
+    if (condSectionHide) condSectionHide.style.display = 'none';
   } else {
-    document.getElementById('wb-greeting').textContent = 'Hi, I am Ivy.';
-    document.getElementById('wb-msg').textContent =
-      'A private cannabis wellness guide built around your specific situation. Free, judgment-free, and here when you need it.';
-    document.getElementById('home-cta').style.display = 'none';
-    const _condSection = document.getElementById('home-conditions-section');
-    if (_condSection) _condSection.style.display = 'block';
-
-    const chipsEl = document.getElementById('home-goal-chips');
-    const chipsAlt = document.getElementById('home-goal-chips-alt');
-    if (chipsEl) chipsEl.style.display = 'none';
-    if (chipsAlt) chipsAlt.style.display = 'none';
-
-    const reengSection = document.getElementById('home-reeng-section');
-    const firstPrompt = document.getElementById('home-first-session-prompt');
-    const histSection = document.getElementById('home-history-section');
-    if (reengSection) reengSection.style.display = 'none';
-    if (firstPrompt) firstPrompt.style.display = 'none';
-    if (histSection) histSection.style.display = 'none';
-
-    const _reengSection = document.getElementById('home-reeng-section');
-    const _firstPrompt = document.getElementById('home-first-session-prompt');
-    const _histSection = document.getElementById('home-history-section');
-    const _chipsEl = document.getElementById('home-goal-chips');
-    const _chipsAlt = document.getElementById('home-goal-chips-alt');
-    if (_reengSection) _reengSection.style.display = 'none';
-    if (_firstPrompt) _firstPrompt.style.display = 'none';
-    if (_histSection) _histSection.style.display = 'none';
-    if (_chipsEl) _chipsEl.style.display = 'none';
-    if (_chipsAlt) _chipsAlt.style.display = 'none';
+    document.getElementById('wb-greeting').textContent = 'Welcome to Ivy';
+    document.getElementById('wb-msg').textContent = 'Private, personalized, judgment-free guidance — built around you.';
+    document.getElementById('home-cta').textContent = 'Get started';
+    const condSection2 = document.getElementById('home-conditions-section');
+    if (condSection2) condSection2.style.display = 'block';
   }
 
   // Show dispensary shortcut if one is selected — regardless of profile state
