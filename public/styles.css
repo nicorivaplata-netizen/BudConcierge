@@ -309,11 +309,14 @@ html,body { height:100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont
 
 /* ── HOME SCREEN REDESIGN ── */
 .home-hero {
-  background: linear-gradient(160deg, #0d4f38 0%, #155c42 55%, #1a9968 100%);
+  background: #0d4f38;
   border-radius: 0;
-  padding: 0;
-  position: static;
-  overflow: visible;
+  padding: 20px 20px 24px;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
 }
 .home-hero-greeting {
   font-size: 11px;

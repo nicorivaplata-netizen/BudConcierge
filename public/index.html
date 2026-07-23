@@ -221,20 +221,19 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       <div class="wb-avatar" id="home-avatar" style="width:34px;height:34px;font-size:13px;cursor:pointer;border:1.5px solid var(--green-mid)" onclick="switchTab('profile')">?</div>
     </div>
 
-    <div class="content" style="padding-top:12px">
+  <div class="home-hero" id="home-hero-card">
+    <div class="home-hero-greeting" id="home-hero-label" style="display:none">Welcome</div>
+    <div class="home-hero-name" id="wb-greeting">Your cannabis guide</div>
+    <div class="home-hero-sub" id="wb-msg">Private, personalized, judgment-free guidance built around you.</div>
+    <div class="home-hero-pill" id="home-hero-pill" style="display:none">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      <span id="home-hero-pill-text">Ready for you</span>
+    </div>
+  </div>
 
-      <!-- Hero card — personalized welcome -->
-      <div class="home-hero" id="home-hero-card">
-        <div class="home-hero-greeting" id="home-hero-label" style="display:none">Welcome</div>
-        <div class="home-hero-name" id="wb-greeting">Your cannabis guide</div>
-        <div class="home-hero-sub" id="wb-msg">Private, personalized, judgment-free guidance — built around you.</div>
-        <div class="home-hero-pill" id="home-hero-pill" style="display:none">
-          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-          <span id="home-hero-pill-text">Ready for you</span>
-        </div>
-      </div>
+  <div class="content" style="padding-top:12px">
 
-      <button class="btn-primary" id="home-cta" onclick="handleCTA()" style="border-radius:12px">Start chatting with Ivy</button>
+    <button class="btn-primary" id="home-cta" onclick="handleCTA()" style="border-radius:12px">Start chatting with Ivy</button>
   <div id="home-conditions-section" style="display:none">
 
     <div class="section-label" style="margin-bottom:10px;padding-left:2px">
@@ -806,13 +805,13 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
             </select>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;box-sizing:border-box;overflow:hidden">
             <div style="display:flex;flex-direction:column;gap:4px">
               <label style="font-size:11px;font-weight:600;color:#5a8f74;letter-spacing:0.06em;text-transform:uppercase">City</label>
               <input type="text" id="disp-city"
                 placeholder="e.g. Dallas"
                 onkeydown="if(event.key==='Enter')searchDispensaries()"
-                style="padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111;font-family:inherit">
+                style="padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111;font-family:inherit;width:100%;box-sizing:border-box">
             </div>
             <div style="display:flex;flex-direction:column;gap:4px">
               <label style="font-size:11px;font-weight:600;color:#5a8f74;letter-spacing:0.06em;text-transform:uppercase">Zip Code</label>
@@ -821,7 +820,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
                 inputmode="numeric"
                 maxlength="5"
                 onkeydown="if(event.key==='Enter')searchDispensaries()"
-                style="padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111;font-family:inherit">
+                style="padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111;font-family:inherit;width:100%;box-sizing:border-box">
             </div>
           </div>
 
@@ -2044,6 +2043,8 @@ function refreshUI() {
   document.getElementById('prof-avatar').textContent = ini;
 
   if (has) {
+    const condSectionHide = document.getElementById('home-conditions-section');
+    if (condSectionHide) condSectionHide.style.display = 'none';
     const hr = new Date().getHours();
     const todGreet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
     const todTip = hr < 12
@@ -2080,14 +2081,15 @@ function refreshUI() {
     if (profileShortcut) profileShortcut.style.display = 'flex';
     const goals = profile.goals && (profile.goals||[]).length ? 'Personalized for: ' + (profile.goals||[]).slice(0,2).join(', ') : 'Ask anything — no profile needed to start';
     document.getElementById('chat-shortcut-sub').textContent = goals;
-    const condSectionHide = document.getElementById('home-conditions-section');
-    if (condSectionHide) condSectionHide.style.display = 'none';
   } else {
     document.getElementById('wb-greeting').textContent = 'Welcome to Ivy';
-    document.getElementById('wb-msg').textContent = 'Private, personalized, judgment-free guidance — built around you.';
+    document.getElementById('wb-msg').textContent = 'Private, personalized, judgment-free guidance built around you.';
     document.getElementById('home-cta').textContent = 'Get started';
     const condSection2 = document.getElementById('home-conditions-section');
     if (condSection2) condSection2.style.display = 'block';
+    document.querySelectorAll('.action-card').forEach(function(card) { card.style.display = 'none'; });
+    const quickSection = document.getElementById('quick-actions');
+    if (quickSection) quickSection.style.display = 'none';
   }
 
   // Show dispensary shortcut if one is selected — regardless of profile state
