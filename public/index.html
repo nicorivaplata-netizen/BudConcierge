@@ -236,6 +236,77 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
 
       <button class="btn-primary" id="home-cta" onclick="handleCTA()" style="border-radius:12px">Start chatting with Ivy</button>
 
+      <div id="home-conditions-section" style="display:none;padding-top:12px">
+
+        <div style="font-size:11px;font-weight:500;color:#9a9c97;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;padding-left:2px">
+          What brings you here today?
+        </div>
+
+        <div style="background:#ffffff;border:1px solid rgba(0,0,0,0.08);border-radius:14px;overflow:hidden;margin-bottom:10px">
+
+          <div onclick="startConditionChat('sleep')" style="display:flex;align-items:center;gap:12px;padding:13px 14px;cursor:pointer">
+            <div style="width:34px;height:34px;border-radius:8px;background:#e8f0fb;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#185fa5" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:14px;font-weight:500;color:#111310;margin-bottom:2px">Sleep issues</div>
+              <div style="font-size:12px;color:#9a9c97;line-height:1.4">Trouble falling or staying asleep</div>
+            </div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a9c97" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div style="height:0.5px;background:rgba(0,0,0,0.07);margin:0 14px"></div>
+
+          <div onclick="startConditionChat('pain')" style="display:flex;align-items:center;gap:12px;padding:13px 14px;cursor:pointer">
+            <div style="width:34px;height:34px;border-radius:8px;background:#e8f7f1;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0f6e56" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:14px;font-weight:500;color:#111310;margin-bottom:2px">Pain or inflammation</div>
+              <div style="font-size:12px;color:#9a9c97;line-height:1.4">Chronic pain, muscle tension, nerve pain</div>
+            </div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a9c97" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div style="height:0.5px;background:rgba(0,0,0,0.07);margin:0 14px"></div>
+
+          <div onclick="startConditionChat('anxiety')" style="display:flex;align-items:center;gap:12px;padding:13px 14px;cursor:pointer">
+            <div style="width:34px;height:34px;border-radius:8px;background:#faf0fb;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#993556" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:14px;font-weight:500;color:#111310;margin-bottom:2px">Anxiety or stress</div>
+              <div style="font-size:12px;color:#9a9c97;line-height:1.4">Worry, tension, or racing thoughts</div>
+            </div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a9c97" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+          <div style="height:0.5px;background:rgba(0,0,0,0.07);margin:0 14px"></div>
+
+          <div onclick="startConditionChat('other')" style="display:flex;align-items:center;gap:12px;padding:13px 14px;cursor:pointer">
+            <div style="width:34px;height:34px;border-radius:8px;background:#f7f8f6;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9a9c97" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:14px;font-weight:500;color:#111310;margin-bottom:2px">Something else</div>
+              <div style="font-size:12px;color:#9a9c97;line-height:1.4">Mood, focus, nausea, or another need</div>
+            </div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9a9c97" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+
+        </div>
+
+        <button onclick="handleCTA()" style="width:100%;padding:10px;background:transparent;color:#9a9c97;border:1px solid rgba(0,0,0,0.1);border-radius:10px;font-size:12px;font-weight:400;cursor:pointer;font-family:inherit;margin-bottom:10px">
+          Set up a full profile instead
+        </button>
+
+        <div style="display:flex;align-items:center;justify-content:center;gap:5px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#9a9c97" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span style="font-size:10px;color:#9a9c97">Private. Stored on your device. Never sold.</span>
+        </div>
+
+      </div>
+
       <!-- Quick actions -->
       <div id="quick-actions" style="display:flex;flex-direction:column;gap:8px">
         <div class="section-label" id="quick-actions-label" style="padding-left:2px">Quick access</div>
@@ -1943,6 +2014,8 @@ function refreshUI() {
   document.getElementById('prof-avatar').textContent = ini;
 
   if (has) {
+    const _condHide = document.getElementById('home-conditions-section');
+    if (_condHide) _condHide.style.display = 'none';
     const hr = new Date().getHours();
     const todGreet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
     const todTip = hr < 12
@@ -1984,6 +2057,11 @@ function refreshUI() {
     document.getElementById('wb-greeting').textContent = 'Welcome to Ivy';
     document.getElementById('wb-msg').textContent = 'Private, personalized, judgment-free guidance — built around you.';
     document.getElementById('home-cta').textContent = 'Get started';
+    document.getElementById('home-cta').style.display = 'none';
+    const _condShow = document.getElementById('home-conditions-section');
+    if (_condShow) _condShow.style.display = 'block';
+    const _quickHide = document.getElementById('quick-actions');
+    if (_quickHide) _quickHide.style.display = 'none';
   }
 
   // Show dispensary shortcut if one is selected — regardless of profile state
