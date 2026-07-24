@@ -2350,6 +2350,17 @@ function startConditionChat(condition) {
     anxiety: 'I am dealing with anxiety and stress and would like help finding the right cannabis product for me.',
     other: 'I would like help finding a cannabis product that fits my wellness needs.'
   };
+  const conditionGoalMap = {
+    sleep:   'Better sleep',
+    pain:    'Pain relief',
+    anxiety: 'Anxiety relief',
+    other:   ''
+  };
+  const mappedGoal = conditionGoalMap[condition];
+  if (mappedGoal) {
+    profile.goals = profile.goals && profile.goals.length ? profile.goals : [mappedGoal];
+    saveData();
+  }
   const prompt = prompts[condition] || prompts.other;
   switchTab('chat');
   setTimeout(function() {
