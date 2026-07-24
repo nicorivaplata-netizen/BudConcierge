@@ -216,107 +216,28 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
           <path d="M28,24 C22,19 13,16 11,9 C17,11 24,17 28,24 Z" fill="white"/>
           <path d="M28,24 C34,19 43,16 45,9 C39,11 32,17 28,24 Z" fill="white"/>
         </svg>
-        <div class="topbar-title" id="home-title" style="letter-spacing:-0.3px;color:white">Ivy</div>
+        <div class="topbar-title" id="home-title" style="letter-spacing:-0.3px">Ivy</div>
       </div>
-      <div class="wb-avatar" id="home-avatar" style="width:34px;height:34px;font-size:13px;cursor:pointer;border:1.5px solid rgba(255,255,255,0.4);color:white;background:rgba(255,255,255,0.15)" onclick="switchTab('profile')">?</div>
+      <div class="wb-avatar" id="home-avatar" style="width:34px;height:34px;font-size:13px;cursor:pointer;border:1.5px solid var(--green-mid)" onclick="switchTab('profile')">?</div>
     </div>
 
-  <div class="home-hero" id="home-hero-card">
-    <div class="home-hero-greeting" id="home-hero-label" style="display:none">Welcome</div>
-    <div class="home-hero-name" id="wb-greeting">Your cannabis guide</div>
-    <div class="home-hero-sub" id="wb-msg">Private, personalized, judgment-free guidance built around you.</div>
-    <div class="home-hero-pill" id="home-hero-pill" style="display:none">
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-      <span id="home-hero-pill-text">Ready for you</span>
-    </div>
-  </div>
+    <div class="content" style="padding-top:12px">
 
-  <div class="content" style="padding-top:12px;background:var(--surface)">
-    <button class="btn-primary" id="home-cta" onclick="handleCTA()" style="border-radius:12px">Start chatting with Ivy</button>
-    <div id="home-conditions-section" style="display:none">
-
-    <div class="section-label" style="margin-bottom:10px;padding-left:2px">
-      What brings you here today?
-    </div>
-
-    <div style="background:var(--surface);border:0.5px solid var(--border-mid);border-radius:var(--radius-md);overflow:hidden;margin-bottom:10px">
-
-      <div class="condition-entry" onclick="startConditionChat('sleep')">
-        <div class="condition-icon" style="background:#e8f0fb">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#185fa5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
+      <!-- Hero card — personalized welcome -->
+      <div class="home-hero" id="home-hero-card">
+        <div class="home-hero-greeting" id="home-hero-label" style="display:none">Welcome</div>
+        <div class="home-hero-name" id="wb-greeting">Your cannabis guide</div>
+        <div class="home-hero-sub" id="wb-msg">Private, personalized, judgment-free guidance — built around you.</div>
+        <div class="home-hero-pill" id="home-hero-pill" style="display:none">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          <span id="home-hero-pill-text">Ready for you</span>
         </div>
-        <div class="condition-info">
-          <div class="condition-title">Sleep issues</div>
-          <div class="condition-sub">Trouble falling or staying asleep</div>
-        </div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
 
-      <div style="height:0.5px;background:var(--border);margin:0 14px"></div>
+      <button class="btn-primary" id="home-cta" onclick="handleCTA()" style="border-radius:12px">Start chatting with Ivy</button>
 
-      <div class="condition-entry" onclick="startConditionChat('pain')">
-        <div class="condition-icon" style="background:#e8f7f1">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0f6e56" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-          </svg>
-        </div>
-        <div class="condition-info">
-          <div class="condition-title">Pain or inflammation</div>
-          <div class="condition-sub">Chronic pain, muscle tension, nerve pain</div>
-        </div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-
-      <div style="height:0.5px;background:var(--border);margin:0 14px"></div>
-
-      <div class="condition-entry" onclick="startConditionChat('anxiety')">
-        <div class="condition-icon" style="background:#faf0fb">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#993556" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-          </svg>
-        </div>
-        <div class="condition-info">
-          <div class="condition-title">Anxiety or stress</div>
-          <div class="condition-sub">Worry, tension, or racing thoughts</div>
-        </div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-
-      <div style="height:0.5px;background:var(--border);margin:0 14px"></div>
-
-      <div class="condition-entry" onclick="startConditionChat('other')">
-        <div class="condition-icon" style="background:var(--surface-3)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
-          </svg>
-        </div>
-        <div class="condition-info">
-          <div class="condition-title">Something else</div>
-          <div class="condition-sub">Mood, focus, nausea, or another need</div>
-        </div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-
-    </div>
-
-    <button onclick="handleCTA()"
-      style="width:100%;padding:10px;background:transparent;color:var(--text-3);border:0.5px solid var(--border-mid);border-radius:var(--radius-md);font-size:12px;font-weight:400;cursor:pointer;font-family:var(--font);margin-bottom:10px">
-      Set up a full profile instead
-    </button>
-
-    <div style="display:flex;align-items:center;justify-content:center;gap:5px">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-      </svg>
-      <span style="font-size:10px;color:var(--text-3)">Private. Stored on your device. Never sold.</span>
-    </div>
-
-    </div>
-    <!-- Quick actions -->
-    <div id="quick-actions" style="display:flex;flex-direction:column;gap:8px">
+      <!-- Quick actions -->
+      <div id="quick-actions" style="display:flex;flex-direction:column;gap:8px">
         <div class="section-label" id="quick-actions-label" style="padding-left:2px">Quick access</div>
 
         <!-- Dispensary shortcut -->
@@ -402,10 +323,8 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   <!-- ═══════════════════════════════════════════
        CHAT SCREEN
   ═══════════════════════════════════════════ -->
-
-
   <div id="screen-chat" class="screen">
-    <div class="topbar" style="background:var(--surface);border-bottom:1px solid var(--border)">
+    <div class="topbar">
       <button class="back-btn" onclick="switchTab('home')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
@@ -448,7 +367,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
        PROFILE SCREEN
   ═══════════════════════════════════════════ -->
   <div id="screen-profile" class="screen">
-    <div class="topbar" style="background:var(--surface);border-bottom:1px solid var(--border)">
+    <div class="topbar">
       <button class="back-btn" onclick="switchTab('home')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
@@ -540,7 +459,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
        EDIT PROFILE SCREEN
   ═══════════════════════════════════════════ -->
   <div id="screen-edit" class="screen">
-    <div class="topbar" style="background:var(--surface);border-bottom:1px solid var(--border)">
+    <div class="topbar">
       <button class="back-btn" onclick="switchTab('profile')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
@@ -729,7 +648,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
        DISPENSARY FINDER SCREEN
   ═══════════════════════════════════════════ -->
   <div id="screen-dispensary" class="screen">
-    <div class="topbar" style="background:var(--surface);border-bottom:1px solid var(--border)">
+    <div class="topbar">
       <button class="back-btn" onclick="switchTab('home')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
@@ -803,13 +722,13 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
             </select>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;box-sizing:border-box;overflow:hidden">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <div style="display:flex;flex-direction:column;gap:4px">
               <label style="font-size:11px;font-weight:600;color:#5a8f74;letter-spacing:0.06em;text-transform:uppercase">City</label>
               <input type="text" id="disp-city"
                 placeholder="e.g. Dallas"
                 onkeydown="if(event.key==='Enter')searchDispensaries()"
-                style="padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111;font-family:inherit;width:100%;box-sizing:border-box">
+                style="padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111;font-family:inherit">
             </div>
             <div style="display:flex;flex-direction:column;gap:4px">
               <label style="font-size:11px;font-weight:600;color:#5a8f74;letter-spacing:0.06em;text-transform:uppercase">Zip Code</label>
@@ -818,7 +737,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
                 inputmode="numeric"
                 maxlength="5"
                 onkeydown="if(event.key==='Enter')searchDispensaries()"
-                style="padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111;font-family:inherit;width:100%;box-sizing:border-box">
+                style="padding:10px 13px;border:1.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;background:#fff;color:#111;font-family:inherit">
             </div>
           </div>
 
@@ -860,7 +779,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
        MY JOURNAL SCREEN
   ═══════════════════════════════════════════ -->
   <div id="screen-journal" class="screen">
-    <div class="topbar" style="background:var(--surface);border-bottom:1px solid var(--border)">
+    <div class="topbar">
       <button class="back-btn" onclick="switchTab('home')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
@@ -1101,27 +1020,44 @@ function getJournalInsights() {
   return { bestType, bestTypeAvg: Math.round(bestTypeAvg*10)/10, bestEffect: effectLabels[bestEffect], bestEffectAvg, topProduct, count: journal.length };
 }
 
-function snoozeJournalNudge(productName, btn) {
-  const card = btn.closest('div[style*="background:var(--green-light)"]');
-  if (!card) return;
-
-  const actionsRow = btn.parentElement;
-  if (actionsRow) {
-    actionsRow.innerHTML = `
-      <div style="width:100%;text-align:center;padding:6px 0;font-size:12px;color:var(--text-3);font-style:italic">
-        Reminder saved. We will check in next time.
-      </div>
-    `;
-  }
-
+function dismissJournalNudge(productName) {
+  // Temporarily dismiss this nudge by marking it in session storage
   try {
-    const snoozed = JSON.parse(sessionStorage.getItem('bc_nudge_snoozed') || '[]');
-    const key = productName.toLowerCase().trim();
-    if (!snoozed.includes(key)) {
-      snoozed.push(key);
-      sessionStorage.setItem('bc_nudge_snoozed', JSON.stringify(snoozed));
-    }
+    const dismissed = JSON.parse(sessionStorage.getItem('bc_nudge_dismissed') || '[]');
+    dismissed.push(productName.toLowerCase().trim());
+    sessionStorage.setItem('bc_nudge_dismissed', JSON.stringify(dismissed));
   } catch(e) {}
+  // Re-render journal to show next untried product or hide nudge
+  const nudgeEl = document.getElementById('journal-nudge');
+
+  // Find next untried saved product that hasn't been dismissed
+  const dismissed = JSON.parse(sessionStorage.getItem('bc_nudge_dismissed') || '[]');
+  const journaledNames = new Set(journal.map(e => e.product?.toLowerCase().trim()));
+  const next = strainHistory.find(h =>
+    h.name &&
+    !journaledNames.has(h.name.toLowerCase().trim()) &&
+    !dismissed.includes(h.name.toLowerCase().trim())
+  );
+
+  if (nudgeEl) nudgeEl.innerHTML = '';
+  if (next && nudgeEl) {
+    nudgeEl.innerHTML = `
+      <div style="background:#E1F5EE;border:1.5px solid #a8dfc9;border-radius:14px;padding:14px 16px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:#0d6647;letter-spacing:0.06em;margin-bottom:6px">HAVE YOU TRIED IT YET?</div>
+        <div style="font-size:13px;color:#111;font-weight:600;margin-bottom:4px">${next.name}</div>
+        <div style="font-size:12px;color:#5a5c57;margin-bottom:12px">You saved this recently. If you've tried it, log how it felt — it takes 30 seconds.</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="startJournalEntry('${next.name.replace(/'/g,"\'")}','${next.type||''}')"
+            style="flex:1;padding:9px;background:#1a9968;border:none;border-radius:10px;font-size:13px;font-weight:700;color:white;cursor:pointer;font-family:inherit">
+            Log how it felt
+          </button>
+          <button onclick="dismissJournalNudge('${next.name.replace(/'/g,"\'")}' )"
+            style="padding:9px 12px;background:transparent;border:1.5px solid #a8dfc9;border-radius:10px;font-size:12px;color:#9a9c97;cursor:pointer;font-family:inherit">
+            Not yet
+          </button>
+        </div>
+      </div>`;
+  }
 }
 
 function startJournalEntry(productName, productType) {
@@ -1168,17 +1104,9 @@ function renderJournal() {
 
   // Find saved products that haven't been journaled yet — nudge to log them
   const journaledNames = new Set(journal.map(e => e.product?.toLowerCase().trim()));
-  const _snoozed = (() => {
-    try {
-      return JSON.parse(sessionStorage.getItem('bc_nudge_snoozed') || '[]');
-    } catch(e) { return []; }
-  })();
-
-  const untriedSaved = strainHistory.filter(function(h) {
-    return h.name &&
-      !journaledNames.has(h.name.toLowerCase().trim()) &&
-      !_snoozed.includes(h.name.toLowerCase().trim());
-  });
+  const untriedSaved = strainHistory.filter(h =>
+    h.name && !journaledNames.has(h.name.toLowerCase().trim())
+  ).slice(0, 3);
 
   // Inject or update nudge card above journal list
   let nudgeEl = document.getElementById('journal-nudge');
@@ -1191,27 +1119,23 @@ function renderJournal() {
   }
 
   if (untriedSaved.length > 0) {
-    nudgeEl.innerHTML = untriedSaved.map(function(product) {
-      const safeName = product.name.replace(/'/g, "\\'");
-      const safeType = (product.type || '').replace(/'/g, "\\'");
-      return `
-        <div style="background:var(--green-light);border:0.5px solid var(--green-mid);border-radius:12px;padding:14px;margin-bottom:8px">
-          <div style="font-size:10px;font-weight:600;color:var(--green-text);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px">Have you tried it yet?</div>
-          <div style="font-size:13px;font-weight:500;color:var(--text-1);margin-bottom:3px">${product.name}</div>
-          <div style="font-size:12px;color:var(--text-2);line-height:1.5;margin-bottom:10px">You saved this product. Log how it felt so Ivy can refine future recommendations for you.</div>
-          <div style="display:flex;gap:8px">
-            <button onclick="startJournalEntry('${safeName}','${safeType}')"
-              style="flex:1;padding:9px;background:var(--green-dark);border:none;border-radius:9px;font-size:12px;font-weight:500;color:white;cursor:pointer;font-family:var(--font)">
-              Log how it felt
-            </button>
-            <button onclick="snoozeJournalNudge('${safeName}', this)"
-              style="padding:9px 12px;background:transparent;border:0.5px solid var(--green-mid);border-radius:9px;font-size:12px;color:var(--text-3);cursor:pointer;font-family:var(--font)">
-              Not yet
-            </button>
-          </div>
+    const product = untriedSaved[0];
+    nudgeEl.innerHTML = `
+      <div style="background:#E1F5EE;border:1.5px solid #a8dfc9;border-radius:14px;padding:14px 16px;margin-bottom:12px">
+        <div style="font-size:11px;font-weight:700;color:#0d6647;letter-spacing:0.06em;margin-bottom:6px">HAVE YOU TRIED IT YET?</div>
+        <div style="font-size:13px;color:#111;font-weight:600;margin-bottom:4px">${product.name}</div>
+        <div style="font-size:12px;color:#5a5c57;margin-bottom:12px">You saved this recently. If you've tried it, log how it felt — it takes 30 seconds.</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="startJournalEntry('${product.name.replace(/'/g,"\\'")}','${product.type||''}')"
+            style="flex:1;padding:9px;background:#1a9968;border:none;border-radius:10px;font-size:13px;font-weight:700;color:white;cursor:pointer;font-family:inherit">
+            Log how it felt
+          </button>
+          <button onclick="dismissJournalNudge('${product.name.replace(/'/g,"\\'")}' )"
+            style="padding:9px 12px;background:transparent;border:1.5px solid #a8dfc9;border-radius:10px;font-size:12px;color:#9a9c97;cursor:pointer;font-family:inherit">
+            Not yet
+          </button>
         </div>
-      `;
-    }).join('');
+      </div>`;
   } else {
     nudgeEl.innerHTML = '';
   }
@@ -2027,22 +1951,15 @@ function switchTab(tab) {
 
 // ─── UI refresh ───────────────────────────────────────────────────────────────
 function refreshUI() {
-  if (sessionStorage.getItem('bc_qr_session')) {
-    showQRWelcome();
-  }
-
   const has = !!profile.name;
   const ini = initials(profile.name);
 
-  const homeAv = document.getElementById('home-avatar');
-  if (homeAv) homeAv.textContent = ini;
+  document.getElementById('home-avatar').textContent = ini;
   const wbAv = document.getElementById('wb-avatar');
   if (wbAv) wbAv.textContent = ini;
   document.getElementById('prof-avatar').textContent = ini;
 
   if (has) {
-    const condSectionHide = document.getElementById('home-conditions-section');
-    if (condSectionHide) condSectionHide.style.display = 'none';
     const hr = new Date().getHours();
     const todGreet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
     const todTip = hr < 12
@@ -2055,6 +1972,7 @@ function refreshUI() {
     document.getElementById('wb-greeting').textContent  = 'Hey ' + firstName;
     document.getElementById('wb-msg').textContent       = todTip;
     document.getElementById('home-cta').textContent     = 'Chat with Ivy';
+    // home-badge hidden
     // Hide profile nudge in chat when profile exists
     const nudge = document.getElementById('chat-profile-nudge');
     if (nudge) nudge.style.display = 'none';
@@ -2074,7 +1992,6 @@ function refreshUI() {
     document.getElementById('prof-name').textContent    = profile.name;
     document.getElementById('prof-since').textContent   = profile.joined ? 'Member since ' + profile.joined : '';
     document.getElementById('quick-actions').style.display = 'flex';
-    document.querySelectorAll('.action-card').forEach(function(card) { if (card.id !== 'profile-shortcut') card.style.display = ''; });
     document.getElementById('quick-actions-label').textContent = 'Quick start';
     const profileShortcut = document.getElementById('profile-shortcut');
     if (profileShortcut) profileShortcut.style.display = 'flex';
@@ -2082,13 +1999,8 @@ function refreshUI() {
     document.getElementById('chat-shortcut-sub').textContent = goals;
   } else {
     document.getElementById('wb-greeting').textContent = 'Welcome to Ivy';
-    document.getElementById('wb-msg').textContent = 'Private, personalized, judgment-free guidance built around you.';
+    document.getElementById('wb-msg').textContent = 'Private, personalized, judgment-free guidance — built around you.';
     document.getElementById('home-cta').textContent = 'Get started';
-    const condSection2 = document.getElementById('home-conditions-section');
-    if (condSection2) condSection2.style.display = 'block';
-    document.querySelectorAll('.action-card').forEach(function(card) { card.style.display = 'none'; });
-    const quickSection = document.getElementById('quick-actions');
-    if (quickSection) quickSection.style.display = 'none';
   }
 
   // Show dispensary shortcut if one is selected — regardless of profile state
@@ -2277,59 +2189,6 @@ function refreshUI() {
   } else if (suggWrap) {
     suggWrap.style.display = 'none';
   }
-}
-
-function startGoalChat(goal) {
-  switchTab('chat');
-  setTimeout(function() {
-    if (!chatInitialized) startChat();
-    setTimeout(function() {
-      var input = document.getElementById('chat-input');
-      if (input) {
-        input.value = 'I need help with ' + goal.toLowerCase();
-        sendMessage();
-        setTimeout(function() {
-          var msgsEl = document.getElementById('messages');
-          if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
-        }, 300);
-      }
-    }, 400);
-  }, 100);
-}
-
-function startConditionChat(condition) {
-  var prompts = {
-    sleep: 'I am having trouble sleeping and would like help finding the right cannabis product for me.',
-    pain: 'I am dealing with pain and inflammation and would like help finding the right cannabis product for me.',
-    anxiety: 'I am dealing with anxiety and stress and would like help finding the right cannabis product for me.',
-    other: 'I would like help finding a cannabis product that fits my wellness needs.'
-  };
-
-  var prompt = prompts[condition] || prompts.other;
-
-  switchTab('chat');
-  setTimeout(function() {
-    if (!chatInitialized) startChat();
-    setTimeout(function() {
-      var input = document.getElementById('chat-input');
-      if (input) {
-        input.value = prompt;
-        sendMessage();
-        setTimeout(function() {
-          var msgsEl = document.getElementById('messages');
-          if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
-        }, 300);
-      }
-    }, 400);
-  }, 100);
-}
-
-function handleCTAAndScroll() {
-  handleCTA();
-  setTimeout(function() {
-    var msgsEl = document.getElementById('messages');
-    if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
-  }, 600);
 }
 
 function updateCompletion() {
@@ -3666,46 +3525,6 @@ function startChat() {
   }
 }
 
-function showQRWelcome() {
-  const slug = sessionStorage.getItem('bc_qr_slug');
-  if (!slug || !DISPENSARIES[slug]) return false;
-
-  const disp = DISPENSARIES[slug];
-  selectedDispensary = disp;
-  saveData();
-
-  const heroName = document.getElementById('home-hero-label') || document.getElementById('wb-greeting');
-  const heroMsg = document.getElementById('wb-msg');
-
-  if (heroName) heroName.textContent = 'Welcome to ' + disp.name + '.';
-  if (heroMsg) heroMsg.textContent = 'Get personalized guidance from ' + disp.name + '\'s live menu — private, free, and built around you.';
-
-  return true;
-}
-
-function startQRChat() {
-  var slug = sessionStorage.getItem('bc_qr_slug');
-  var disp = slug && DISPENSARIES[slug] ? DISPENSARIES[slug] : null;
-
-  switchTab('chat');
-  setTimeout(function() {
-    if (!chatInitialized) startChat();
-    if (disp) {
-      setTimeout(function() {
-        var input = document.getElementById('chat-input');
-        if (input) {
-          input.value = 'Hi Ivy, I am at ' + disp.name + ' and would like personalized guidance.';
-          sendMessage();
-          setTimeout(function() {
-            var msgsEl = document.getElementById('messages');
-            if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
-          }, 300);
-        }
-      }, 400);
-    }
-  }, 100);
-}
-
 // ── Quick Setup Card — shown inline in chat for new users ────────────────────
 let quickSetupData = { name: '', experience: '', goals: [], conditions: [], otherCondition: '', medications: '' };
 
@@ -4087,24 +3906,20 @@ inp.addEventListener('input', () => { inp.style.height = 'auto'; inp.style.heigh
 // ─── Dispensary Registry ──────────────────────────────────────────────────────
 const DISPENSARIES = {
   // MO — Recreational + Medical since Nov 2022
-  'high-profile-pineville':      { name: 'High Profile — Pineville, MO',        brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  type: 'cannabis', payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-pineville',      menuUrl: 'https://highprofilecannabis.com/shop/pineville-dispensary' },
-  'mo-chesterfield-hp':          { name: 'High Profile — Chesterfield, MO',     brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  type: 'cannabis', payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-chesterfield',   menuUrl: 'https://highprofilecannabis.com/shop/chesterfield-dispensary' },
-  'mo-columbia-hp':              { name: 'High Profile — Columbia, MO',         brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  type: 'cannabis', payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-columbia',       menuUrl: 'https://highprofilecannabis.com/shop/columbia-dispensary' },
-  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO',   brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  type: 'cannabis', payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-cape-girardeau', menuUrl: 'https://highprofilecannabis.com/shop/cape-girardeau-dispensary' },
+  'high-profile-pineville':      { name: 'High Profile — Pineville, MO',        brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-pineville',      menuUrl: 'https://highprofilecannabis.com/shop/pineville-dispensary' },
+  'mo-chesterfield-hp':          { name: 'High Profile — Chesterfield, MO',     brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-chesterfield',   menuUrl: 'https://highprofilecannabis.com/shop/chesterfield-dispensary' },
+  'mo-columbia-hp':              { name: 'High Profile — Columbia, MO',         brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-columbia',       menuUrl: 'https://highprofilecannabis.com/shop/columbia-dispensary' },
+  'high-profile-cape-girardeau': { name: 'High Profile — Cape Girardeau, MO',   brand: 'High Profile',   state: 'MO', recreational: true,  medical: true,  payment: 'Cash, debit', hours: '',                    wmSlug: 'high-profile-cape-girardeau', menuUrl: 'https://highprofilecannabis.com/shop/cape-girardeau-dispensary' },
   // AZ — Recreational + Medical since Nov 2020
-  'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis', state: 'AZ', recreational: true,  medical: true,  type: 'cannabis', payment: '',            hours: '',                    wmSlug: 'story-dunlap',                menuUrl: 'https://storycannabis.com/shop/arizona/shop-dunlap/rec-menu' },
+  'story-dunlap':                { name: 'Story Cannabis — Phoenix, AZ',         brand: 'Story Cannabis', state: 'AZ', recreational: true,  medical: true,  payment: '',            hours: '',                    wmSlug: 'story-dunlap',                menuUrl: 'https://storycannabis.com/shop/arizona/shop-dunlap/rec-menu' },
   // MD — Recreational + Medical since Jul 2023
-  'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', state: 'MD', recreational: true,  medical: true,  type: 'cannabis', payment: '',            hours: '',                    wmSlug: 'story-mechanicsville',        menuUrl: 'https://storycannabis.com/shop/maryland/shop-mechanicsville/med-menu' },
+  'story-mechanicsville':        { name: 'Story Cannabis — Mechanicsville, MD',  brand: 'Story Cannabis', state: 'MD', recreational: true,  medical: true,  payment: '',            hours: '',                    wmSlug: 'story-mechanicsville',        menuUrl: 'https://storycannabis.com/shop/maryland/shop-mechanicsville/med-menu' },
   // OH — Recreational + Medical since Aug 2023
-  'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', state: 'OH', recreational: true,  medical: true,  type: 'cannabis', payment: '',            hours: '',                    wmSlug: 'story-cleveland',             menuUrl: 'https://storycannabis.com/shop/ohio/shop-cleveland/rec-menu' },
+  'story-cleveland':             { name: 'Story Cannabis — Cleveland, OH',       brand: 'Story Cannabis', state: 'OH', recreational: true,  medical: true,  payment: '',            hours: '',                    wmSlug: 'story-cleveland',             menuUrl: 'https://storycannabis.com/shop/ohio/shop-cleveland/rec-menu' },
   // AR — Medical only (recreational ballot failed 2022)
-  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      state: 'AR', recreational: false, medical: true,  type: 'cannabis', payment: '',            hours: '',                    wmSlug: 'purspirit-cannabis-co',        menuUrl: 'https://menu.purspirit.com/shop/menu' },
-  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', recreational: false, medical: true,  type: 'cannabis', payment: '',            hours: '',                    wmSlug: 'the-source-rogers',           menuUrl: 'https://www.thesource-mj.com/stores/the-source-rogers', city: 'rogers', altNames: ['the source rogers', 'source rogers', 'the source craft'] },
-  'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       state: 'AR', recreational: false, medical: true,  type: 'cannabis', payment: '',            hours: '',                    wmSlug: 'the-hill-fayetteville',       menuUrl: 'https://thehillnwa.com/our-menu' },
-  // TX/OK — CBD retail (non-plant-touching)
-  'sunmed-dallas-legacy':        { name: 'SunMed — Legacy West, Plano TX',       brand: 'SunMed',         state: 'TX', recreational: false, medical: false, type: 'cbd',     payment: 'Cash + card', hours: 'Mon–Sat 10am–8pm, Sun 11am–6pm', menuUrl: 'https://gosunmed.com' },
-  'sunmed-dallas-frisco':        { name: 'SunMed — Frisco, TX',                  brand: 'SunMed',         state: 'TX', recreational: false, medical: false, type: 'cbd',     payment: 'Cash + card', hours: 'Mon–Sat 10am–8pm, Sun 11am–6pm', menuUrl: 'https://gosunmed.com' },
-  'sunmed-okc':                  { name: 'SunMed — Oklahoma City, OK',           brand: 'SunMed',         state: 'OK', recreational: false, medical: false, type: 'cbd',     payment: 'Cash + card', hours: 'Mon–Sat 10am–8pm, Sun 11am–6pm', menuUrl: 'https://gosunmed.com' },
+  'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      state: 'AR', recreational: false, medical: true,  payment: '',            hours: '',                    wmSlug: 'purspirit-cannabis-co',        menuUrl: 'https://menu.purspirit.com/shop/menu' },
+  'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', recreational: false, medical: true,  payment: '',            hours: '',                    wmSlug: 'the-source-rogers',           menuUrl: 'https://www.thesource-mj.com/stores/the-source-rogers', city: 'rogers', altNames: ['the source rogers', 'source rogers', 'the source craft'] },
+  'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       state: 'AR', recreational: false, medical: true,  payment: '',            hours: '',                    wmSlug: 'the-hill-fayetteville',       menuUrl: 'https://thehillnwa.com/our-menu' },
 };
 
 let selectedDispensary = null; // { slug, name, brand, inventory[] }
@@ -4276,17 +4091,6 @@ function buildInventoryContext() {
 }
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────
-(function detectQR() {
-  var params = new URLSearchParams(window.location.search);
-  var slug = params.get('ref');
-  var kiosk = params.get('kiosk') === 'true';
-  if (slug) {
-    sessionStorage.setItem('bc_qr_slug', slug);
-    sessionStorage.setItem('bc_qr_session', '1');
-    if (kiosk) sessionStorage.setItem('bc_kiosk', '1');
-  }
-})();
-
 loadData();
 loadJournal();
 refreshUI();
