@@ -1020,44 +1020,24 @@ function getJournalInsights() {
   return { bestType, bestTypeAvg: Math.round(bestTypeAvg*10)/10, bestEffect: effectLabels[bestEffect], bestEffectAvg, topProduct, count: journal.length };
 }
 
-function dismissJournalNudge(productName) {
-  // Temporarily dismiss this nudge by marking it in session storage
-  try {
-    const dismissed = JSON.parse(sessionStorage.getItem('bc_nudge_dismissed') || '[]');
-    dismissed.push(productName.toLowerCase().trim());
-    sessionStorage.setItem('bc_nudge_dismissed', JSON.stringify(dismissed));
-  } catch(e) {}
-  // Re-render journal to show next untried product or hide nudge
-  const nudgeEl = document.getElementById('journal-nudge');
-
-  // Find next untried saved product that hasn't been dismissed
-  const dismissed = JSON.parse(sessionStorage.getItem('bc_nudge_dismissed') || '[]');
-  const journaledNames = new Set(journal.map(e => e.product?.toLowerCase().trim()));
-  const next = strainHistory.find(h =>
-    h.name &&
-    !journaledNames.has(h.name.toLowerCase().trim()) &&
-    !dismissed.includes(h.name.toLowerCase().trim())
-  );
-
-  if (nudgeEl) nudgeEl.innerHTML = '';
-  if (next && nudgeEl) {
-    nudgeEl.innerHTML = `
-      <div style="background:#E1F5EE;border:1.5px solid #a8dfc9;border-radius:14px;padding:14px 16px;margin-bottom:12px">
-        <div style="font-size:11px;font-weight:700;color:#0d6647;letter-spacing:0.06em;margin-bottom:6px">HAVE YOU TRIED IT YET?</div>
-        <div style="font-size:13px;color:#111;font-weight:600;margin-bottom:4px">${next.name}</div>
-        <div style="font-size:12px;color:#5a5c57;margin-bottom:12px">You saved this recently. If you've tried it, log how it felt — it takes 30 seconds.</div>
-        <div style="display:flex;gap:8px">
-          <button onclick="startJournalEntry('${next.name.replace(/'/g,"\'")}','${next.type||''}')"
-            style="flex:1;padding:9px;background:#1a9968;border:none;border-radius:10px;font-size:13px;font-weight:700;color:white;cursor:pointer;font-family:inherit">
-            Log how it felt
-          </button>
-          <button onclick="dismissJournalNudge('${next.name.replace(/'/g,"\'")}' )"
-            style="padding:9px 12px;background:transparent;border:1.5px solid #a8dfc9;border-radius:10px;font-size:12px;color:#9a9c97;cursor:pointer;font-family:inherit">
-            Not yet
-          </button>
-        </div>
+function snoozeJournalNudge(productName, btn) {
+  const card = btn.closest('div[style*="background:#E1F5EE"]') || btn.parentElement?.parentElement;
+  if (!card) return;
+  const actionsRow = btn.parentElement;
+  if (actionsRow) {
+    actionsRow.innerHTML = `
+      <div style="width:100%;text-align:center;padding:6px 0;font-size:12px;color:#9a9c97;font-style:italic">
+        Reminder saved. We will check in next time.
       </div>`;
   }
+  try {
+    const snoozed = JSON.parse(sessionStorage.getItem('bc_nudge_snoozed') || '[]');
+    const key = productName.toLowerCase().trim();
+    if (!snoozed.includes(key)) {
+      snoozed.push(key);
+      sessionStorage.setItem('bc_nudge_snoozed', JSON.stringify(snoozed));
+    }
+  } catch(e) {}
 }
 
 function startJournalEntry(productName, productType) {
@@ -1130,7 +1110,7 @@ function renderJournal() {
             style="flex:1;padding:9px;background:#1a9968;border:none;border-radius:10px;font-size:13px;font-weight:700;color:white;cursor:pointer;font-family:inherit">
             Log how it felt
           </button>
-          <button onclick="dismissJournalNudge('${product.name.replace(/'/g,"\\'")}' )"
+          <button onclick="snoozeJournalNudge('${product.name.replace(/'/g,"\\'")}', this)"
             style="padding:9px 12px;background:transparent;border:1.5px solid #a8dfc9;border-radius:10px;font-size:12px;color:#9a9c97;cursor:pointer;font-family:inherit">
             Not yet
           </button>
@@ -1951,6 +1931,9 @@ function switchTab(tab) {
 
 // ─── UI refresh ───────────────────────────────────────────────────────────────
 function refreshUI() {
+  if (sessionStorage.getItem('bc_qr_session')) {
+    showQRWelcome();
+  }
   const has = !!profile.name;
   const ini = initials(profile.name);
 
@@ -2272,6 +2255,39 @@ function renderHistory(id) {
 function handleCTA() {
   switchTab('chat');
   setTimeout(() => { if (!chatInitialized) startChat(); }, 100);
+}
+
+function handleCTAAndScroll() {
+  handleCTA();
+  setTimeout(function() {
+    const msgsEl = document.getElementById('messages');
+    if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
+  }, 600);
+}
+
+function startConditionChat(condition) {
+  const prompts = {
+    sleep: 'I am having trouble sleeping and would like help finding the right cannabis product for me.',
+    pain: 'I am dealing with pain and inflammation and would like help finding the right cannabis product for me.',
+    anxiety: 'I am dealing with anxiety and stress and would like help finding the right cannabis product for me.',
+    other: 'I would like help finding a cannabis product that fits my wellness needs.'
+  };
+  const prompt = prompts[condition] || prompts.other;
+  switchTab('chat');
+  setTimeout(function() {
+    if (!chatInitialized) startChat();
+    setTimeout(function() {
+      const input = document.getElementById('chat-input');
+      if (input) {
+        input.value = prompt;
+        sendMessage();
+        setTimeout(function() {
+          const msgsEl = document.getElementById('messages');
+          if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
+        }, 300);
+      }
+    }, 400);
+  }, 100);
 }
 
 // ─── Edit profile ─────────────────────────────────────────────────────────────
@@ -3525,6 +3541,41 @@ function startChat() {
   }
 }
 
+function showQRWelcome() {
+  const slug = sessionStorage.getItem('bc_qr_slug');
+  if (!slug || !DISPENSARIES[slug]) return false;
+  const disp = DISPENSARIES[slug];
+  selectedDispensary = disp;
+  saveData();
+  const greetEl = document.getElementById('wb-greeting');
+  const msgEl = document.getElementById('wb-msg');
+  if (greetEl) greetEl.textContent = 'Welcome to ' + disp.name + '.';
+  if (msgEl) msgEl.textContent = 'Get personalized guidance from ' + disp.name + '. Private, free, and built around you.';
+  return true;
+}
+
+function startQRChat() {
+  const slug = sessionStorage.getItem('bc_qr_slug');
+  const disp = slug && DISPENSARIES[slug] ? DISPENSARIES[slug] : null;
+  switchTab('chat');
+  setTimeout(function() {
+    if (!chatInitialized) startChat();
+    if (disp) {
+      setTimeout(function() {
+        const input = document.getElementById('chat-input');
+        if (input) {
+          input.value = 'Hi Ivy, I am at ' + disp.name + ' and would like personalized guidance.';
+          sendMessage();
+          setTimeout(function() {
+            const msgsEl = document.getElementById('messages');
+            if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
+          }, 300);
+        }
+      }, 400);
+    }
+  }, 100);
+}
+
 // ── Quick Setup Card — shown inline in chat for new users ────────────────────
 let quickSetupData = { name: '', experience: '', goals: [], conditions: [], otherCondition: '', medications: '' };
 
@@ -3920,6 +3971,39 @@ const DISPENSARIES = {
   'purspirit-fayetteville':      { name: 'PurSpirit — Fayetteville, AR',         brand: 'PurSpirit',      state: 'AR', recreational: false, medical: true,  payment: '',            hours: '',                    wmSlug: 'purspirit-cannabis-co',        menuUrl: 'https://menu.purspirit.com/shop/menu' },
   'the-source-rogers':           { name: 'The Source — Rogers, AR',              brand: 'The Source',     state: 'AR', recreational: false, medical: true,  payment: '',            hours: '',                    wmSlug: 'the-source-rogers',           menuUrl: 'https://www.thesource-mj.com/stores/the-source-rogers', city: 'rogers', altNames: ['the source rogers', 'source rogers', 'the source craft'] },
   'the-hill-fayetteville':       { name: 'The Hill — Fayetteville, AR',          brand: 'The Hill',       state: 'AR', recreational: false, medical: true,  payment: '',            hours: '',                    wmSlug: 'the-hill-fayetteville',       menuUrl: 'https://thehillnwa.com/our-menu' },
+  'sunmed-dallas-legacy': {
+    name: 'SunMed — Legacy West, Plano TX',
+    brand: 'SunMed',
+    state: 'TX',
+    recreational: false,
+    medical: false,
+    type: 'cbd',
+    payment: 'Cash + card',
+    hours: 'Mon–Sat 10am–8pm, Sun 11am–6pm',
+    menuUrl: 'https://gosunmed.com',
+  },
+  'sunmed-dallas-frisco': {
+    name: 'SunMed — Frisco, TX',
+    brand: 'SunMed',
+    state: 'TX',
+    recreational: false,
+    medical: false,
+    type: 'cbd',
+    payment: 'Cash + card',
+    hours: 'Mon–Sat 10am–8pm, Sun 11am–6pm',
+    menuUrl: 'https://gosunmed.com',
+  },
+  'sunmed-okc': {
+    name: 'SunMed — Oklahoma City, OK',
+    brand: 'SunMed',
+    state: 'OK',
+    recreational: false,
+    medical: false,
+    type: 'cbd',
+    payment: 'Cash + card',
+    hours: 'Mon–Sat 10am–8pm, Sun 11am–6pm',
+    menuUrl: 'https://gosunmed.com',
+  },
 };
 
 let selectedDispensary = null; // { slug, name, brand, inventory[] }
@@ -4091,6 +4175,16 @@ function buildInventoryContext() {
 }
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────
+(function detectQR() {
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('ref');
+  const kiosk = params.get('kiosk') === 'true';
+  if (slug) {
+    sessionStorage.setItem('bc_qr_slug', slug);
+    sessionStorage.setItem('bc_qr_session', '1');
+    if (kiosk) sessionStorage.setItem('bc_kiosk', '1');
+  }
+})();
 loadData();
 loadJournal();
 refreshUI();
