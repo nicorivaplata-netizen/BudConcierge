@@ -10,7 +10,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <!-- PWA: makes it installable on phones like a real app -->
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -36,7 +35,6 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   <div id="screen-agegate" class="screen active">
     <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2.5rem 2rem;text-align:center">
 
-      <!-- Ivy mark -->
       <svg width="64" height="64" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:16px">
         <circle cx="28" cy="28" r="28" fill="#1a9968"/>
         <line x1="28" y1="42" x2="28" y2="14" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
@@ -98,7 +96,6 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
   <div id="screen-onboard" class="screen">
     <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:2.5rem 1.5rem 1.5rem">
 
-      <!-- Ivy logo -->
       <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:4px">
         <svg width="48" height="48" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
   <circle cx="28" cy="28" r="28" fill="#1a9968"/>
@@ -157,7 +154,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
         <div id="ob-slide-3" class="ob-slide" style="width:100%;display:none">
           <h2 style="font-size:22px;font-weight:700;color:#111310;margin-bottom:6px;letter-spacing:-0.5px">Your cannabis experience?</h2>
           <p style="font-size:13px;color:#9a9c97;margin-bottom:18px">Ivy adjusts recommendations to your comfort level.</p>
-          <div style="display:flex;flex-direction:column;gap:10px" id="ob-exp-btns">
+          <div class="flex-col-gap10" id="ob-exp-btns">
             <button onclick="selectObExp('Never tried it')" class="ob-exp-btn" style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">Never tried it</button>
             <button onclick="selectObExp('Tried it once or twice')" class="ob-exp-btn" style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">Tried it once or twice</button>
             <button onclick="selectObExp('Use occasionally')" class="ob-exp-btn" style="width:100%;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#111;text-align:left;transition:all 0.15s">Use occasionally</button>
@@ -194,7 +191,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
         </div>
         <div style="display:flex;gap:10px;align-items:center">
           <button id="ob-back-btn" onclick="prevSlide()" style="display:none;padding:13px 16px;border:1.5px solid rgba(0,0,0,0.1);border-radius:12px;background:#fff;font-size:14px;cursor:pointer;font-family:inherit;color:#5a5c57;flex-shrink:0">← Back</button>
-          <button class="btn-primary" id="ob-btn" onclick="nextSlide()" style="flex:1">Get started</button>
+          <button class="btn-primary flex-1" id="ob-btn" onclick="nextSlide()">Get started</button>
         </div>
         <button onclick="finishOnboard()" style="background:transparent;border:none;color:#9a9c97;font-size:13px;cursor:pointer;padding:6px">Skip for now</button>
       </div>
@@ -223,7 +220,6 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
 
     <div class="content" style="padding-top:12px">
 
-      <!-- Hero card — personalized welcome -->
       <div class="home-hero" id="home-hero-card">
         <div class="home-hero-greeting" id="home-hero-label" style="display:none">Welcome</div>
         <div class="home-hero-name" id="wb-greeting">Your cannabis guide</div>
@@ -248,7 +244,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
             <div style="width:34px;height:34px;border-radius:8px;background:#e8f0fb;display:flex;align-items:center;justify-content:center;flex-shrink:0">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#185fa5" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             </div>
-            <div style="flex:1;min-width:0">
+            <div class="flex-1-min0">
               <div style="font-size:14px;font-weight:500;color:#111310;margin-bottom:2px">Sleep issues</div>
               <div style="font-size:12px;color:#5a5c57;line-height:1.4">Trouble falling or staying asleep</div>
             </div>
@@ -261,7 +257,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
             <div style="width:34px;height:34px;border-radius:8px;background:#e8f7f1;display:flex;align-items:center;justify-content:center;flex-shrink:0">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0f6e56" stroke-width="2" stroke-linecap="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             </div>
-            <div style="flex:1;min-width:0">
+            <div class="flex-1-min0">
               <div style="font-size:14px;font-weight:500;color:#111310;margin-bottom:2px">Pain or inflammation</div>
               <div style="font-size:12px;color:#5a5c57;line-height:1.4">Chronic pain, muscle tension, nerve pain</div>
             </div>
@@ -274,7 +270,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
             <div style="width:34px;height:34px;border-radius:8px;background:#faf0fb;display:flex;align-items:center;justify-content:center;flex-shrink:0">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#993556" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
             </div>
-            <div style="flex:1;min-width:0">
+            <div class="flex-1-min0">
               <div style="font-size:14px;font-weight:500;color:#111310;margin-bottom:2px">Anxiety or stress</div>
               <div style="font-size:12px;color:#5a5c57;line-height:1.4">Worry, tension, or racing thoughts</div>
             </div>
@@ -287,7 +283,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
             <div style="width:34px;height:34px;border-radius:8px;background:#f7f8f6;display:flex;align-items:center;justify-content:center;flex-shrink:0">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9a9c97" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
             </div>
-            <div style="flex:1;min-width:0">
+            <div class="flex-1-min0">
               <div style="font-size:14px;font-weight:500;color:#111310;margin-bottom:2px">Something else</div>
               <div style="font-size:12px;color:#5a5c57;line-height:1.4">Mood, focus, nausea, or another need</div>
             </div>
@@ -311,7 +307,6 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       <div id="quick-actions" style="display:flex;flex-direction:column;gap:8px">
         <div class="section-label" id="quick-actions-label" style="padding-left:2px">Quick access</div>
 
-        <!-- Dispensary shortcut -->
         <div id="disp-shortcut-card" style="display:none;cursor:pointer;padding:14px 16px;background:linear-gradient(135deg,#0d6647,#1a9968);border-radius:16px;border:none;box-shadow:0 4px 16px rgba(13,102,71,0.3)" onclick="useDispensaryShortcut()">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div style="display:flex;align-items:center;gap:12px">
@@ -327,12 +322,11 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
           </div>
         </div>
 
-        <!-- Chat card -->
         <div class="action-card" onclick="switchTab('chat'); setTimeout(() => { if (!chatInitialized) startChat(); }, 100)">
           <div class="action-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
-          <div style="flex:1;min-width:0">
+          <div class="flex-1-min0">
             <div class="action-title">Chat with Ivy</div>
             <div class="action-sub" id="chat-shortcut-sub">Ask anything — private and judgment-free</div>
           </div>
@@ -342,24 +336,22 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
         <!-- Profile nudge / wellness snapshot -->
         <div id="profile-nudge" style="display:none;cursor:pointer;border-radius:14px;overflow:hidden" onclick="switchTab('profile')"></div>
 
-        <!-- Find dispensary card -->
         <div class="action-card" onclick="switchTab('dispensary')">
           <div class="action-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           </div>
-          <div style="flex:1;min-width:0">
+          <div class="flex-1-min0">
             <div class="action-title">Find a dispensary</div>
             <div class="action-sub">Search licensed dispensaries near you</div>
           </div>
           <svg class="action-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
 
-        <!-- Journal card -->
         <div class="action-card" onclick="switchTab('journal')">
           <div class="action-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           </div>
-          <div style="flex:1;min-width:0">
+          <div class="flex-1-min0">
             <div class="action-title">My Journal</div>
             <div class="action-sub" id="journal-shortcut-sub">Track how products make you feel</div>
           </div>
@@ -371,7 +363,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
           <div class="action-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d6647" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
-          <div style="flex:1;min-width:0">
+          <div class="flex-1-min0">
             <div class="action-title">My preferences</div>
             <div class="action-sub">Goals, tolerance &amp; wellness profile</div>
           </div>
@@ -399,7 +391,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       <button class="back-btn" onclick="switchTab('home')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <div style="flex:1">
+      <div class="flex-1">
         <div class="topbar-title">Ivy</div>
         <div class="topbar-sub">Personalized cannabis guidance</div>
       </div>
@@ -409,7 +401,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
     <!-- Profile nudge — shown only when no profile exists -->
     <div id="chat-profile-nudge" style="display:none;margin:10px 16px 0;background:#E1F5EE;border-radius:10px;padding:10px 14px;border:1px solid #a8dfc9">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <div style="flex:1">
+        <div class="flex-1">
           <div style="font-size:12px;font-weight:600;color:#0d6647;margin-bottom:2px">Get personalized recommendations</div>
           <div style="font-size:11px;color:#4a9c78;line-height:1.4">Set up your profile so Ivy knows your health goals, experience, and wellness needs.</div>
         </div>
@@ -442,15 +434,14 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       <button class="back-btn" onclick="switchTab('home')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <div class="topbar-title" style="flex:1">My profile</div>
+      <div class="topbar-title flex-1">My profile</div>
       <span id="prof-badge" style="font-size:10px;background:#E1F5EE;color:#085041;padding:2px 8px;border-radius:10px;font-weight:600">New</span>
     </div>
 
     <div class="content">
-      <!-- Avatar row -->
       <div class="card" style="display:flex;align-items:center;gap:14px">
         <div class="wb-avatar" id="prof-avatar" style="width:52px;height:52px;font-size:20px">?</div>
-        <div style="flex:1">
+        <div class="flex-1">
           <div style="font-size:16px;font-weight:600" id="prof-name">Set up your profile</div>
           <div style="font-size:12px;color:#888" id="prof-since"></div>
         </div>
@@ -470,7 +461,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
 
       <!-- Preferences summary -->
       <div>
-        <div class="section-label" style="margin-bottom:8px">Preferences</div>
+        <div class="section-label mb-8">Preferences</div>
         <div class="card" style="padding:0 16px">
           <div class="pref-row">
             <span class="pref-label">Experience</span>
@@ -513,7 +504,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
 
       <!-- Saved strains -->
       <div>
-        <div class="section-label" style="margin-bottom:8px">Saved strains</div>
+        <div class="section-label mb-8">Saved strains</div>
         <div class="card" style="padding:0;overflow:hidden" id="prof-history-list"></div>
       </div>
 
@@ -543,14 +534,14 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       <div class="card" style="display:flex;flex-direction:column;gap:16px">
 
         <div>
-          <div class="section-label" style="margin-bottom:8px">Your name</div>
+          <div class="section-label mb-8">Your name</div>
           <input type="text" id="edit-name" placeholder="Your first name..." maxlength="30"
             style="width:100%;padding:10px 13px;border:1px solid rgba(0,0,0,0.15);border-radius:8px;font-size:14px;background:#fff;color:#1a1a18">
         </div>
 
         <div>
-          <div class="section-label" style="margin-bottom:8px">Experience level</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="section-label mb-8">Experience level</div>
+          <div class="grid-2col">
             <button class="opt-btn" data-field="experience" data-val="first_time" onclick="pickExperience(this)">First time</button>
             <button class="opt-btn" data-field="experience" data-val="beginner" onclick="pickExperience(this)">Tried it a couple times</button>
             <button class="opt-btn" data-field="experience" data-val="occasional" onclick="pickExperience(this)">Occasional</button>
@@ -561,9 +552,9 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
 
         <!-- Strain preference — shown for Regular and Daily use only -->
         <div id="strain-pref-section" style="display:none">
-          <div class="section-label" style="margin-bottom:4px">Preferred strain type</div>
+          <div class="section-label mb-4">Preferred strain type</div>
           <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">Select all that apply — helps us skip the basics</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="grid-2col">
             <button class="opt-btn" data-field="strain_pref" data-val="Indica" onclick="pickMany(this)">Indica</button>
             <button class="opt-btn" data-field="strain_pref" data-val="Sativa" onclick="pickMany(this)">Sativa</button>
             <button class="opt-btn" data-field="strain_pref" data-val="Hybrid" onclick="pickMany(this)">Hybrid</button>
@@ -574,9 +565,9 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
         </div>
 
         <div>
-          <div class="section-label" style="margin-bottom:4px">Preferred time</div>
+          <div class="section-label mb-4">Preferred time</div>
           <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">Select all that apply</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="grid-2col">
             <button class="opt-btn" data-field="time" data-val="Morning" onclick="pickMany(this)">Morning</button>
             <button class="opt-btn" data-field="time" data-val="Daytime" onclick="pickMany(this)">Daytime</button>
             <button class="opt-btn" data-field="time" data-val="Evening" onclick="pickMany(this)">Evening</button>
@@ -585,8 +576,8 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
         </div>
 
         <div>
-          <div class="section-label" style="margin-bottom:8px">Product types (select all that apply)</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="section-label mb-8">Product types (select all that apply)</div>
+          <div class="grid-2col">
             <button class="opt-btn" data-field="products" data-val="Flower" onclick="pickMany(this)">Flower</button>
             <button class="opt-btn" data-field="products" data-val="Edibles" onclick="pickMany(this)">Edibles</button>
             <button class="opt-btn" data-field="products" data-val="THC drinks" onclick="pickMany(this)">THC drinks</button>
@@ -599,8 +590,8 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
         </div>
 
         <div>
-          <div class="section-label" style="margin-bottom:8px">Goals (select all that apply)</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="section-label mb-8">Goals (select all that apply)</div>
+          <div class="grid-2col">
             <button class="opt-btn" data-field="goals" data-val="Better sleep" onclick="pickMany(this)">Better sleep</button>
             <button class="opt-btn" data-field="goals" data-val="Anxiety relief" onclick="pickMany(this)">Anxiety relief</button>
             <button class="opt-btn" data-field="goals" data-val="Pain relief" onclick="pickMany(this)">Pain relief</button>
@@ -613,7 +604,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
         </div>
 
         <div>
-          <div class="section-label" style="margin-bottom:4px">Gender</div>
+          <div class="section-label mb-4">Gender</div>
           <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">Helps personalize recommendations</div>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
             <button class="opt-btn" data-field="gender" data-val="Male" onclick="pickGender(this)">Male</button>
@@ -630,8 +621,8 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
           <div style="font-size:12px;color:#5a5c57;line-height:1.5">These optional questions help us give you more relevant recommendations based on hormonal health.</div>
 
           <div>
-            <div class="section-label" style="margin-bottom:8px">Menstrual cycle phase <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div class="section-label mb-8">Menstrual cycle phase <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
+            <div class="grid-2col">
               <button class="opt-btn" data-field="cycle" data-val="Menstrual" onclick="pickOne(this)">Menstrual</button>
               <button class="opt-btn" data-field="cycle" data-val="Follicular" onclick="pickOne(this)">Follicular</button>
               <button class="opt-btn" data-field="cycle" data-val="Ovulation" onclick="pickOne(this)">Ovulation</button>
@@ -642,8 +633,8 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
           </div>
 
           <div>
-            <div class="section-label" style="margin-bottom:8px">Hormonal conditions <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div class="section-label mb-8">Hormonal conditions <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
+            <div class="grid-2col">
               <button class="opt-btn" data-field="hormonal" data-val="PCOS" onclick="pickMany(this)">PCOS</button>
               <button class="opt-btn" data-field="hormonal" data-val="Endometriosis" onclick="pickMany(this)">Endometriosis</button>
               <button class="opt-btn" data-field="hormonal" data-val="Fibroids" onclick="pickMany(this)">Fibroids</button>
@@ -659,7 +650,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       <div id="other-hormonal-toggle" style="display:none">
         <div class="card" style="background:#F7F8F6">
           <div style="font-size:13px;color:#5a5c57;margin-bottom:10px">Some wellness recommendations are tailored for hormonal health. Would you like to answer a few optional questions?</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="grid-2col">
             <button class="opt-btn" data-field="hormonal_opt" data-val="Yes" onclick="showHormonalFromOther(this)">Yes, show them</button>
             <button class="opt-btn" data-field="hormonal_opt" data-val="No" onclick="hideHormonalFromOther(this)">No thanks</button>
           </div>
@@ -673,8 +664,8 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
         <div class="card" style="display:flex;flex-direction:column;gap:16px">
 
           <div>
-            <div class="section-label" style="margin-bottom:8px">What are you managing <span style="font-weight:400;color:#9a9c97;font-size:12px">(optional — helps Ivy personalize your guidance)</span></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div class="section-label mb-8">What are you managing <span style="font-weight:400;color:#9a9c97;font-size:12px">(optional — helps Ivy personalize your guidance)</span></div>
+            <div class="grid-2col">
               <button class="opt-btn" data-field="conditions" data-val="Chronic pain" onclick="pickMany(this)">Chronic pain</button>
               <button class="opt-btn" data-field="conditions" data-val="Sleep issues" onclick="pickMany(this)">Sleep issues</button>
               <button class="opt-btn" data-field="conditions" data-val="Anxiety" onclick="pickMany(this)">Anxiety</button>
@@ -689,13 +680,12 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
           </div>
 
           <div>
-            <div class="section-label" style="margin-bottom:4px">Medications <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
+            <div class="section-label mb-4">Medications <span style="font-weight:400;color:#9a9c97">(optional)</span></div>
             <div style="font-size:11px;color:#9a9c97;margin-bottom:8px">Cannabis may interact with some medications. We share general wellness context to help inform your conversations with your doctor or pharmacist — not to replace them.</div>
 
             <!-- Medication list -->
             <div id="med-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:8px"></div>
 
-            <!-- Add medication button -->
             <button onclick="addMedication()" id="add-med-btn"
               style="width:100%;padding:9px;border:1.5px dashed rgba(0,0,0,0.15);border-radius:9px;font-size:13px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#1a9968">
               + Add a medication
@@ -723,16 +713,15 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       <button class="back-btn" onclick="switchTab('home')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <div style="flex:1">
+      <div class="flex-1">
         <div class="topbar-title">Find a dispensary</div>
         <div class="topbar-sub">Powered by Google Places</div>
       </div>
     </div>
     <div class="content">
-      <!-- Search bar -->
-      <div class="card" style="display:flex;flex-direction:column;gap:10px">
+      <div class="card flex-col-gap10">
         <div style="font-size:13px;color:#5a5c57;line-height:1.6">Search your dispensary. Partner dispensaries show live inventory so Ivy only recommends what is actually in stock.</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="flex-col-gap10">
 
           <div style="display:flex;flex-direction:column;gap:4px">
             <label style="font-size:11px;font-weight:600;color:#5a8f74;letter-spacing:0.06em;text-transform:uppercase">State</label>
@@ -793,7 +782,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
             </select>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="grid-2col">
             <div style="display:flex;flex-direction:column;gap:4px">
               <label style="font-size:11px;font-weight:600;color:#5a8f74;letter-spacing:0.06em;text-transform:uppercase">City</label>
               <input type="text" id="disp-city"
@@ -827,7 +816,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
 
       <!-- Currently selected dispensary -->
       <div id="current-disp-card" style="display:none">
-        <div class="section-label" style="margin-bottom:8px">Currently selected</div>
+        <div class="section-label mb-8">Currently selected</div>
         <div class="card" style="padding:14px 16px;background:#e8f7f1;border-color:#a8dfc9">
           <div style="display:flex;align-items:center;justify-content:space-between">
             <div>
@@ -841,7 +830,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
 
       <div id="disp-status" style="font-size:13px;color:#9a9c97;text-align:center;padding:8px 0"></div>
       <div id="partner-status" style="font-size:12px;color:#1a9968;padding:4px 0;line-height:1.5"></div>
-      <div id="disp-results" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div id="disp-results" class="flex-col-gap10"></div>
     </div>
     <div class="navbar-placeholder"></div>
   </div>
@@ -854,7 +843,7 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
       <button class="back-btn" onclick="switchTab('home')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <div style="flex:1">
+      <div class="flex-1">
         <div class="topbar-title">My Journal</div>
         <div class="topbar-sub">Track how products make you feel</div>
       </div>
@@ -922,24 +911,24 @@ window.va = window.va || function () { (window.vaq = window.vaq || []).push(argu
           <div class="section-label" style="margin-bottom:10px">How did it affect you? (1 = not at all, 10 = very much)</div>
           <div style="display:flex;flex-direction:column;gap:12px">
             <div>
-              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Sleep quality</span><span id="val-sleep" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
-              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-sleep').textContent=this.value" style="width:100%">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span class="text-secondary-sm">Sleep quality</span><span id="val-sleep" class="text-label-green">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-sleep').textContent=this.value" class="w-full">
             </div>
             <div>
-              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Anxiety relief</span><span id="val-anxiety" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
-              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-anxiety').textContent=this.value" style="width:100%">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span class="text-secondary-sm">Anxiety relief</span><span id="val-anxiety" class="text-label-green">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-anxiety').textContent=this.value" class="w-full">
             </div>
             <div>
-              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Pain relief</span><span id="val-pain" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
-              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-pain').textContent=this.value" style="width:100%">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span class="text-secondary-sm">Pain relief</span><span id="val-pain" class="text-label-green">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-pain').textContent=this.value" class="w-full">
             </div>
             <div>
-              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Energy / focus</span><span id="val-energy" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
-              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-energy').textContent=this.value" style="width:100%">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span class="text-secondary-sm">Energy / focus</span><span id="val-energy" class="text-label-green">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-energy').textContent=this.value" class="w-full">
             </div>
             <div>
-              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;color:#5a5c57">Mood lift</span><span id="val-mood" style="font-size:13px;font-weight:600;color:#1a9968">5</span></div>
-              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-mood').textContent=this.value" style="width:100%">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span class="text-secondary-sm">Mood lift</span><span id="val-mood" class="text-label-green">5</span></div>
+              <input type="range" min="1" max="10" value="5" step="1" oninput="document.getElementById('val-mood').textContent=this.value" class="w-full">
             </div>
           </div>
         </div>
@@ -1197,14 +1186,14 @@ function renderJournal() {
   empty.style.display = 'none'; list.style.display = 'flex';
 
   const scoreBar = (label, val) =>
-    `<div style="margin-bottom:4px"><div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="font-size:11px;color:#9a9c97">${label}</span><span style="font-size:11px;font-weight:600;color:#1a9968">${val}/10</span></div><div style="height:4px;background:#f0f1ee;border-radius:2px"><div style="height:100%;width:${val*10}%;background:#1a9968;border-radius:2px"></div></div></div>`;
+    `<div class="mb-4"><div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="font-size:11px;color:#9a9c97">${label}</span><span style="font-size:11px;font-weight:600;color:#1a9968">${val}/10</span></div><div style="height:4px;background:#f0f1ee;border-radius:2px"><div style="height:100%;width:${val*10}%;background:#1a9968;border-radius:2px"></div></div></div>`;
 
   // Insights card
   const ins = getJournalInsights();
   const insightsHtml = ins ? `
     <div style="background:linear-gradient(135deg,#1a9968,#0d6647);border-radius:14px;padding:16px 18px;margin-bottom:0">
       <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.75);letter-spacing:0.08em;margin-bottom:10px">YOUR PATTERNS (${ins.count} entries)</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="grid-2col">
         ${ins.bestType ? `<div style="background:rgba(255,255,255,0.15);border-radius:9px;padding:10px 12px">
           <div style="font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:2px">Best rated type</div>
           <div style="font-size:14px;font-weight:700;color:white">${ins.bestType}</div>
@@ -1449,7 +1438,7 @@ function renderDispensaries(list) {
     return `
     <div style="background:${bgColor};border:1.5px solid ${borderColor};border-radius:14px;padding:14px 16px">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px">
-        <div style="flex:1">
+        <div class="flex-1">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
             ${d.website
               ? `<a href="${d.website}" target="_blank" style="font-size:14px;font-weight:700;color:${isPartner?'#0d6647':'#1a9968'};text-decoration:none">${d.name} ↗</a>`
@@ -2156,7 +2145,7 @@ function refreshUI() {
           <div style="width:38px;height:38px;border-radius:11px;background:#1a9968;display:flex;align-items:center;justify-content:center;flex-shrink:0">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
-          <div style="flex:1">
+          <div class="flex-1">
             <div style="font-size:13px;font-weight:700;color:#0a5c3a;margin-bottom:3px">Get more from Ivy</div>
             <div style="font-size:12px;color:#3a7a5a;line-height:1.55">A 2 minute profile means every recommendation is built around you specifically.</div>
           </div>
@@ -2232,7 +2221,7 @@ function refreshUI() {
     }
     suggCard.innerHTML = `<div style="display:flex;align-items:flex-start;gap:12px">
       <div style="font-size:24px;line-height:1;flex-shrink:0;margin-top:2px">${icon}</div>
-      <div style="flex:1">
+      <div class="flex-1">
         <div style="font-size:13px;font-weight:700;color:#111;margin-bottom:3px">${headline}</div>
         <div style="font-size:12px;color:#5a5c57;line-height:1.55;margin-bottom:8px">${body}</div>
         <div style="font-size:12px;font-weight:600;color:#1a9968">Ask Ivy →</div>
@@ -2315,7 +2304,7 @@ function renderHistory(id) {
     const rateLabel = (showDelete && !h.rating) ? '<div style="font-size:10px;color:#9a9c97;margin-top:1px;text-align:right">Tap to rate</div>' : '';
     return '<div class="h-item" id="h-item-' + i + '">' +
       '<div class="h-dot" style="background:' + color + '"></div>' +
-      '<div style="flex:1">' +
+      '<div class="flex-1">' +
         '<div class="h-name">' + h.name + '</div>' +
         '<div class="h-meta">' + h.type + ' · ' + (h.date||'Recently') + '</div>' +
       '</div>' +
@@ -3715,7 +3704,7 @@ function showQuickSetup() {
       <!-- Step 2: Experience (hidden initially) -->
       <div id="qs-step-2" style="display:none">
         <div style="font-size:13px;font-weight:600;color:#111;margin-bottom:12px">What's your experience with cannabis?</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="grid-2col">
           ${['First time','Occasional','Regular','Daily use'].map(exp => `
           <button onclick="quickSetupData.experience='${exp}';qsNextStep(2)"
             style="padding:11px 8px;border:1.5px solid rgba(0,0,0,0.1);border-radius:9px;font-size:13px;font-weight:500;background:#f7f8f6;cursor:pointer;font-family:inherit;color:#333;text-align:center">

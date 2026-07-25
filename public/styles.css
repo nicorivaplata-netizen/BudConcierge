@@ -44,11 +44,8 @@ html,body { height:100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont
 
 /* Top bar */
 .topbar { display:flex; align-items:center; gap:10px; padding:13px 16px; background:var(--surface); border-bottom:1px solid var(--border); min-height:58px; flex-shrink:0; }
-.topbar-avatar { width:36px; height:36px; border-radius:50%; background:var(--green-light); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--green-text); flex-shrink:0; cursor:pointer; border:1.5px solid var(--green-mid); }
 .topbar-title { font-size:15px; font-weight:700; color:var(--text-1); letter-spacing:-0.2px; }
 .topbar-sub { font-size:11px; color:var(--text-3); margin-top:1px; }
-.topbar-badge { font-size:10px; background:var(--green-light); color:var(--green-text); padding:3px 9px; border-radius:20px; font-weight:700; border:1px solid var(--green-mid); }
-.online-dot { width:8px; height:8px; border-radius:50%; background:var(--green); flex-shrink:0; box-shadow:0 0 0 2px var(--green-light); }
 .back-btn { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border:none; background:transparent; cursor:pointer; border-radius:50%; color:var(--text-2); }
 .back-btn:hover { background:var(--surface-2); }
 
@@ -79,22 +76,12 @@ html,body { height:100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont
 .pill { display:inline-block; font-size:11px; padding:3px 10px; border-radius:20px; font-weight:600; }
 .pill-green  { background:var(--green-light); color:var(--green-text); border:1px solid var(--green-mid); }
 .pill-purple { background:#EEEDFE; color:#26215C; }
-.pill-amber  { background:#FAEEDA; color:#412402; }
 
 /* Section label */
 .section-label { font-size:11px; font-weight:700; color:var(--text-3); letter-spacing:.08em; text-transform:uppercase; }
 
-/* Welcome banner */
-.welcome-banner { display:flex; align-items:flex-start; gap:14px; padding:18px; background:var(--green-light); border:1px solid var(--green-mid); border-radius:var(--radius-lg); }
 .wb-avatar { width:50px; height:50px; border-radius:50%; background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; color:var(--green-text); flex-shrink:0; border:2px solid var(--green-mid); }
-.wb-title { font-size:16px; font-weight:700; margin-bottom:4px; letter-spacing:-0.2px; }
-.wb-sub   { font-size:13px; color:var(--text-2); line-height:1.6; }
 
-/* Quick cards */
-.quick-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px 16px; cursor:pointer; box-shadow:var(--shadow-sm); }
-.quick-card:hover { border-color:var(--green-mid); box-shadow:var(--shadow-md); }
-.quick-card-title { font-size:14px; font-weight:650; color:var(--text-1); margin-bottom:3px; }
-.quick-card-sub   { font-size:12px; color:var(--text-2); line-height:1.4; }
 
 /* ── CHAT ── */
 .messages { flex:1; overflow-y:auto; padding:20px 14px 70px; display:flex; flex-direction:column; gap:16px; }
@@ -166,7 +153,6 @@ html,body { height:100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont
 }
 .chip:hover { background: var(--green-mid); border-color: var(--green); }
 .chip.used  { opacity:.38; pointer-events:none; }
-.chip.selected { opacity:1; background:var(--green-mid); border-color:var(--green); color:var(--green-dark); font-weight:600; pointer-events:none; }
 
 /* Rec card — product recommendation */
 .rec-card {
@@ -262,7 +248,6 @@ html,body { height:100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont
 .h-dot  { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
 .h-name { font-size:13px; font-weight:600; }
 .h-meta { font-size:11px; color:var(--text-3); margin-top:1px; }
-.h-stars { margin-left:auto; font-size:12px; color:#EF9F27; }
 .no-history { padding:20px; text-align:center; font-size:13px; color:var(--text-3); line-height:1.5; }
 
 /* Toast */
@@ -451,3 +436,15 @@ html,body { height:100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont
   color: var(--text-1);
   letter-spacing: -0.2px;
 }
+
+/* ── UTILITY CLASSES ── */
+.flex-col-gap10 { display: flex; flex-direction: column; gap: 10px; }
+.flex-center-gap12 { display: flex; align-items: center; gap: 12px; }
+.grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.text-secondary-sm { font-size: 13px; color: #5a5c57; }
+.text-label-green { font-size: 13px; font-weight: 600; color: #1a9968; }
+.mb-4 { margin-bottom: 4px; }
+.mb-8 { margin-bottom: 8px; }
+.w-full { width: 100%; }
+.flex-1 { flex: 1; }
+.flex-1-min0 { flex: 1; min-width: 0; }
