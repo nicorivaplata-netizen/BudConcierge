@@ -1946,7 +1946,6 @@ function pills(arr, cls) {
 function addPromotion(dispensary, product, deal, expires) {
   promotions.push({ dispensary, product, deal, expires, added: new Date().toLocaleDateString() });
   try { localStorage.setItem(PROMOKEY, JSON.stringify(promotions)); } catch(e) {}
-  console.log('Promotion added:', product, deal);
 }
 
 function clearPromotions() {
@@ -2578,12 +2577,12 @@ function buildSystem() {
   const expKey     = profile.experience || '';
 
   const expLabel = {
-    first_time:  'a first timer — start conservative, very low THC or CBD-dominant only, explain onset times, dosing guidance mandatory',
-    beginner:    'fairly new — keep THC moderate, clear simple explanations',
-    occasional:  'occasional user — moderate approach, skip the very basics',
-    regular:     'regular user — mid to high THC fine, skip beginner guidance',
-    experienced: 'experienced — high tolerance likely, recommend strong products confidently'
-  }[expKey] || 'unknown experience level — treat as beginner until clarified';
+    first_time:  'a first timer. start conservative, very low THC or CBD-dominant only, explain onset times, dosing guidance mandatory',
+    beginner:    'fairly new. keep THC moderate, clear simple explanations',
+    occasional:  'occasional user. moderate approach, skip the very basics',
+    regular:     'regular user. mid to high THC fine, skip beginner guidance',
+    experienced: 'experienced. high tolerance likely, recommend strong products confidently'
+  }[expKey] || 'unknown experience level. treat as beginner until clarified';
 
   // Journal context — last 5 entries with ratings
   const recentJournal = (journal || []).slice(0, 5);
@@ -2628,6 +2627,7 @@ Adjust recommendations for hormonal context — CBD and balanced ratios are gene
     : '';
 
   // Inventory context
+  const isCbdStore = (selectedDispensary?.type === 'cbd') || false;
   const inventoryCtx = buildInventoryContext();
 
   // Strain database — compact format
@@ -2793,7 +2793,7 @@ RECOMMENDATION QUALITY RULES:
 - SPECIFICITY: name the specific mechanism in plain language — not "this is relaxing" but why it fits this exact situation
 - PRODUCT TYPE: match the format to the use case — edibles for sustained relief, vape for fast onset, tincture for dose control, topical for localized pain
 - ONSET: always mention how quickly they will feel it and how long it lasts
-- FIRST-TIMERS: dosing guidance is mandatory — 2.5mg edibles max after a meal wait 90 min; one small vape puff wait 15 min; half tincture label under tongue 60 sec. Always say: "You can always take more later but you cannot take less once it is in your system."
+- FIRST-TIMERS: dosing guidance is mandatory — Edibles: 2.5mg max after a meal, wait 90 min. Vape or flower: one small puff, wait 15 minutes before taking more. Tincture: half the label dose, hold under tongue 60 sec. Always say: "You can always take more later but you cannot take less once it is in your system."
 - HEALTH CONTEXT: let what the user is managing drive the recommendation — chronic pain, sleep disruption, anxiety patterns, nerve discomfort, and inflammation each need different approaches. When a user shares specific health context use it to inform cannabinoid direction, product format, and timing without making therapeutic claims.
 
 PLAIN LANGUAGE RULE — every explanation must be understood by someone who has never tried cannabis:
@@ -2815,6 +2815,8 @@ CHIPS|||option1|||option2|||option3|||option4
 - Multi-select (add select:multiple first): goals, conditions, pain types, product formats, time of day
 - Single-select (add select:single first): experience level, medication yes/no, name, all diagnostic follow-up questions
 - If two options lead to the same recommendation merge them into one
+
+${isCbdStore ? `CBD STORE ACTIVE: This dispensary sells CBD products only — no THC products are available. All recommendations must be CBD-based. Do not suggest THC products or ask about THC preference.` : ''}
 
 LIVE INVENTORY:
 ${inventoryCtx || 'No dispensary selected. Recommend from product database only.'}
@@ -4104,16 +4106,13 @@ async function fetchInventory(slug) {
     const data = await res.json();
 
     if (data.status === 'NO_DATA') {
-      console.log(`No inventory data yet for ${slug}`);
       return [];
     }
 
     selectedDispensary = { slug, ...DISPENSARIES[slug], inventory: data.inventory, summary: data.summary, menuUrl: DISPENSARIES[slug]?.menuUrl || '' };
     localStorage.setItem('bc_selected_dispensary', JSON.stringify({ slug, name: DISPENSARIES[slug].name }));
-    console.log(`Loaded ${data.inventory.length} products for ${data.dispensary}`);
     return data.inventory;
   } catch(e) {
-    console.warn('Could not load inventory:', e.message);
     return null;
   }
 }
