@@ -1761,6 +1761,13 @@ function finishOnboard() {
   if (!obData.name && !obData.experience && !obData.goals.length) {
     chatInitialized = false;
     switchTab('chat');
+    setTimeout(function() {
+      if (!chatInitialized) startChat();
+      setTimeout(function() {
+        var msgsEl = document.getElementById('messages');
+        if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
+      }, 300);
+    }, 100);
     return;
   }
 
