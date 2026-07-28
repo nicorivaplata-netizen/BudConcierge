@@ -1759,15 +1759,8 @@ function finishOnboard() {
 
   // If user skipped from Slide 1 with nothing collected, use the standard no-profile welcome
   if (!obData.name && !obData.experience && !obData.goals.length) {
-    chatInitialized = false;
-    switchTab('chat');
-    setTimeout(function() {
-      if (!chatInitialized) startChat();
-      setTimeout(function() {
-        var msgsEl = document.getElementById('messages');
-        if (msgsEl) msgsEl.scrollTop = msgsEl.scrollHeight;
-      }, 300);
-    }, 100);
+    switchTab('home');
+    refreshUI();
     return;
   }
 
